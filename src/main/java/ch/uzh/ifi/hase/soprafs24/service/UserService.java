@@ -12,6 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/*
+ * M3 implementation in between
+ */
+import ch.uzh.ifi.hase.soprafs24.Class.UserClass;
+/*
+ * M3 implementation in between
+ */
+
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +29,18 @@ import java.util.UUID;
  * the user
  * (e.g., it creates, modifies, deletes, finds). The result will be passed back
  * to the caller.
+ * 
+ * @Service marks a Java class as a service class, which holds business logic. 
+ * It's a specialization of @Component, and it indicates that the class holds business logic. 
+ * Usually, it is used to define service-layer classes.
+ * 
+ * @Transactional is used to declare that a method or class should be executed within a transactional context. 
+ * It means that if anything goes wrong during the method execution, 
+ * all changes made to the database within that method will be rolled back, preventing partial updates.
+ * 
+ * @Autowired is used to automatically wire beans in the Spring container. 
+ * It can be used to autowire bean on the setter method, a constructor, a property, 
+ * or methods with arbitrary names and/or multiple arguments.
  */
 @Service
 @Transactional
