@@ -16,6 +16,8 @@ import org.mapstruct.factory.Mappers;
  * Additional mappers can be defined for new entities.
  * Always created one mapper for getting information (GET) and one mapper for
  * creating information (POST).
+ * 
+ * we can re-wrap the fields we need to send back to the client with DTO
  */
 @Mapper
 public interface DTOMapper {
@@ -24,11 +26,13 @@ public interface DTOMapper {
 
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
+  @Mapping(source = "password", target = "password")
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   @Mapping(source = "id", target = "id")
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
+  @Mapping(source = "password", target = "password") //not necessary to send back the password, considering deleting this one
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
 }
