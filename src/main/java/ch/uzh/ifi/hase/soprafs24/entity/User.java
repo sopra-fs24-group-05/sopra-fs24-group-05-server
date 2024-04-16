@@ -22,7 +22,7 @@ import java.util.List;
  * import javax.persistence.* to utlize keywords start with @
  */
 
-/*
+/**
  * @Entity: Indicates that the class is an entity, 
  * which means it will be mapped to a database table.
  * @Table(name = "USER"): Specifies the name of the database table 
@@ -44,7 +44,7 @@ public class User implements Serializable {
   @GeneratedValue
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private String name;
 
   @Column(nullable = false, unique = true)
@@ -66,10 +66,13 @@ public class User implements Serializable {
     return id;
   }
 
+  /* 
+   * Only to be used in test
+  */
   public void setId(Long id) {
     this.id = id;
   }
-
+  
   public String getName() {
     return name;
   }

@@ -58,18 +58,76 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
-  public User createUser(User newUser) {
+  /**
+   * This is a method that help to handle request to create a new user in the database
+   * It will check the uniqueness of username and throw error if input is not valid
+   * @param newUser
+   * @throws org.springframework.web.server.ResponseStatusException
+   * @return User
+   * @see User
+   * @see UserRepository
+   */
+  public User createUser(User newUser) throws ResponseStatusException{
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
-    userRepository.existsById(newUser.getId());
-    checkIfUserExists(newUser);
+
+    if(userRepository.existsByUsername(newUser.getUsername())){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
+    }
+    //checkIfUserExists(newUser); // original check for the username uniqueness
+    
     // saves the given entity but data is only persisted in the database once
-    // flush() is called
+    // flush() is called, used to synchronize any changes made to entities managed by persistence context with the underlying database.
     newUser = userRepository.save(newUser);
     userRepository.flush();
 
     log.debug("Created Information for User: {}", newUser);
     return newUser;
+  }
+
+  /**
+   * This is a method that help to handle login request. It is used in endpoint that handle put request
+   * always make sure update is made to the right entity(primary key)
+   * here the return of findByUsername() include primary key: Long id
+   * It will check the uniqueness of username and throw error if input is not valid
+   * @param loginUser
+   * @throws org.springframework.web.server.ResponseStatusException
+   * @return User
+   * @see User
+   * @see UserRepository
+   */
+  public User loginUser(User loginUser) throws ResponseStatusException{
+    User userByUsername = userRepository.findByUsername(loginUser.getUsername());
+    if(userByUsername == null){
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "username not found");
+    }else if(!loginUser.getPassword().equals(userByUsername.getPassword())){
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"incorrect password");
+    }
+
+    userByUsername.setStatus(UserStatus.ONLINE);
+    userRepository.saveAndFlush(userByUsername);
+    return userByUsername;
+  }
+
+  /**
+   * This method is similar to loginUser but do the oppsite job
+   * invalid input need to be handle is also different
+   * @param logoutUser
+   * @throws org.springframework.web.server.ResponseStatusException
+   * @return User
+   * @see User loginUser(User logingUser)
+   * 
+   * toDO: needs to specify which field should be used to logout target user, id? username? token? 
+   * 
+   */
+  public void logoutUser(User logoutUser) throws ResponseStatusException{
+    User userByUsername = userRepository.findByUsername(logoutUser.getUsername());
+    if(userByUsername == null){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "username not found");
+    }
+
+    userByUsername.setStatus(UserStatus.OFFLINE);
+    userRepository.saveAndFlush(userByUsername);
   }
 
   /**

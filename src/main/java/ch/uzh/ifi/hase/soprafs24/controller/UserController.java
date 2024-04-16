@@ -42,7 +42,7 @@ public class UserController {
     return userGetDTOs;
   }
 
-  @PostMapping("/users")
+  @PostMapping("/users/registration")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
@@ -51,7 +51,26 @@ public class UserController {
 
     // create user
     User createdUser = userService.createUser(userInput);
+    //createUser will return A User entity with field of: id, username, password, token
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+  }
+
+  @PutMapping("/users/login")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO loginUser(@RequestBody UserPostDTO userPostDTO){
+    User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    User loginUser = userService.loginUser(userInput);
+    return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
+  }
+
+  //frontend should correspondingly delete token
+  @PutMapping("/users/logout")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void logoutUser(@RequestBody UserPostDTO userPostDTO){
+    User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    userService.logoutUser(userInput);
   }
 }

@@ -8,24 +8,17 @@
 
 * Zizhou Luo
 
+  progress on implementing User Management System(#4,#7,#9): Registration, Login, Logout
+
+  * modify User Class in `User.java`, add several fields, corresponding methods and corresponding mapping in `DTOMapper.java`
+  * implement help methods in `UserService.java` to manipulate database and provide corresponding endpoint in `UserController.java`
+
+  create `contributions.md` to keep track of weekly contribution
+
+  add comments to make the code more readable 
+
+  
+
 * 
 
-
-
-
-
-## Zizhou Luo
-
-### 24/4/15
-
-(a) base on my work in milestone 1, progress on implementing User Management System(#4,#7,#9)
-
-* modified @Entity User Class
-  * add `@Column String password` field and relative methods `get()` and `set()`
-  * add corresponding mapping in `DTOMapper`
-* 
-
-(b) create `contributions.md` to keep track of progress
-
-(c) add some comments to explain the code (e.g. the meaning of certain keyword like "@Entity", what's *DTO relation to User class)
 
