@@ -5,8 +5,10 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,34 @@ public class UserController {
     return userGetDTOs;
   }
 
+
+  @GetMapping("/users/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO getUserById(@PathVariable Long userId) {
+      User user = userService.getUserById(userId);
+      if (user == null){
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND,"user with userId was not found");
+      }
+      UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+      return userGetDTO;
+  }
+
+
+  @PostMapping("/login")
+  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseBody
+  public UserGetDTO login(@RequestBody UserPostDTO userPostDTO) {
+      // convert API user to internal representation
+      User userInput = new User();
+      BeanUtils.copyProperties(userPostDTO, userInput);
+
+      // create user
+      User createdUser = userService.login(userPostDTO);
+      // convert internal representation of user back to API
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+  }
+
   @PostMapping("/users")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
@@ -53,5 +83,16 @@ public class UserController {
     User createdUser = userService.createUser(userInput);
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+  }
+
+  @PutMapping("/users/{userId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ResponseBody
+  public UserGetDTO updateUser(@RequestBody User userInput,@PathVariable("userId") Long userId) {
+      userInput.setId(userId);
+      // create user
+      User createdUser = userService.updateUser(userInput);
+      // convert internal representation of user back to API
+      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 }
