@@ -7,11 +7,15 @@ import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * User Controller
@@ -44,7 +48,15 @@ public class UserController {
     return userGetDTOs;
   }
 
-  @PostMapping("/users")
+  @GetMapping("/users/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public User getUserById(@PathVariable Long id) {
+    return userService.getUserById(id);
+  }
+  
+
+  @PostMapping("/users/registration")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
@@ -74,15 +86,14 @@ public class UserController {
   public void logoutUser(@RequestBody UserPostDTO userPostDTO){
     User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
     userService.logoutUser(userInput);
-
-  @PutMapping("/users/{userId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ResponseBody
-  public UserGetDTO updateUser(@RequestBody User userInput,@PathVariable("userId") Long userId) {
-      userInput.setId(userId);
-      // create user
-      User createdUser = userService.updateUser(userInput);
-      // convert internal representation of user back to API
-      return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
+
+  @PutMapping("/users/edit")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void editUser(@RequestBody UserPostDTO userPostDTO, @RequestParam String token){
+    User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    userService.editUser(userInput, token);
+  }
+
 }

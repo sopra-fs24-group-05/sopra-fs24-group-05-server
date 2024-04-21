@@ -58,6 +58,13 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
+  public User getUserById(Long id){
+    if(!userRepository.existsById(id)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User Id not found");
+    }
+    return userRepository.findById(id).get();
+  }
+
   /**
    * This is a method that help to handle request to create a new user in the database
    * It will check the uniqueness of username and throw error if input is not valid
@@ -131,27 +138,29 @@ public class UserService {
   }
 
   /**
-   * This is a helper method that will check the uniqueness criteria of the
-   * username and the name
-   * defined in the User entity. The method will do nothing if the input is unique
-   * and throw an error otherwise.
-   *
-   * @param userToBeCreated
+   * This is a helper method that handle the request to edit specific users files
+   * 
+   * @param editUser
+   * @param token use to judge whether the user are editing their own file
    * @throws org.springframework.web.server.ResponseStatusException
-   * @see User
    */
-  private void checkIfUserExists(User userToBeCreated) {
-    User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    User userByName = userRepository.findByName(userToBeCreated.getName());
-
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null && userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format(baseErrorMessage, "username and the name", "are"));
-    } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } else if (userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
+  public void editUser(User editUser, String token){
+    if(userRepository.existsById(editUser.getId())){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
+    }else if(userRepository.existsByUsername(editUser.getUsername())){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
+    }else if(userRepository.findById(editUser.getId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"access deny");
     }
+    User targetUser = userRepository.findById(editUser.getId()).get();
+    if(editUser.getUsername()!=null){
+      targetUser.setUsername(editUser.getUsername());
+    }
+    if(editUser.getPassword()!=null){
+      targetUser.setPassword(editUser.getPassword());
+    }
+
+    userRepository.saveAndFlush(targetUser);
+    return;
   }
 }
