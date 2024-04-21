@@ -76,10 +76,12 @@ public class UserService {
    */
   public User createUser(User newUser) throws ResponseStatusException{
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.ONLINE);
+    newUser.setStatus(UserStatus.OFFLINE);
 
     if(userRepository.existsByUsername(newUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
+    }else if(userRepository.findByName(newUser.getName())!=null){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
     //checkIfUserExists(newUser); // original check for the username uniqueness
     

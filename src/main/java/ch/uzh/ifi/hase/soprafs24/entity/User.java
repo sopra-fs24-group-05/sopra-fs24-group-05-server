@@ -54,9 +54,10 @@ public class User implements Serializable {
   @Column(nullable = false)
   private String password;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private Date createDate;
 
+  @Column(nullable = true)
   private Date birthday;
 
   public Long getId() {
