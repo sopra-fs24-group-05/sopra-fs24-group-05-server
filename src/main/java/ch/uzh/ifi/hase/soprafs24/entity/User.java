@@ -4,8 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
-import java.util.List;
+import java.util.Date;
 
 /**
  * Internal User Representation
@@ -33,12 +32,8 @@ import java.util.List;
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
-/*
- * Serializable is a marker interface in Java, which means it doesn't have any methods to implement. 
- * It's used to indicate that instances of the class can be serialized, meaning they can be converted into a stream of bytes and written to a file, 
- * sent over a network, or stored in a database.
- */
-  private static final long serialVersionUID = 1L; // "final" means cannot be changed after initialized or overriden by subclass
+
+  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue
@@ -50,17 +45,19 @@ public class User implements Serializable {
   @Column(nullable = false, unique = true)
   private String username;
 
-  @Column(nullable = false)
-  private String password;
-
   @Column(nullable = false, unique = true)
   private String token;
 
   @Column(nullable = false)
   private UserStatus status;
 
-  @Column(nullable = true)
-  private List<Long> followingTopics;
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private Date createDate;
+
+    private Date birthday;
 
   public Long getId() {
     return id;
@@ -89,14 +86,6 @@ public class User implements Serializable {
     this.username = username;
   }
 
-  public String getPassword(){
-    return password;
-  }
-
-  public void setPassword(String password){
-    this.password = password;
-  }
-  
   public String getToken() {
     return token;
   }
@@ -113,4 +102,27 @@ public class User implements Serializable {
     this.status = status;
   }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
 }
