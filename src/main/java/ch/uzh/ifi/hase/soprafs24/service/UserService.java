@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,4 +97,28 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
     }
   }
+
+    public User getUserById(Long userId) {
+        User user = userRepository.findById(userId).get();
+        return user;
+    }
+
+    public User updateUser(User userInput) {
+        User user = userRepository.findById(userInput.getId()).get();
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"user with userId was not found");
+        }
+        return userRepository.save(userInput);
+    }
+
+    public User login(UserPostDTO userInput) {
+        User user = userRepository.findByUsername(userInput.getUsername());
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The username did not sign up,please signup!");
+        }
+        if (!userInput.getPassword().equals(user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "username or password error!");
+        }
+        return user;
+    }
 }

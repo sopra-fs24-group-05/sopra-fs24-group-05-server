@@ -3,6 +3,9 @@ package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -35,4 +38,20 @@ public interface DTOMapper {
   @Mapping(source = "password", target = "password") //not necessary to send back the password, considering deleting this one
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
+  @Mapping(source = "topicName", target = "topicName")
+  @Mapping(source = "ownerId", target = "ownerId")
+  @Mapping(source = "editAllowed", target = "editAllowed")
+  @Mapping(source = "content", target = "content")
+  Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
+
+  @Mapping(source = "id", target = "id")
+  @Mapping(source = "topicName", target = "topicName")
+  @Mapping(source = "creation_date", target = "creation_date")
+  @Mapping(source = "ownerId", target = "ownerId")
+  @Mapping(source = "fatherTopicId", target = "fatherTopicId")
+  @Mapping(source = "sonTopicId", target = "sonTopicId")
+  @Mapping(source = "editAllowed", target = "editAllowed")
+  @Mapping(source = "content", target = "content")
+  TopicGetDTO convertTopicGetDTOtoEntity(Topic topic);
 }
