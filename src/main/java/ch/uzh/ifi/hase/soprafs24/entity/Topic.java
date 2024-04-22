@@ -17,7 +17,7 @@ public class Topic implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Long topicId;
 
     @Column(nullable = false)
     private String topicName;
@@ -49,9 +49,9 @@ public class Topic implements Serializable {
     @Column(name = "message")
     private List<String> chatPool = new ArrayList<>();
 
-    public void setId(Long id) {this.id = id;}
+    public void setId(Long topicId) {this.topicId = topicId;}
 
-    public Long getId() {return id;}
+    public Long getId() {return topicId;}
 
     public String getTopicName() {return topicName;}
 

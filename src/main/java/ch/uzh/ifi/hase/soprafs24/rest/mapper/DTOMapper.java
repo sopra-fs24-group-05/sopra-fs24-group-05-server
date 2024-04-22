@@ -47,7 +47,7 @@ public interface DTOMapper {
 
   @Mapping(source = "id", target = "id")
   @Mapping(source = "topicName", target = "topicName")
-  @Mapping(source = "creation_date", target = "creation_date")
+  @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(source = "ownerId", target = "ownerId")
   @Mapping(source = "fatherTopicId", target = "fatherTopicId")
   @Mapping(source = "sonTopicId", target = "sonTopicId")

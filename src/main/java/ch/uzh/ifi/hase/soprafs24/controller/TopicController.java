@@ -1,18 +1,15 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
+
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 @RestController
