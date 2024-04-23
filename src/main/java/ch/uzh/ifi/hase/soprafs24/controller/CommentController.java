@@ -28,13 +28,20 @@ public class CommentController {
     return commentService.getCommentById(commentId);
   }
 
+  @GetMapping("/comments/{itemId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<Comment> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
+    return commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
+  }
+
   @PostMapping("/comments/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public CommentGetDTO creatComment(@RequestBody CommentPostDTO commentPostDTO){
     Comment commentInput = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
 
-    Comment createdComment = commentService.creatComment(commentInput);
+    Comment createdComment = commentService.createComment(commentInput);
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
   }
 

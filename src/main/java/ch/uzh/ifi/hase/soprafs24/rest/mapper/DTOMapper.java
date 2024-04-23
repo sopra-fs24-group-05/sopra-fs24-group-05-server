@@ -64,6 +64,7 @@ public interface DTOMapper {
   @Mapping(source = "commentId", target = "commentId")
   @Mapping(source = "userId", target = "userId")
   @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "score", target = "score")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
@@ -71,6 +72,7 @@ public interface DTOMapper {
   @Mapping(source = "commentId", target = "commentId")
   @Mapping(source = "userId", target = "userId")
   @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "score", target = "score")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   CommentGetDTO converEntityToCommentGetDTO(Comment comment);

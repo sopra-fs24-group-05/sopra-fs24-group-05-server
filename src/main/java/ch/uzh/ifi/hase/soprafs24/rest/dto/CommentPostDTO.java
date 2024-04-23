@@ -5,6 +5,7 @@ public class CommentPostDTO {
   private Long commentId;
   private Long userId;
   private Long itemId;
+  private Long score;
   private String content;
   private Long thumbsUpNum;
 
@@ -31,6 +32,14 @@ public class CommentPostDTO {
 
   public void setItemId(Long itemId){
     this.itemId=itemId;
+  }
+
+  public Long getScore(){
+    return this.score;
+  }
+
+  public void setScore(Long score){ 
+    this.score=score;
   }
 
   public String getContent(){
