@@ -28,7 +28,9 @@ public class Comment {
    * @JoinColumn()
    */
 
-  @Column(nullable = false, length = 150)
+  public static final int MAX_LENGTH = 150;
+  
+  @Column(nullable = false, length = MAX_LENGTH)
   private String content;
 
   @Column(nullable = false)

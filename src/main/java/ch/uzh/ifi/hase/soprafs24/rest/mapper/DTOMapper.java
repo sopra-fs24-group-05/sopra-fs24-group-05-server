@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import org.mapstruct.*;
@@ -37,4 +40,18 @@ public interface DTOMapper {
   @Mapping(source = "token", target = "token")
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
+  @Mapping(source = "commentId", target = "commentId")
+  @Mapping(source = "userId", target = "userId")
+  @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
+  Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
+
+  @Mapping(source = "commentId", target = "commentId")
+  @Mapping(source = "userId", target = "userId")
+  @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
+  CommentGetDTO converEntityToCommentGetDTO(Comment comment);
 }

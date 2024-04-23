@@ -52,6 +52,14 @@ public class CommentService {
   }
    */
 
+   public Comment creatComment(Comment newComment) throws ResponseStatusException{
+    if(newComment.getContent().length()>newComment.MAX_LENGTH){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The comments exceeded the 150-character limit");
+    }
+    newComment = commentRepository.saveAndFlush(newComment);
+    return newComment;
+   }
+
 
   
 }
