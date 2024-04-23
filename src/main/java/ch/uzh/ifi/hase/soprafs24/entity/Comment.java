@@ -22,15 +22,19 @@ public class Comment {
   @Column(nullable = false)
   private Long itemId;
 
-  //ToDO: specify the foreign key mapping relationship to items
-  /*
-   * @ManyToOne
-   * @JoinColumn()
+  @ManyToOne
+  @JoinColumn(name = "itemId", referencedColumnName = "id", insertable = false, updatable = false)
+  private Item item;
+
+  /**
+   * score to the item by the user
    */
+  @Column(nullable = false)
+  private Long score;
 
   public static final int MAX_LENGTH = 150;
   
-  @Column(nullable = false, length = MAX_LENGTH)
+  @Column(nullable = true, length = MAX_LENGTH)
   private String content;
 
   @Column(nullable = false)
@@ -59,6 +63,14 @@ public class Comment {
 
   public void setItemId(Long ItemId){ 
     this.itemId=itemId;
+  }
+
+  public Long getScore(){
+    return this.score;
+  }
+
+  public void setScore(Long score){ 
+    this.score=score;
   }
 
   public String getContent(){

@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,13 @@ public class CommentService {
   private final Logger log = LoggerFactory.getLogger(CommentService.class);
 
   private final CommentRepository commentRepository;
+  private final ItemRepository itemRepository;
 
   @Autowired
-  public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository){
+  public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository,
+                        @Qualifier("itemRepository" ) ItemRepository itemRepository){
     this.commentRepository = commentRepository;
+    this.itemRepository = itemRepository;
   }
 
   public Comment getCommentById(Long commentId){
@@ -35,9 +39,9 @@ public class CommentService {
     return commentRepository.findById(commentId).get();
   }
 
-  public List<Comment> getCommentOrderByThumbsUpNumDesc(int pageNumber, int pageSize){
+  public List<Comment> getCommentByItemIdOrderByThumbsUpNumDesc(Long itemId, int pageNumber, int pageSize){
     Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by("thumbsUpNum").descending());
-    return commentRepository.findByOrderByThumbsUpNumDesc(pageable);
+    return commentRepository.findByItemIdOrderByThumbsUpNumDesc(itemId,pageable);
   }
 
   /*
@@ -51,15 +55,27 @@ public class CommentService {
     return page.getContent();
   }
    */
-
-   public Comment creatComment(Comment newComment) throws ResponseStatusException{
+  /**
+   * Service methods for creating Comment
+   * check if the content exceed max length
+   * check if the user has already comment on the item
+   * @param newComment
+   * @return newComment
+   * @throws ResponseStatusException
+   */
+  public Comment createComment(Comment newComment) throws ResponseStatusException{
+    if(!itemRepository.existsById(newComment.getItemId())){
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+    }
     if(newComment.getContent().length()>newComment.MAX_LENGTH){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The comments exceeded the 150-character limit");
     }
+    boolean hasCommented = commentRepository.existsByUserIdAndItemId(newComment.getUserId(),newComment.getItemId());
+    if(hasCommented){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User has already commented on this item");
+    }
     newComment = commentRepository.saveAndFlush(newComment);
     return newComment;
-   }
+  }
 
-
-  
 }
