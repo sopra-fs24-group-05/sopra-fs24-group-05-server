@@ -6,6 +6,9 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -41,6 +44,23 @@ public interface DTOMapper {
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
+
+  @Mapping(source = "topicName", target = "topicName")
+  @Mapping(source = "ownerId", target = "ownerId")
+  @Mapping(source = "editAllowed", target = "editAllowed")
+  @Mapping(source = "content", target = "content")
+  Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
+
+  @Mapping(source = "id", target = "id")
+  @Mapping(source = "topicName", target = "topicName")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "ownerId", target = "ownerId")
+  @Mapping(source = "fatherTopicId", target = "fatherTopicId")
+  @Mapping(source = "sonTopicId", target = "sonTopicId")
+  @Mapping(source = "editAllowed", target = "editAllowed")
+  @Mapping(source = "content", target = "content")
+  TopicGetDTO convertTopicGetDTOtoEntity(Topic topic);
+
   @Mapping(source = "commentId", target = "commentId")
   @Mapping(source = "userId", target = "userId")
   @Mapping(source = "itemId", target = "itemId")
@@ -54,4 +74,5 @@ public interface DTOMapper {
   @Mapping(source = "content", target = "content")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   CommentGetDTO converEntityToCommentGetDTO(Comment comment);
+
 }

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 
 @Entity
@@ -15,13 +17,13 @@ public class Topic implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Long topicId;
 
     @Column(nullable = false)
-    private String TopicName;
+    private String topicName;
 
     @Column(nullable = false)
-    private Date CreationDate;
+    private Date creation_date;
 
     @Column(nullable = false)
     private Long ownerId;
@@ -38,17 +40,26 @@ public class Topic implements Serializable {
     @Column
     private String content;
 
-    public void setId(Long id) {this.id = id;}
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items;
 
-    public Long getId() {return id;}
 
-    public String getTopicName() {return TopicName;}
+    @ElementCollection
+    @CollectionTable(name = "topic_chatpools", joinColumns = @JoinColumn(name = "topic_id"))
+    @Column(name = "message")
+    private List<String> chatPool = new ArrayList<>();
 
-    public void setTopicName(String topicName) {TopicName = topicName;}
+    public void setId(Long topicId) {this.topicId = topicId;}
 
-    public Date getCreationDate() {return CreationDate;}
+    public Long getId() {return topicId;}
 
-    public void setCreationDate(Date creationDate) {CreationDate = creationDate;}
+    public String getTopicName() {return topicName;}
+
+    public void setTopicName(String topicName) {this.topicName = topicName;}
+
+    public Date getCreationDate() {return creation_date;}
+
+    public void setCreationDate(Date creation_date) {this.creation_date = creation_date;}
 
     public Long getOwnerId() {return ownerId;}
 
@@ -70,4 +81,14 @@ public class Topic implements Serializable {
 
     public void setContent(String content) {this.content = content;}
 
+    public List<String> getChatPool() { return chatPool; }
+    public void setChatPool(List<String> chatPool) { this.chatPool = chatPool; }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
 }
