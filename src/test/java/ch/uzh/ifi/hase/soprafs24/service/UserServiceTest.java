@@ -54,12 +54,19 @@ public class UserServiceTest {
     assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
   }
 
+  /**
+   * TODO: field "name" is not used in practice(2024/04/21)
+   * And if it is used in practice, name doesn't have to be unique
+   * should we delete this test?
+   * and modify createUser in UserService.java 
+   */
   @Test
   public void createUser_duplicateName_throwsException() {
     // given -> a first user has already been created
     userService.createUser(testUser);
 
     // when -> setup additional mocks for UserRepository
+    //field name in Class User is not used in practice
     Mockito.when(userRepository.findByName(Mockito.any())).thenReturn(testUser);
     Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
 

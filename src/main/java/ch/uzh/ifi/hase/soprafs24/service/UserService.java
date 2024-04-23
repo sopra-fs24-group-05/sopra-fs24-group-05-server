@@ -13,12 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-/*
- * M3 implementation in between
- */
-/*
- * M3 implementation in between
- */
+
 
 import java.util.List;
 import java.util.UUID;
@@ -59,13 +54,35 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
-  public User createUser(User newUser) {
+  public User getUserById(Long id){
+    if(!userRepository.existsById(id)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User Id not found");
+    }
+    return userRepository.findById(id).get();
+  }
+
+  /**
+   * This is a method that help to handle request to create a new user in the database
+   * It will check the uniqueness of username and throw error if input is not valid
+   * @param newUser
+   * @throws org.springframework.web.server.ResponseStatusException
+   * @return User
+   * @see User
+   * @see UserRepository
+   */
+  public User createUser(User newUser) throws ResponseStatusException{
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.ONLINE);
-    userRepository.existsById(newUser.getId());
-    checkIfUserExists(newUser);
+    newUser.setStatus(UserStatus.OFFLINE);
+
+    if(userRepository.existsByUsername(newUser.getUsername())){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
+    }else if(userRepository.findByName(newUser.getName())!=null){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+    //checkIfUserExists(newUser); // original check for the username uniqueness
+    
     // saves the given entity but data is only persisted in the database once
-    // flush() is called
+    // flush() is called, used to synchronize any changes made to entities managed by persistence context with the underlying database.
     newUser = userRepository.save(newUser);
     userRepository.flush();
 
@@ -74,28 +91,75 @@ public class UserService {
   }
 
   /**
-   * This is a helper method that will check the uniqueness criteria of the
-   * username and the name
-   * defined in the User entity. The method will do nothing if the input is unique
-   * and throw an error otherwise.
-   *
-   * @param userToBeCreated
+   * This is a method that help to handle login request. It is used in endpoint that handle put request
+   * always make sure update is made to the right entity(primary key)
+   * here the return of findByUsername() include primary key: Long id
+   * It will check the uniqueness of username and throw error if input is not valid
+   * @param loginUser
    * @throws org.springframework.web.server.ResponseStatusException
+   * @return User
    * @see User
+   * @see UserRepository
    */
-  private void checkIfUserExists(User userToBeCreated) {
-    User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    User userByName = userRepository.findByName(userToBeCreated.getName());
-
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null && userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format(baseErrorMessage, "username and the name", "are"));
-    } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } else if (userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
+  public User loginUser(User loginUser) throws ResponseStatusException{
+    User userByUsername = userRepository.findByUsername(loginUser.getUsername());
+    if(userByUsername == null){
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "username not found");
+    }else if(!loginUser.getPassword().equals(userByUsername.getPassword())){
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"incorrect password");
     }
+
+    userByUsername.setStatus(UserStatus.ONLINE);
+    userRepository.saveAndFlush(userByUsername);
+    return userByUsername;
+  }
+
+  /**
+   * This method is similar to loginUser but do the oppsite job
+   * invalid input need to be handle is also different
+   * @param logoutUser
+   * @throws org.springframework.web.server.ResponseStatusException
+   * @return User
+   * @see User loginUser(User logingUser)
+   * 
+   * toDO: needs to specify which field should be used to logout target user, id? username? token? 
+   * 
+   */
+  public void logoutUser(User logoutUser) throws ResponseStatusException{
+    User userByUsername = userRepository.findByUsername(logoutUser.getUsername());
+    if(userByUsername == null){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "username not found");
+    }
+
+    userByUsername.setStatus(UserStatus.OFFLINE);
+    userRepository.saveAndFlush(userByUsername);
+  }
+
+  /**
+   * This is a helper method that handle the request to edit specific users files
+   * 
+   * @param editUser
+   * @param token use to judge whether the user are editing their own file
+   * @throws org.springframework.web.server.ResponseStatusException
+   */
+  public void editUser(User editUser, String token){
+    if(userRepository.existsById(editUser.getId())){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
+    }else if(userRepository.existsByUsername(editUser.getUsername())){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
+    }else if(userRepository.findById(editUser.getId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"access deny");
+    }
+    User targetUser = userRepository.findById(editUser.getId()).get();
+    if(editUser.getUsername()!=null){
+      targetUser.setUsername(editUser.getUsername());
+    }
+    if(editUser.getPassword()!=null){
+      targetUser.setPassword(editUser.getPassword());
+    }
+
+    userRepository.saveAndFlush(targetUser);
+    return;
   }
 
     public User getUserById(Long userId) {

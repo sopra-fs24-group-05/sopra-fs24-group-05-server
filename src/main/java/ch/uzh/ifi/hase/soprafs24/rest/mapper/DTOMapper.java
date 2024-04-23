@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
@@ -27,6 +30,7 @@ public interface DTOMapper {
 
   DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
+  @Mapping(source = "id", target = "id")
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
   @Mapping(source = "password", target = "password")
@@ -36,8 +40,10 @@ public interface DTOMapper {
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
   @Mapping(source = "password", target = "password") //not necessary to send back the password, considering deleting this one
+  @Mapping(source = "token", target = "token")
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
 
   @Mapping(source = "topicName", target = "topicName")
   @Mapping(source = "ownerId", target = "ownerId")
@@ -54,4 +60,19 @@ public interface DTOMapper {
   @Mapping(source = "editAllowed", target = "editAllowed")
   @Mapping(source = "content", target = "content")
   TopicGetDTO convertTopicGetDTOtoEntity(Topic topic);
+
+  @Mapping(source = "commentId", target = "commentId")
+  @Mapping(source = "userId", target = "userId")
+  @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
+  Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
+
+  @Mapping(source = "commentId", target = "commentId")
+  @Mapping(source = "userId", target = "userId")
+  @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
+  CommentGetDTO converEntityToCommentGetDTO(Comment comment);
+
 }

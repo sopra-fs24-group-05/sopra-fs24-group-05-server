@@ -16,6 +16,19 @@ import java.util.Date;
  * - unique = true -> this value must be unqiue across the database -> composes
  * the primary key
  */
+
+/*
+ * import javax.persistence.* to utlize keywords start with @
+ */
+
+/**
+ * @Entity: Indicates that the class is an entity, 
+ * which means it will be mapped to a database table.
+ * @Table(name = "USER"): Specifies the name of the database table 
+ * to which this entity is mapped.
+ * @Id: Specifies the primary key of the entity.
+ * @GeneratedValue: Specifies that the value of the primary key will be generated automatically by the database.
+ */
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
@@ -27,7 +40,7 @@ public class User implements Serializable {
   @GeneratedValue
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private String name;
 
   @Column(nullable = false, unique = true)
@@ -39,22 +52,26 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
-    @Column(nullable = false)
-    private String password;
+  @Column(nullable = false)
+  private String password;
 
-    @Column(nullable = false)
-    private Date createDate;
+  @Column(nullable = true)
+  private Date createDate;
 
-    private Date birthday;
+  @Column(nullable = true)
+  private Date birthday;
 
   public Long getId() {
     return id;
   }
 
+  /* 
+   * Only to be used in test
+  */
   public void setId(Long id) {
     this.id = id;
   }
-
+  
   public String getName() {
     return name;
   }
