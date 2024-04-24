@@ -31,5 +31,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
   boolean existsByUserIdAndItemId(Long userId,Long itemId);
 
   @Query("SELECT AVG(c.score) FROM Comment c WHERE c.itemId = :itemId")
-  Double calculateAverageScoreByItemId(Long itemId);
+  static Double calculateAverageScoreByItemId(Long itemId);
 }

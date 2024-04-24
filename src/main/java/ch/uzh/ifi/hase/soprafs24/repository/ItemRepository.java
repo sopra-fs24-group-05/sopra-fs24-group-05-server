@@ -14,10 +14,10 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    @Query("SELECT i FROM Item i WHERE i.topic.id = :topicId ORDER BY i.totalScore / i.scoreCount DESC")
+    @Query("SELECT i FROM Item i WHERE i.topic.topicName = :topicId ORDER BY i.totalScore / i.scoreCount DESC")
     List<Item> findByTopicIdOrderByScoreDesc(@Param("topicId") Long topicId);
 
-    @Query("SELECT i FROM Item i WHERE i.topic.id = :topicId")
+    @Query("SELECT i FROM Item i WHERE i.topic.topicId = :topicId")
     List<Item> findByTopicId(@Param("topicId") Long topicId);
 
     @Query("SELECT i FROM Item i WHERE i.topic.topicName = :topicName")

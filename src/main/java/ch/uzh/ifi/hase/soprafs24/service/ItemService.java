@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,16 @@ public class ItemService {
         Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new RuntimeException("Topic not found"));
         item.setTopic(topic);
         return itemRepository.save(item);
+    }
+
+    public void AverageScore(Long itemId, double score) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
+        item.addScore(score);
+        itemRepository.save(item);
+        // Update average score
+        Double newAverageScore = CommentRepository.calculateAverageScoreByItemId(itemId);
+        item.setAverageScore(newAverageScore);
+        itemRepository.save(item);
     }
 
 }

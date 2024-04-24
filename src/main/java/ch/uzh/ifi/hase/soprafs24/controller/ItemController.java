@@ -27,11 +27,6 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{itemId}/score")
-    public ResponseEntity<?> scoreItem(@PathVariable Long itemId, @RequestBody double rating) {
-        itemService.scoreItem(itemId, rating);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/sorted-by-score")
     public ResponseEntity<List<Item>> getItemsSortedByScore(@PathVariable Long topicId) {
@@ -55,6 +50,12 @@ public class ItemController {
     public ResponseEntity<Item> addItemToTopic(@PathVariable Long topicId, @RequestBody Item item) {
         Item newItem = itemService.addItemToTopic(topicId, item);
         return ResponseEntity.ok(newItem);
+    }
+
+    @PostMapping("/{itemId}/score")
+    public ResponseEntity<?> AverageScore(@PathVariable Long itemId, @RequestBody double rating) {
+        itemService.scoreItem(itemId, rating);
+        return ResponseEntity.ok().build();
     }
 
 }

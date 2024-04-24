@@ -10,7 +10,7 @@ import java.util.Date;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long itemId;
 
     @Column(nullable = false)
     private String name;
@@ -34,16 +34,16 @@ public class Item {
     private int likes = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "topic_id", nullable = false)
+    @JoinColumn(name = "topicName", nullable = false)
     private Topic topic;  // 关联的Topic
 
     // Getters and Setters
     public Long getId() {
-        return id;
+        return itemId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public String getName() {
@@ -82,7 +82,7 @@ public class Item {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setAverageScore(double score) {
         this.score = score;
     }
 
