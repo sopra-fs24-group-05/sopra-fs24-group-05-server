@@ -42,7 +42,7 @@ public class TopicService {
         Topic newTopic = new Topic();
         newTopic.setCreationDate(new Date()); // set creation date
         newTopic.setTopicName(topicName);
-        newTopic.setOwnerId(currentUser.getId()); // set Owner ID
+        newTopic.setOwnerId(currentUser.getUserId()); // set Owner ID
         newTopic.setEditAllowed(editAllowed);
         newTopic = topicRepository.save(newTopic); // save Topic，ID from Repository automatically
         topicRepository.flush();
@@ -60,11 +60,11 @@ public class TopicService {
     }
 
     public Topic getTopicsByOwner(User user) {
-        return topicRepository.findByOwnerId(user.getId());
+        return topicRepository.findByOwnerId(user.getUserId());
     }
 
     public Topic updateTopic(Topic topic, String topicName, boolean editAllowed) {
-        if (topic.getOwnerId() == currentUser.getId()) {
+        if (topic.getOwnerId() == currentUser.getUserId()) {
             topic.setTopicName(topicName);
             topic.setEditAllowed(editAllowed);
             topic = topicRepository.save(topic);
@@ -76,7 +76,7 @@ public class TopicService {
     }
 
     public void deleteTopic(Topic topic) {
-        if (topic.getOwnerId() == currentUser.getId()) {
+        if (topic.getOwnerId() == currentUser.getUserId()) {
             topicRepository.delete(topic);
             log.debug("Deleted Topic: {}", topic);
         }

@@ -40,7 +40,7 @@ public class UserServiceIntegrationTest {
     assertNull(userRepository.findByUsername("testUsername"));
 
     User testUser = new User();
-    testUser.setName("testName");
+    //testUser.setName("testName");
     testUser.setUsername("testUsername");
     testUser.setPassword("testPassword");
     testUser.setStatus(UserStatus.OFFLINE);
@@ -49,8 +49,8 @@ public class UserServiceIntegrationTest {
     User createdUser = userService.createUser(testUser);
 
     // then
-    assertEquals(testUser.getId(), createdUser.getId());
-    assertEquals(testUser.getName(), createdUser.getName());
+    assertEquals(testUser.getUserId(), createdUser.getUserId());
+    //assertEquals(testUser.getName(), createdUser.getName());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
     assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
@@ -61,7 +61,7 @@ public class UserServiceIntegrationTest {
     assertNull(userRepository.findByUsername("testUsername"));
 
     User testUser = new User();
-    testUser.setName("testName");
+    //testUser.setName("testName");
     testUser.setUsername("testUsername");
     testUser.setPassword("testPassword");
     testUser.setStatus(UserStatus.OFFLINE);
@@ -71,7 +71,7 @@ public class UserServiceIntegrationTest {
     User testUser2 = new User();
 
     // change the name but forget about the username
-    testUser2.setName("testName2");
+    //testUser2.setName("testName2");
     testUser2.setUsername("testUsername");
 
     // check that an error is thrown

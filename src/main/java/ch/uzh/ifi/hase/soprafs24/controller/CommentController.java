@@ -8,7 +8,11 @@ import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -24,15 +28,21 @@ public class CommentController {
   @GetMapping("/comments/{commentId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public Comment getCommentById(@PathVariable Long commentId){
-    return commentService.getCommentById(commentId);
+  public CommentGetDTO getCommentByCommentId(@PathVariable Long commentId){
+    Comment commentByCommentId = commentService.getCommentByCommentId(commentId);
+    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
   }
 
   @GetMapping("/comments/{itemId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<Comment> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
-    return commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
+  public List<CommentGetDTO> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
+    List<Comment> comments=commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
+    List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
+    for(Comment comment:comments){
+      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+    }
+    return commentGetDTOs;
   }
 
   @PostMapping("/comments/create")
@@ -45,5 +55,16 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
   }
 
+  @GetMapping("/comments/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<CommentGetDTO> getCommentByUserId(@PathVariable Long userId) {
+    List<Comment> comments=commentService.getCommentByUserId(userId);
+    List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
+    for(Comment comment:comments){
+      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+    }
+    return commentGetDTOs;
+  }
   
 }

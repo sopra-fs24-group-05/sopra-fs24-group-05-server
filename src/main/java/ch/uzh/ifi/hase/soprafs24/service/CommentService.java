@@ -32,7 +32,7 @@ public class CommentService {
     this.itemRepository = itemRepository;
   }
 
-  public Comment getCommentById(Long commentId){
+  public Comment getCommentByCommentId(Long commentId){
     if(!commentRepository.existsById(commentId)){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"comment not found");
     }
@@ -42,6 +42,13 @@ public class CommentService {
   public List<Comment> getCommentByItemIdOrderByThumbsUpNumDesc(Long itemId, int pageNumber, int pageSize){
     Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by("thumbsUpNum").descending());
     return commentRepository.findByItemIdOrderByThumbsUpNumDesc(itemId,pageable);
+  }
+
+  public List<Comment> getCommentByUserId(Long userId){
+    if(!commentRepository.existsByUserId(userId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"comment not found");
+    }
+    return commentRepository.findByUserId(userId);
   }
 
   /*
@@ -74,8 +81,16 @@ public class CommentService {
     if(hasCommented){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User has already commented on this item");
     }
+    newComment.setThumbsUpNum(0L);
     newComment = commentRepository.saveAndFlush(newComment);
     return newComment;
+  }
+
+  public Double calculateAverageScoreByItemId(Long itemId){
+    if(!commentRepository.existsByItemId(itemId)){
+      return 0.0;
+    }
+    return commentRepository.calculateAverageScoreByItemId(itemId);
   }
 
 }

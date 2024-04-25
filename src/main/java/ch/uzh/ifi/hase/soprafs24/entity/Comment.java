@@ -16,7 +16,7 @@ public class Comment {
   // specify the foreign key mapping relationship
   // no need to implement get() & set() methods, @ManyToOne provide a getUser() methods
   @ManyToOne
-  @JoinColumn(name = "userId", referencedColumnName = "id", insertable = false, updatable = false)
+  @JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false)
   private User user;
 
   @Column(nullable = false)

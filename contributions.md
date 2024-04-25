@@ -1,10 +1,8 @@
 # contributions
 
-## Weekly contributions
+## Sprint 1
 
-### Sprint 1
-
-#### Week 1 (24/04/10~24/04/17)
+### Week 1 (24/04/10~24/04/17)
 
 * Zizhou Luo
 
@@ -21,4 +19,10 @@
 
 * 
 
+### week 2
 
+* Zizhou Luo
+
+  progress on comment and scoring system (#15) and other user related methods
+
+  progress on frontend and backend integration

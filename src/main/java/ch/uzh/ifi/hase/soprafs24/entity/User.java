@@ -34,14 +34,16 @@ import java.util.Date;
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
-    public static Long getId;
+  public static Long getId;
 
-    @Id
+  @Id
   @GeneratedValue
-  private Long id;
+  private Long userId;
 
+  /*
   @Column(nullable = true)
   private String name;
+  */
 
   @Column(nullable = false, unique = true)
   private String username;
@@ -61,17 +63,18 @@ public class User implements Serializable {
   @Column(nullable = true)
   private Date birthday;
 
-  public Long getId() {
-    return id;
+  public Long getUserId() {
+    return userId;
   }
 
   /* 
    * Only to be used in test
   */
-  public void setId(Long id) {
-    this.id = id;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
-  
+
+  /*
   public String getName() {
     return name;
   }
@@ -79,6 +82,7 @@ public class User implements Serializable {
   public void setName(String name) {
     this.name = name;
   }
+  */
 
   public String getUsername() {
     return username;

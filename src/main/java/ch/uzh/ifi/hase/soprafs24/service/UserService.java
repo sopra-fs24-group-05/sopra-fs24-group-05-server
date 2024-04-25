@@ -76,9 +76,14 @@ public class UserService {
 
     if(userRepository.existsByUsername(newUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
-    }else if(userRepository.findByName(newUser.getName())!=null){
+    }
+    
+    /*
+    else if(userRepository.findByName(newUser.getName())!=null){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
+    */
+
     //checkIfUserExists(newUser); // original check for the username uniqueness
     
     // saves the given entity but data is only persisted in the database once
@@ -126,13 +131,13 @@ public class UserService {
    * 
    */
   public void logoutUser(User logoutUser) throws ResponseStatusException{
-    User userByUsername = userRepository.findByUsername(logoutUser.getUsername());
-    if(userByUsername == null){
+    User userByToken = userRepository.findByToken(logoutUser.getToken());
+    if(userByToken == null){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "username not found");
     }
 
-    userByUsername.setStatus(UserStatus.OFFLINE);
-    userRepository.saveAndFlush(userByUsername);
+    userByToken.setStatus(UserStatus.OFFLINE);
+    userRepository.saveAndFlush(userByToken);
   }
 
   /**
@@ -143,14 +148,14 @@ public class UserService {
    * @throws org.springframework.web.server.ResponseStatusException
    */
   public void editUser(User editUser, String token){
-    if(userRepository.existsById(editUser.getId())){
+    if(userRepository.existsById(editUser.getUserId())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
     }else if(userRepository.existsByUsername(editUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
-    }else if(userRepository.findById(editUser.getId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
+    }else if(userRepository.findById(editUser.getUserId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"access deny");
     }
-    User targetUser = userRepository.findById(editUser.getId()).get();
+    User targetUser = userRepository.findById(editUser.getUserId()).get();
     if(editUser.getUsername()!=null){
       targetUser.setUsername(editUser.getUsername());
     }
