@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
@@ -7,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -53,7 +55,22 @@ public class UserController {
     User userById=userService.getUserById(id);
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userById);
   }
-  
+
+//  @GetMapping("/users/{userId}/followItems")
+//  @ResponseStatus(HttpStatus.OK)
+//  @ResponseBody
+//  public ResponseEntity<List<Item>> getFollowItemList(@PathVariable Long userId) {
+//      List<Item> followItems = userService.getFollowItems(userId);
+//      return ResponseEntity.ok(followItems);
+//  }
+
+  @GetMapping("/users/{userId}/followUsers")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public ResponseEntity<List<User>> getFollowUserList(@PathVariable Long userId) {
+      List<User> followUsers = userService.getFollowUsers(userId);
+      return ResponseEntity.ok(followUsers);
+  }
 
   @PostMapping("/users/registration")
   @ResponseStatus(HttpStatus.CREATED)
@@ -76,6 +93,13 @@ public class UserController {
     User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
     User loginUser = userService.loginUser(userInput);
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
+  }
+
+  @PutMapping("/users/follow/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void followUser(@PathVariable Long userId, @RequestBody String followUserId){
+      userService.followUser(userId, followUserId);
   }
 
   //frontend should correspondingly delete token

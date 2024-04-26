@@ -2,23 +2,25 @@ package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
 
 /**
  * User Service
@@ -132,6 +134,56 @@ public class UserService {
     userByUsername.setStatus(UserStatus.ONLINE);
     userRepository.saveAndFlush(userByUsername);
     return userByUsername;
+  }
+
+  public void followUser(Long userId, String newFollowedUserId) {
+      System.out.println(newFollowedUserId);
+      try {
+          ObjectMapper objectMapper = new ObjectMapper();
+          JsonNode jsonNode = objectMapper.readTree(newFollowedUserId);
+          Long followingUserId = jsonNode.get("followUserId").asLong();
+
+          Optional<User> userOptional = userRepository.findById(userId);
+          if (userOptional.isPresent()) {
+              User user = userOptional.get();
+              List<Long> followedUsers = user.getFollowUserList();
+              if (followedUsers.contains(followingUserId)) {
+                  return;
+//                  throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have followed this user!");
+              }
+              followedUsers.add(followingUserId);
+              user.setFollowUserList(followedUsers);
+              userRepository.save(user);
+          } else {
+              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+          }
+      } catch (Exception e) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
+      }
+  }
+
+//    public void removeUserFromFollowedList(Long userId, Long followedUserIdToRemove) {
+//        Optional<User> userOptional = userRepository.findById(userId);
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            List<Long> followedUsers = user.getFollowedUsers();
+//            followedUsers.remove(followedUserIdToRemove);
+//            user.setFollowedUsers(followedUsers);
+//            userRepository.save(user);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+//        }
+//    }
+
+  public List<User> getFollowUsers(Long userId) {
+      User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+      List<Long> userIdList = user.getFollowUserList();
+      List<User> userList = new ArrayList<>();
+      for (Long id : userIdList) {
+          User userToBeAdd = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+          userList.add(userToBeAdd);
+      }
+      return userList;
   }
 
   /**
