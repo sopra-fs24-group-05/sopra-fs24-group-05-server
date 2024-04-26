@@ -71,7 +71,6 @@ public class CommentControllerTest {
         .andExpect(jsonPath("$.score", is(comment.getScore().intValue())))
         .andExpect(jsonPath("$.content", is(comment.getContent())))
         .andExpect((jsonPath("$.thumbsUpNum", is(comment.getThumbsUpNum().intValue()))));
-
   }
 
   @Test
@@ -99,6 +98,57 @@ public class CommentControllerTest {
       .andExpect(jsonPath("$[0].commentId", is(comment.getCommentId().intValue())))
       .andExpect(jsonPath("$[0].itemId", is(comment.getItemId().intValue())))
       .andExpect(jsonPath("$[0].score", is(comment.getScore().intValue())));    
+  }
+
+  @Test
+  public void givenComments_whenGetCommentByItemId_thenReturnJsonArray() throws Exception{
+    //given：some comments have been created 
+    Comment comment = new Comment();
+    comment.setCommentId(1L);
+    comment.setUserId(1L);
+    comment.setItemId(1L);
+    comment.setScore(5L);
+    comment.setContent(null);
+    comment.setThumbsUpNum(1L);
+
+    List<Comment> commentsByUserId = Collections.singletonList(comment);
+
+    given(commentService.getCommentByItemIdOrderByThumbsUpNumDesc(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt())).willReturn(commentsByUserId);
+
+    MockHttpServletRequestBuilder getRequest = get("/comments/findByItemId/{itemId}",1L)
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(asJsonString(commentsByUserId));
+
+    mockMvc.perform(getRequest)
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$", hasSize(1)))
+      .andExpect(jsonPath("$[0].commentId", is(comment.getCommentId().intValue())))
+      .andExpect(jsonPath("$[0].itemId", is(comment.getItemId().intValue())))
+      .andExpect(jsonPath("$[0].score", is(comment.getScore().intValue())));    
+  }
+
+  @Test
+  public void givenComments_whenGetCommentByCommentId_thenReturnJsonArray() throws Exception{
+    //given：some comments have been created 
+    Comment comment = new Comment();
+    comment.setCommentId(1L);
+    comment.setUserId(1L);
+    comment.setItemId(1L);
+    comment.setScore(5L);
+    comment.setContent(null);
+    comment.setThumbsUpNum(1L);
+
+    given(commentService.getCommentByCommentId(Mockito.anyLong())).willReturn(comment);
+
+    MockHttpServletRequestBuilder getRequest = get("/comments/findByCommentId/{commentId}",1L)
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(asJsonString(comment));
+
+    mockMvc.perform(getRequest)
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.commentId", is(comment.getCommentId().intValue())))
+      .andExpect(jsonPath("$.itemId", is(comment.getItemId().intValue())))
+      .andExpect(jsonPath("$.score", is(comment.getScore().intValue())));    
   }
 
   /**
