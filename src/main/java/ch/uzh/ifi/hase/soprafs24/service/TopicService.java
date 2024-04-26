@@ -137,6 +137,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 
 import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.Predicate;
@@ -153,7 +155,7 @@ public class TopicService {
     private final TopicRepository topicRepository;
 
     @Autowired
-    public TopicService(@Qualifier("topicRepository") TopicRepository topicRepository) {
+    public TopicService(@Qualifier("topicRepository")TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
         System.out.println("111");
         Topic mensa = createTopic("MENSA", true, 1L);
@@ -169,65 +171,81 @@ public class TopicService {
 
     public List<Topic> getAllTopics() {return topicRepository.findAll();}
 
+    public Topic createTopic(Topic newTopic) {
 
-    public Topic createTopic(String topicName, Boolean editAllowed, Long currentUserId) {
-        Topic newTopic = new Topic();
-        newTopic.setCreationDate(new Date()); // set creation date
-        newTopic.setTopicName(topicName);
-//        newTopic.setOwnerId(currentUser.getUserId()); // set Owner ID
-        newTopic.setEditAllowed(editAllowed);
-        newTopic = topicRepository.save(newTopic); // save Topic，ID from Repository automatically
+        newTopic.setCreationDate(new Date());
+
+        checkIfTopicExists(newTopic);
+
+        newTopic = topicRepository.save(newTopic); // 保存话题
         topicRepository.flush();
+
         log.debug("Created Information for Topic: {}", newTopic);
         return newTopic;
     }
 
-    public Topic getTopicById(Long topicId) {
-        if(topicRepository.findByTopicId(topicId) != null) {
-            return topicRepository.findByTopicId(topicId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found");
+    private void checkIfTopicExists(Topic topicToBeCreated) {
+        Topic topicByTopicName = topicRepository.findByTopicName(topicToBeCreated.getTopicName());
+        String baseErrorMessage = "The %s provided %s not unique. Therefore, the topic could not be created!";
+     if (topicByTopicName != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "add Topic failed because topicName already exists");
         }
     }
 
-    public Topic getTopicByName(String topicName) {
-        return topicRepository.findByTopicName(topicName);
+
+    public Topic getTopicById(int topicId) {
+        Topic topic = topicRepository.findByTopicId(topicId);
+        return topic;
     }
 
-    public Topic getTopicsByOwner(User user) {
-        return topicRepository.findByOwnerId(user.getUserId());
+    public Topic getTopicByTopicName(String topicName) {
+        Topic topic = topicRepository.findByTopicName(topicName);
+        return topic;
+    }
+    public Topic getTopicByOwnerId(int ownerId) {
+        Topic topic = topicRepository.findByOwnerId(ownerId);
+        return topic;
     }
 
-//    public Topic updateTopic(Topic topic, String topicName, boolean editAllowed) {
-//        if (topic.getOwnerId() == currentUser.getUserId()) {
-//            topic.setTopicName(topicName);
-//            topic.setEditAllowed(editAllowed);
-//            topic = topicRepository.save(topic);
-//            log.debug("Updated Information for Topic: {}", topic);
-//            return topic;
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to edit this topic");
-//        }
-//    }
-
-//    public void deleteTopic(Topic topic) {
-//        if (topic.getOwnerId() == currentUser.getUserId()) {
-//            topicRepository.delete(topic);
-//            log.debug("Deleted Topic: {}", topic);
-//        }
-//        else {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to delete this topic");
-//        }
-//    }
-
-    public Topic searchTopic(String topicName) {
-        return topicRepository.findByTopicName(topicName);
+    public Topic updateTopic(Topic topicInput) {
+        Topic topic = topicRepository.findById(Long.valueOf(topicInput.getTopicId())).get();
+        if(topic == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Topic with TopicId was not found");
+        }
+        return topicRepository.save(topicInput);
     }
+
+
+    public void deleteTopicByTopicName(String topicName) {
+        Topic topic = topicRepository.findByTopicName(topicName);
+        if (topic == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found");
+        }
+        else {
+            topicRepository.delete(topic);
+        /*}
+        if (topic.getOwnerId().equals(userService.getCurrentUser().getId())) {
+            topicRepository.delete(topic);
+            log.debug("Deleted Topic: {}", topic);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to delete this topic");
+        }*/
+            //Need a method from userService!
+        }
+    }
+    public void deleteTopicByTopicId(Integer topicId) {
+        if (!topicRepository.existsById(Long.valueOf(topicId))) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found");
+        }
+        topicRepository.deleteById(Long.valueOf(topicId));
+    }
+
     public List<Topic> searchTopics(String keyword) {
+
         return topicRepository.searchByKeyword(keyword);
     }
 
-    public List<Topic> filterTopics(String name, Boolean editAllowed) {
+/*    public List<Topic> filterTopics(String name, Boolean editAllowed) {
         return topicRepository.findAll((Specification<Topic>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (name != null) {
@@ -238,13 +256,15 @@ public class TopicService {
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
-    }
+    }*/
 
     public List<Topic> getMostPopularTopics() {
+
         return topicRepository.findMostPopularTopics();
     }
 
     public List<Topic> getTopicsByFirstLetter(String prefix) {
+
         return topicRepository.findByFirstLetter(prefix);
     }
 

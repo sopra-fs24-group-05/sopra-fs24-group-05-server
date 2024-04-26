@@ -15,9 +15,7 @@
 
   add comments to make the code more readable 
 
-  
 
-* 
 
 ### week 2
 
@@ -26,3 +24,22 @@
   progress on comment and scoring system (#15) and other user related methods
 
   progress on frontend and backend integration
+
+### Sprint 2
+
+#### Week 2 (24/04/17~24/04/24)
+
+* Yiming Xiao
+
+    Finish implementing Topic System as per User stories.
+
+    * Related files include `Topic.java`, `TopicController.java`, `TopicService.java`, `TopicRepository.java`, `TopicGetDTO.java`, `TopicPostDTO.java`in the project.
+
+    Finish implementing Item System as per User stories.
+
+    * Related files include `Item.java`, `ItemController.java`, `ItemService.java`, `ItemRepository.java` in the project.
+
+    Modify the function 'Ranking' and 'Get the average score' as per discussion with Zizhou.
+
+    * Delete the function related code in item system and use it from Comment system.
+

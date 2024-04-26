@@ -5,6 +5,13 @@ import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
+
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
+
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -30,6 +37,11 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "token", target = "token")
   @Mapping(source = "password", target = "password")
+
+  @Mapping(target = "token", ignore = true)
+  @Mapping(target = "status", ignore = true)
+  @Mapping(target = "createDate", ignore = true)
+  @Mapping(target = "birthday", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   @Mapping(source = "userId", target = "userId")
@@ -44,18 +56,37 @@ public interface DTOMapper {
   @Mapping(source = "topicName", target = "topicName")
   @Mapping(source = "ownerId", target = "ownerId")
   @Mapping(source = "editAllowed", target = "editAllowed")
-  @Mapping(source = "topicIntroduction", target = "topicIntroduction")
+  @Mapping(source = "description", target = "description")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(target = "chatPool", ignore = true)
   Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
 
-  @Mapping(source = "topicId", target = "topicId")
+  @Mapping(source = "topicId" , target = "id")
   @Mapping(source = "topicName", target = "topicName")
   @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(source = "ownerId", target = "ownerId")
-  @Mapping(source = "fatherTopicId", target = "fatherTopicId")
-  @Mapping(source = "sonTopicId", target = "sonTopicId")
   @Mapping(source = "editAllowed", target = "editAllowed")
-  @Mapping(source = "topicIntroduction", target = "topicIntroduction")
-  TopicGetDTO convertTopicGetDTOtoEntity(Topic topic);
+  @Mapping(source = "description", target = "description")
+  TopicGetDTO convertEntityToTopicGetDTO(Topic topic);
+
+
+  @Mapping(source = "itemName", target = "itemName")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "score", target = "score")
+  @Mapping(source = "likes", target = "likes")
+  @Mapping(source = "topicId", target = "topicId")
+  Item convertItemPostDTOtoEntity(ItemPostDTO itemPostDTO);  
+
+  @Mapping(source = "itemId" , target = "itemId")
+  @Mapping(source = "itemName", target = "itemName")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "score", target = "score")
+  @Mapping(source = "likes", target = "likes")
+  @Mapping(source = "topicId", target = "topicId")
+  ItemGetDTO convertEntityToItemGetDTO(Item item);
+  
 
 //  @Mapping(source = "itemId", target = "itemId")
   @Mapping(source = "itemname", target = "itemname")
