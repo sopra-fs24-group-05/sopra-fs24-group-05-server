@@ -9,7 +9,7 @@ public class TopicPostDTO {
 
     private Boolean editAllowed;
 
-    private String content;
+    private String topicIntroduction;
 
     public String getTopicName() {return topicName;}
 
@@ -23,8 +23,8 @@ public class TopicPostDTO {
 
     public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
 
-    public String getContent() {return content;}
+    public String getTopicIntroduction() {return topicIntroduction;}
 
-    public void setContent(String content) {this.content = content;}
+    public void setTopicIntroduction(String topicIntroduction) {this.topicIntroduction = topicIntroduction;}
 
 }

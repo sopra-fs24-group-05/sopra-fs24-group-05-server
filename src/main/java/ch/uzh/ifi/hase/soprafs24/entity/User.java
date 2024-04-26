@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
@@ -62,6 +63,9 @@ public class User implements Serializable {
 
   @Column(nullable = true)
   private Date birthday;
+
+  @Column(nullable = true)
+  private UserIdentity identity;
 
   public Long getUserId() {
     return userId;
@@ -131,4 +135,8 @@ public class User implements Serializable {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
+    public void setIdentity(UserIdentity identity) { this.identity = identity; }
+
+    public UserIdentity getIdentity() { return identity; }
 }

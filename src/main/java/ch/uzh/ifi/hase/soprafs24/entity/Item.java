@@ -13,12 +13,12 @@ public class Item {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String itemname;
 
     @Column(nullable = false)
-    private String description;
+    private String itemIntroduction;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date creationDate;
 
     @Column(nullable = false)
@@ -33,6 +33,9 @@ public class Item {
     @Column(nullable = false)
     private int likes = 0;
 
+    @Column(nullable = false)
+    private Long itemTopicId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;  // 关联的Topic
@@ -46,20 +49,20 @@ public class Item {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getItemname() {
+        return itemname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setItemname(String itemname) {
+        this.itemname = itemname;
     }
 
-    public String getDescription() {
-        return description;
+    public String getItemIntroduction() {
+        return itemIntroduction;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setItemIntroduction(String itemIntroduction) {
+        this.itemIntroduction = itemIntroduction;
     }
 
     public Date getCreationDate() {
@@ -101,6 +104,10 @@ public class Item {
         }
         return 0.0;
     }
+
+    public Long getItemTopicId() { return itemTopicId; }
+
+    public void setItemTopicId(Long itemTopicId) { this.itemTopicId = itemTopicId; }
 
     public Topic getTopic() {
         return topic;

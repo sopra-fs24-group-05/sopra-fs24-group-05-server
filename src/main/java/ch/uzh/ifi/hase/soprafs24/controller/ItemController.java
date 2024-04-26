@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/items")
+//@RequestMapping("/api/items")
 public class ItemController {
 
     private final ItemService itemService;
@@ -51,9 +51,15 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
-    @PostMapping
-    public ResponseEntity<Item> addItemToTopic(@PathVariable Long topicId, @RequestBody Item item) {
-        Item newItem = itemService.addItemToTopic(topicId, item);
+//    @PostMapping
+//    public ResponseEntity<Item> addItemToTopic(@PathVariable Long topicId, @RequestBody Item item) {
+//        Item newItem = itemService.addItemToTopic(topicId, item);
+//        return ResponseEntity.ok(newItem);
+//    }
+
+    @PostMapping("/items")
+    public ResponseEntity<Item> addItemToTopic(@RequestBody Item item) {
+        Item newItem = itemService.addItemToTopic(item);
         return ResponseEntity.ok(newItem);
     }
 

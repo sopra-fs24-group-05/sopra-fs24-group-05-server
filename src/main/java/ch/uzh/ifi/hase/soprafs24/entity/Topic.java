@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "TOPIC")
 public class Topic implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 0L;
 
     @Id
     @GeneratedValue
@@ -25,7 +25,7 @@ public class Topic implements Serializable {
     @Column(nullable = false)
     private Date creation_date;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long ownerId;
 
     @Column
@@ -38,10 +38,10 @@ public class Topic implements Serializable {
     private Boolean editAllowed;
 
     @Column
-    private String content;
+    private String topicIntroduction;
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Item> items;
+//    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Item> items;
 
 
     @ElementCollection
@@ -49,9 +49,9 @@ public class Topic implements Serializable {
     @Column(name = "message")
     private List<String> chatPool = new ArrayList<>();
 
-    public void setId(Long topicId) {this.topicId = topicId;}
+    public void setTopicId(Long topicId) {this.topicId = topicId;}
 
-    public Long getId() {return topicId;}
+    public Long getTopicId() {return topicId;}
 
     public String getTopicName() {return topicName;}
 
@@ -77,18 +77,18 @@ public class Topic implements Serializable {
 
     public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
 
-    public String getContent() {return content;}
+    public String getTopicIntroduction() {return topicIntroduction;}
 
-    public void setContent(String content) {this.content = content;}
+    public void setTopicIntroduction(String topicIntroduction) {this.topicIntroduction = topicIntroduction;}
 
     public List<String> getChatPool() { return chatPool; }
     public void setChatPool(List<String> chatPool) { this.chatPool = chatPool; }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
+//    public List<Item> getItems() {
+//        return items;
+//    }
+//
+//    public void setItems(List<Item> items) {
+//        this.items = items;
+//    }
 }
