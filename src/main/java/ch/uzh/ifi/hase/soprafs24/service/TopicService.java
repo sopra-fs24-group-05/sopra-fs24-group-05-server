@@ -37,20 +37,18 @@ public class TopicService {
     public TopicService(@Qualifier("topicRepository")TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
-    private UserService userService;
-
 
     public List<Topic> getAllTopics() {return topicRepository.findAll();}
 
 
     public Topic createTopic(Topic newTopic) {
 
-        newTopic.setCreationDate(new Date()); // 设置创建日期
+        newTopic.setCreationDate(new Date());
 
         checkIfTopicExists(newTopic);
 
         newTopic = topicRepository.save(newTopic); // 保存话题
-        topicRepository.flush(); // 确保即时写入数据库
+        topicRepository.flush();
 
         log.debug("Created Information for Topic: {}", newTopic);
         return newTopic;
@@ -105,11 +103,11 @@ public class TopicService {
             //Need a method from userService!
         }
     }
-    public void deleteTopicByTopicId(Long id) {
-        if (!topicRepository.existsById(id)) {
+    public void deleteTopicByTopicId(Integer topicId) {
+        if (!topicRepository.existsById(Long.valueOf(topicId))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found");
         }
-        topicRepository.deleteById(id);
+        topicRepository.deleteById(Long.valueOf(topicId));
     }
 
     public List<Topic> searchTopics(String keyword) {

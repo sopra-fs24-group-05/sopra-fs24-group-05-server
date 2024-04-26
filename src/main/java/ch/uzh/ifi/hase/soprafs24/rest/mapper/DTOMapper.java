@@ -9,6 +9,9 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -50,23 +53,41 @@ public interface DTOMapper {
   UserGetDTO convertEntityToUserGetDTO(User user);
 
 
-  @Mapping(target = "topicName", source = "topicName")
-  @Mapping(target = "ownerId", source = "ownerId")
-  @Mapping(target = "editAllowed", source = "editAllowed")
-  @Mapping(target = "description", source = "description")
+  @Mapping(source = "topicName", target = "topicName")
+  @Mapping(source = "ownerId", target = "ownerId")
+  @Mapping(source = "editAllowed", target = "editAllowed")
+  @Mapping(source = "description", target = "description")
   @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(target = "chatPool", ignore = true)
   @Mapping(target = "items", ignore = true)
   Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
 
-  @Mapping(target = "id", source = "topicId")
-  @Mapping(target = "topicName", source = "topicName")
+  @Mapping(source = "topicId" , target = "id")
+  @Mapping(source = "topicName", target = "topicName")
   @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(source = "ownerId", target = "ownerId")
   @Mapping(source = "editAllowed", target = "editAllowed")
   @Mapping(source = "description", target = "description")
   TopicGetDTO convertEntityToTopicGetDTO(Topic topic);
 
+
+  @Mapping(source = "itemName", target = "itemName")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "score", target = "score")
+  @Mapping(source = "likes", target = "likes")
+  @Mapping(source = "topicId", target = "topicId")
+  Item convertItemPostDTOtoEntity(ItemPostDTO itemPostDTO);  
+
+  @Mapping(source = "itemId" , target = "itemId")
+  @Mapping(source = "itemName", target = "itemName")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "score", target = "score")
+  @Mapping(source = "likes", target = "likes")
+  @Mapping(source = "topicId", target = "topicId")
+  ItemGetDTO convertEntityToItemGetDTO(Item item);
+  
 
   @Mapping(source = "commentId", target = "commentId")
   @Mapping(source = "userId", target = "userId")

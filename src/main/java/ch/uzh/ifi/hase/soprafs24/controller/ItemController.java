@@ -1,61 +1,105 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
-import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-import ch.uzh.ifi.hase.soprafs24.service.TopicService;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.service.ItemService;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/items")
 public class ItemController {
 
     private final ItemService itemService;
 
-    @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
-    @PostMapping("/{itemId}/like")
+    @PostMapping("/items/byTopicId/{topicId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public ItemGetDTO addItem(@RequestBody ItemPostDTO itemPostDTO) {
+
+        Item itemInput = new Item();
+
+        BeanUtils.copyProperties(itemPostDTO, itemInput);
+
+        Item addedItem = itemService.addItem(itemInput);
+
+        return DTOMapper.INSTANCE.convertEntityToItemGetDTO(addedItem);
+    }
+    
+    @PostMapping("/items/{itemId}/like")
     public ResponseEntity<?> likeItem(@PathVariable Long itemId) {
         itemService.likeItem(itemId);
         return ResponseEntity.ok().build();
     }
 
-
-    @GetMapping("/sorted-by-score")
-    public ResponseEntity<List<Item>> getItemsSortedByScore(@PathVariable Long topicId) {
+    
+    @GetMapping("/items/sortedByScore/{topicId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<List<ItemGetDTO>> getItemsByTopicSortedByScore(@PathVariable Integer topicId) {
         List<Item> items = itemService.getItemsByTopicSortedByScore(topicId);
-        return ResponseEntity.ok(items);
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(itemGetDTOs);
     }
 
-    @GetMapping("/by-topic-id")
-    public ResponseEntity<List<Item>> getItemsByTopicId(@RequestParam Long topicId) {
+    @GetMapping("/items/byTopicId/{topicId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<List<ItemGetDTO>> getItemsByTopicId(@PathVariable Integer topicId) {
         List<Item> items = itemService.getItemsByTopicId(topicId);
-        return ResponseEntity.ok(items);
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(itemGetDTOs);
     }
 
-    @GetMapping("/by-topic-name")
-    public ResponseEntity<List<Item>> getItemsByTopicName(@RequestParam String topicName) {
+    @GetMapping("/items/byTopicName/{topicName}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<List<ItemGetDTO>> getItemsByTopicName(@PathVariable String topicName) {
         List<Item> items = itemService.getItemsByTopicName(topicName);
-        return ResponseEntity.ok(items);
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(itemGetDTOs);
     }
 
-    @PostMapping
-    public ResponseEntity<Item> addItemToTopic(@PathVariable Long topicId, @RequestBody Item item) {
-        Item newItem = itemService.addItemToTopic(topicId, item);
-        return ResponseEntity.ok(newItem);
+    @GetMapping("/{itemId}/score")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<Double> getItemAverageScore(@PathVariable Long itemId) {
+        Double averageScore = itemService.getItemAverageScore(itemId);
+        return ResponseEntity.ok(averageScore);
     }
 
-    @PostMapping("/{itemId}/score")
-    public ResponseEntity<?> AverageScore(@PathVariable Long itemId, @RequestBody double rating) {
-        itemService.scoreItem(itemId, rating);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/items/{topicId}/{itemName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteItemByItemName(@PathVariable Integer topicId, @PathVariable String itemName) {
+        itemService.deleteItemByItemName(itemName);
+    }
+
+
+    @DeleteMapping("/items/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTopicById(@PathVariable Long itemId) {
+        itemService.deleteItemByItemId(itemId);
     }
 
 }

@@ -21,7 +21,7 @@ public class TopicPostDTO {
     private String description;
 
 
-    // Getter 和 Setter 方法
+    // Getter and Setter
     public Integer getTopicId() {
         return topicId;
     }

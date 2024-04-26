@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,11 +22,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -185,8 +191,9 @@ public class TopicControllerTest {
 
         mockMvc.perform(getRequest).andExpect(status().isNotFound());
     }
+
     @Test()
-    public void createTopic_validInput_TopicUpdate() throws Exception {
+    public void updateTopic_validInput_TopicUpdate() throws Exception {
         // given
         int topicId = 1;
         Topic topic = new Topic();
@@ -221,8 +228,59 @@ public class TopicControllerTest {
                 .andExpect(jsonPath("$.editAllowed", is(topic.getEditAllowed())));
     }
 
-    
-    
-    
+
+    @Test
+    public void deleteTopicWithName_validInput_TopicDeleted() throws Exception {
+
+        String topicName = "Test Topic";
+
+        BDDMockito.willDoNothing().given(topicService).deleteTopicByTopicName(anyString());
+
+        MockHttpServletRequestBuilder deleteRequest = delete("/topics/topicName/{topicName}", topicName)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(deleteRequest)
+                .andExpect(status().isNoContent()); // 204 No Content
+
+        verify(topicService, times(1)).deleteTopicByTopicName(topicName);
+    }
+
+
+    @Test
+    public void deleteTopicWithId_validInput_TopicDeleted() throws Exception {
+
+        Integer topicId = 1;
+
+        BDDMockito.willDoNothing().given(topicService).deleteTopicByTopicId(topicId);
+
+        MockHttpServletRequestBuilder deleteRequest = delete("/topics/topicId/{topicId}", topicId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(deleteRequest)
+                .andExpect(status().isNoContent()); // 204 No Content
+
+        verify(topicService, times(1)).deleteTopicByTopicId(topicId);
+    }
+
+    @Test
+    public void getPopularTopics_validInput_TopicsListReturned() throws Exception {
+        // given
+        Topic topic1 = new Topic();
+        topic1.setTopicName("Test Topic 1");
+        Topic topic2 = new Topic();
+        topic2.setTopicName("Test Topic 2");
+        List<Topic> popularTopics = Arrays.asList(topic1, topic2);
+
+        when(topicService.getMostPopularTopics()).thenReturn(popularTopics);
+
+        // when/then
+        mockMvc.perform(get("/topics/popular")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].topicName", is("Test Topic 1")))
+                .andExpect(jsonPath("$[1].topicName", is("Test Topic 2")));
+    }
+
   }
 

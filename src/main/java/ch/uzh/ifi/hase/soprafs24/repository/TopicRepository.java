@@ -17,9 +17,9 @@ import java.util.Optional;
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Topic findByTopicName(String TopicName);
 
-  Topic findByTopicId(int id);
+  Topic findByTopicId(Integer id);
 
-  Topic findByOwnerId(int ownerId);
+  Topic findByOwnerId(Integer ownerId);
 
   @Query("SELECT t FROM Topic t WHERE LOWER(t.topicName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Topic> searchByKeyword(@Param("keyword") String keyword);

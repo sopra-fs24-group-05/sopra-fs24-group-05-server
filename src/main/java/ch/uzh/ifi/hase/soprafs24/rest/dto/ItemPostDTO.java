@@ -1,40 +1,30 @@
-package ch.uzh.ifi.hase.soprafs24.entity;
+package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
+
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 
 import java.util.Date;
 
+public class ItemPostDTO {
 
-@Entity
-@Table(name = "ITEM")
-public class Item implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemId;
 
-    @Column(nullable = false)
     private String itemName;
 
-    @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private Date creationDate;
 
-    @Column(nullable = false)
     private double score = 0.0;
 
-    @Column(nullable = false)
     private int likes = 0;
 
-    @Column(nullable = false)
+    private Topic topic;
+
     private Integer topicId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "topicName", nullable = false)
-    private Topic topic;  // 关联的Topic
+
 
     // Getters and Setters
     public Long getItemId() {
@@ -95,8 +85,6 @@ public class Item implements Serializable {
         this.topicId = topicId;
     }
 
-    public void updateScore(CommentRepository commentRepository) {
-        Double averageScore = commentRepository.calculateAverageScoreByItemId(itemId);
-        this.score = averageScore != null ? averageScore : 0.0;
-    }
+
 }
+

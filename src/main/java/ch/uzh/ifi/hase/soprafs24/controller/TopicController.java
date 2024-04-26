@@ -146,15 +146,15 @@ public class TopicController {
         return DTOMapper.INSTANCE.convertEntityToTopicGetDTO(createdTopic);
     }
 
-    @DeleteMapping("/topics/{topicName}")
+    @DeleteMapping("/topics/topicName/{topicName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTopicByName(@PathVariable String topicName) {
         topicService.deleteTopicByTopicName(topicName);
     }
 
-    @DeleteMapping("/topics/{topicId}")
+    @DeleteMapping("/topics/topicId/{topicId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTopicById(@PathVariable Long topicId) {
+    public void deleteTopicById(@PathVariable Integer topicId) {
         topicService.deleteTopicByTopicId(topicId);
     }
 
