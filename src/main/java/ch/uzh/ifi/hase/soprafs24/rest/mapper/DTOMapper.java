@@ -34,6 +34,11 @@ public interface DTOMapper {
   @Mapping(source = "name", target = "name")
   @Mapping(source = "username", target = "username")
   @Mapping(source = "password", target = "password")
+
+  @Mapping(target = "token", ignore = true)
+  @Mapping(target = "status", ignore = true)
+  @Mapping(target = "createDate", ignore = true)
+  @Mapping(target = "birthday", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   @Mapping(source = "id", target = "id")
@@ -45,21 +50,23 @@ public interface DTOMapper {
   UserGetDTO convertEntityToUserGetDTO(User user);
 
 
-  @Mapping(source = "topicName", target = "topicName")
-  @Mapping(source = "ownerId", target = "ownerId")
-  @Mapping(source = "editAllowed", target = "editAllowed")
-  @Mapping(source = "content", target = "content")
+  @Mapping(target = "topicName", source = "topicName")
+  @Mapping(target = "ownerId", source = "ownerId")
+  @Mapping(target = "editAllowed", source = "editAllowed")
+  @Mapping(target = "description", source = "description")
+  @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(target = "chatPool", ignore = true)
+  @Mapping(target = "items", ignore = true)
   Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
 
-  @Mapping(source = "id", target = "id")
-  @Mapping(source = "topicName", target = "topicName")
+  @Mapping(target = "id", source = "topicId")
+  @Mapping(target = "topicName", source = "topicName")
   @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(source = "ownerId", target = "ownerId")
-  @Mapping(source = "fatherTopicId", target = "fatherTopicId")
-  @Mapping(source = "sonTopicId", target = "sonTopicId")
   @Mapping(source = "editAllowed", target = "editAllowed")
-  @Mapping(source = "content", target = "content")
-  TopicGetDTO convertTopicGetDTOtoEntity(Topic topic);
+  @Mapping(source = "description", target = "description")
+  TopicGetDTO convertEntityToTopicGetDTO(Topic topic);
+
 
   @Mapping(source = "commentId", target = "commentId")
   @Mapping(source = "userId", target = "userId")

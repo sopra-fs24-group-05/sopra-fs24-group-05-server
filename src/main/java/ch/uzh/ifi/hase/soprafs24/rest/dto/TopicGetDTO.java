@@ -2,13 +2,13 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import java.util.Date;
 public class TopicGetDTO {
-    private Long id;
+    private Integer topicId;
 
     private String topicName;
 
-    private Date creation_date;
+    private Date creationDate;
 
-    private Long ownerId;
+    private Integer ownerId;
 
     private Long fatherTopicId;
 
@@ -16,23 +16,23 @@ public class TopicGetDTO {
 
     private Boolean editAllowed;
 
-    private String content;
+    private String description;
 
-    public Long getId() {return id;}
+    public Integer getId() {return topicId;}
 
-    public void setId(Long id) {this.id = id;}
+    public void setId(Integer topicId) {this.topicId = topicId;}
 
     public String getTopicName() {return topicName;}
 
     public void setTopicName(String topicName) {this.topicName = topicName;}
 
-    public Date getCreationDate() {return creation_date;}
+    public Date getCreationDate() {return creationDate;}
 
-    public void setCreationDate(Date CreationDate) {this.creation_date = CreationDate;}
+    public void setCreationDate(Date creationDate) {this.creationDate = creationDate;}
 
-    public Long getOwnerId() {return ownerId;}
+    public Integer getOwnerId() {return ownerId;}
 
-    public void setOwnerId(Long ownerId) {this.ownerId = ownerId;}
+    public void setOwnerId(Integer ownerId) {this.ownerId = ownerId;}
 
     public Long getFatherTopicId() {return fatherTopicId;}
 
@@ -46,8 +46,8 @@ public class TopicGetDTO {
 
     public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
 
-    public String getContent() {return content;}
+    public String getDescription() {return description;}
 
-    public void setContent(String content) {this.content = content;}
+    public void setDescription(String description) {this.description = description;}
 
 }

@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,16 +15,16 @@ public class Topic implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long topicId;
+    private Integer topicId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String topicName;
 
     @Column(nullable = false)
-    private Date creation_date;
+    private Date creationDate;
 
     @Column(nullable = false)
-    private Long ownerId;
+    private Integer ownerId;
 
     @Column
     private Long fatherTopicId;
@@ -38,7 +36,7 @@ public class Topic implements Serializable {
     private Boolean editAllowed;
 
     @Column
-    private String content;
+    private String description;
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;
@@ -49,21 +47,21 @@ public class Topic implements Serializable {
     @Column(name = "message")
     private List<String> chatPool = new ArrayList<>();
 
-    public void setId(Long topicId) {this.topicId = topicId;}
+    public void setTopicId(Integer topicId) {this.topicId = topicId;}
 
-    public Long getId() {return topicId;}
+    public Integer getTopicId() {return topicId;}
 
     public String getTopicName() {return topicName;}
 
     public void setTopicName(String topicName) {this.topicName = topicName;}
 
-    public Date getCreationDate() {return creation_date;}
+    public Date getCreationDate() {return creationDate;}
 
-    public void setCreationDate(Date creation_date) {this.creation_date = creation_date;}
+    public void setCreationDate(Date creation_date) {this.creationDate = creation_date;}
 
-    public Long getOwnerId() {return ownerId;}
+    public Integer getOwnerId() {return ownerId;}
 
-    public void setOwnerId(Long ownerId) {this.ownerId = ownerId;}
+    public void setOwnerId(Integer ownerId) {this.ownerId = ownerId;}
 
     public Long getFatherTopicId() {return fatherTopicId;}
 
@@ -77,9 +75,9 @@ public class Topic implements Serializable {
 
     public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
 
-    public String getContent() {return content;}
+    public String getDescription() {return description;}
 
-    public void setContent(String content) {this.content = content;}
+    public void setDescription(String description) {this.description = description;}
 
     public List<String> getChatPool() { return chatPool; }
     public void setChatPool(List<String> chatPool) { this.chatPool = chatPool; }

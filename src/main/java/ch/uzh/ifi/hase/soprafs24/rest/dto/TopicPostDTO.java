@@ -1,30 +1,87 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import java.util.Date;
+
 public class TopicPostDTO {
+
+    private int topicId;
 
     private String topicName;
 
-    private Long ownerId;
+    private int ownerId;
+
+    private Date creationDate;
+
+    private Long fatherTopicId;
+
+    private Long sonTopicId;
 
     private Boolean editAllowed;
 
-    private String content;
+    private String description;
 
-    public String getTopicName() {return topicName;}
 
-    public void setTopicName(String topicName) {this.topicName = topicName;}
+    // Getter 和 Setter 方法
+    public Integer getTopicId() {
+        return topicId;
+    }
 
-    public Long getOwnerId() {return ownerId;}
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
+    }
 
-    public void setOwnerId(Long ownerId) {this.ownerId = ownerId;}
+    public String getTopicName() {
+        return topicName;
+    }
 
-    public Boolean getEditAllowed() {return editAllowed;}
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
 
-    public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
+    public Date getCreationDate(){return creationDate;}
 
-    public String getContent() {return content;}
+    public void setCreationDate(Date creationDate) {this.creationDate = creationDate;}
 
-    public void setContent(String content) {this.content = content;}
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public Long getFatherTopicId() {
+        return fatherTopicId;
+    }
+
+    public void setFatherTopicId(Long fatherTopicId) {
+        this.fatherTopicId = fatherTopicId;
+    }
+
+    public Long getSonTopicId() {
+        return sonTopicId;
+    }
+
+    public void setSonTopicId(Long sonTopicId) {
+        this.sonTopicId = sonTopicId;
+    }
+
+    public Boolean getEditAllowed() {
+        return editAllowed;
+    }
+
+    public void setEditAllowed(Boolean editAllowed) {
+        this.editAllowed = editAllowed;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
 }
+
