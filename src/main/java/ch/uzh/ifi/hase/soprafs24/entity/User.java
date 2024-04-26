@@ -2,8 +2,12 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -69,13 +73,11 @@ public class User implements Serializable {
   private Date birthday;
 
 
-//  @OneToMany(cascade = CascadeType.ALL)
-//  @JoinColumn(name = "userId")
-//  private List<Item> followItemList;
-//
-//  @OneToMany(cascade = CascadeType.ALL)
-//  @JoinColumn(name = "userId")
-//  private List<User> followUserList;
+  @Column(columnDefinition = "TEXT", nullable = true)
+  private String followItemList;
+
+  @Column(columnDefinition = "TEXT", nullable = true)
+  private String followUserList;
 
   public Long getUserId() {
     return userId;
@@ -138,5 +140,50 @@ public class User implements Serializable {
 
   public void setIdentity(UserIdentity identity) { this.identity = identity; }
 
+
   public UserIdentity getIdentity() { return identity; }
+
+  public List<Long> getFollowItemList() {
+      if (followItemList == null) {
+          return new ArrayList<>();
+      }
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          return objectMapper.readValue(followItemList, new TypeReference<List<Long>>() {});
+      } catch (IOException e) {
+          e.printStackTrace();
+          return new ArrayList<>();
+      }
+  }
+
+  public void setFollowItemList(List<Long> followedItems) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          this.followUserList = objectMapper.writeValueAsString(followedItems);
+      } catch (JsonProcessingException e) {
+          e.printStackTrace();
+      }
+  }
+
+  public List<Long> getFollowUserList() {
+      if (followUserList == null) {
+          return new ArrayList<>();
+      }
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          return objectMapper.readValue(followUserList, new TypeReference<List<Long>>() {});
+      } catch (IOException e) {
+          e.printStackTrace();
+          return new ArrayList<>();
+      }
+  }
+
+  public void setFollowUserList(List<Long> followedUsers) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          this.followUserList = objectMapper.writeValueAsString(followedUsers);
+      } catch (JsonProcessingException e) {
+          e.printStackTrace();
+      }
+  }
 }
