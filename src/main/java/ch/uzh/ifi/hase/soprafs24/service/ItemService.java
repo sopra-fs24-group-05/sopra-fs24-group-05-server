@@ -107,4 +107,7 @@ public class ItemService {
         itemRepository.deleteById(Long.valueOf(itemId));
     }
     
+    public Item getItemByItemId(Long itemId){
+        return itemRepository.findByItemId(itemId);
+    }
 }

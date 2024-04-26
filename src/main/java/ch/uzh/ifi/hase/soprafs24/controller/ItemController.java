@@ -68,13 +68,13 @@ public class ItemController {
 
     @GetMapping("/items/getByItemTopicId/{topicId}")
     public ResponseEntity<List<Item>> getItemsByItemTopicId(@PathVariable Long topicId) {
-        List<Item> items = itemService.getItemsByItemTopicId(topicId);
+        List<Item> items = itemService.getItemsByTopicId(topicId.intValue());
         return ResponseEntity.ok(items);
-      
+    }
    //YZQ_DEV_M3
 
   //main
-  /*
+  
     @GetMapping("/items/byTopicId/{topicId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -95,7 +95,7 @@ public class ItemController {
                 .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(itemGetDTOs);
-      */
+
      //main
 
     }
