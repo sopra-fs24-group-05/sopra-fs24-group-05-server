@@ -1,72 +1,88 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
+
+import java.util.Date;
+
 public class ItemPostDTO {
-  private Long itemId;
-  private Long userId;
-  private Long itemTopicId;
-  private String itemname;
-  private String itemIntroduction;
-  //private Date creationDate;
-  private double score = 0.0;
-  private double totalScore = 0.0;
-  private int scoreCount = 0;
-  private int likes = 0;
 
-  public Long getItemId() {return itemId;}
+    private Long itemId;
 
-  public void setItemId(Long itemId) {this.itemId = itemId;}
+    private String itemName;
 
-  public Long getUserId() {return userId;}
+    private String content;
 
-public void setUserId(Long userId) {this.userId = userId;}
+    private Date creationDate;
 
-public Long getItemTopicId() {return itemTopicId;}
+    private double score = 0.0;
 
-public void setItemTopicId(Long itemTopicId) {this.itemTopicId = itemTopicId;}
+    private int likes = 0;
 
-  public String getItemname() {return itemname;}
+    private Topic topic;
 
-  public void setItemname(String itemname) {this.itemname = itemname;}
+    private Integer topicId;
 
-  public String getItemIntroduction() {
-      return itemIntroduction;
-  }
 
-  public void setItemIntroduction(String itemIntroduction) {
-      this.itemIntroduction = itemIntroduction;
-  }
 
-  public int getLikes() {
-      return likes;
-  }
+    // Getters and Setters
+    public Long getItemId() {
+        return itemId;
+    }
 
-  public void setLikes(int likes) {
-      this.likes = likes;
-  }
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
 
-  public double getScore() {
-      return score;
-  }
+    public String getItemName() {return itemName;}
 
-  public void setScore(double score) {
-      this.score = score;
-  }
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
-  public void addLike() {
-      this.likes++;
-  }
+    public String getContent() {
+        return content;
+    }
 
-  public void addScore(double score) {
-      this.totalScore += score;
-      this.scoreCount++;
-  }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-  public double getAverageScore() {
-      if (scoreCount > 0) {
-          return totalScore / scoreCount;
-      }
-      return 0.0;
-  }
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {this.likes = likes;}
+
+    public double getScore() {return score;}
+
+    public void setScore(double score) {this.score = score;}
+
+    public void addLike() {
+        this.likes++;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public Integer getTopicId() { return topicId; }
+
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
+    }
 
 }
+

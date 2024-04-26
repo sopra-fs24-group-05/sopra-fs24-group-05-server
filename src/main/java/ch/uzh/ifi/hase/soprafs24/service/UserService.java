@@ -95,6 +95,8 @@ public class UserService {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
     newUser.setCreateDate(new Date());
+    //default
+    newUser.setIdentity(UserIdentity.STUDENT);
     if(userRepository.existsByUsername(newUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
     }

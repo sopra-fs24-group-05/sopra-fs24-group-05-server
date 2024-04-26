@@ -12,9 +12,7 @@ import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
+//import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -35,17 +33,6 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
   }
 
-//  @GetMapping("/comment/{itemId}")
-//  @ResponseStatus(HttpStatus.OK)
-//  @ResponseBody
-//  public List<CommentGetDTO> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
-//    List<Comment> comments=commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
-//    List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
-//    for(Comment comment:comments){
-//      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
-//    }
-//    return commentGetDTOs;
-//  }
 
   @GetMapping("/comments/itemId/{itemId}")
   @ResponseStatus(HttpStatus.OK)
