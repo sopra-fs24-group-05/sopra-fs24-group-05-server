@@ -27,7 +27,7 @@ public class CommentController {
     this.commentService=commentService;
   }
 
-  @GetMapping("/comments/{commentId}")
+  @GetMapping("/comments/commentId/{commentId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public CommentGetDTO getCommentByCommentId(@PathVariable Long commentId){
@@ -35,16 +35,28 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
   }
 
-  @GetMapping("/comments/{itemId}")
+//  @GetMapping("/comment/{itemId}")
+//  @ResponseStatus(HttpStatus.OK)
+//  @ResponseBody
+//  public List<CommentGetDTO> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
+//    List<Comment> comments=commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
+//    List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
+//    for(Comment comment:comments){
+//      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+//    }
+//    return commentGetDTOs;
+//  }
+
+  @GetMapping("/comments/itemId/{itemId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<CommentGetDTO> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
-    List<Comment> comments=commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
-    List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
-    for(Comment comment:comments){
-      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
-    }
-    return commentGetDTOs;
+  public List<CommentGetDTO> getCommentsByCommentItemId(@PathVariable Long itemId){
+      List<Comment> comments = commentService.getCommentByCommentItemId(itemId);
+      List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
+      for(Comment comment : comments){
+          commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+      }
+      return commentGetDTOs;
   }
 
   @PostMapping("/comments/create")
@@ -57,7 +69,7 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
   }
 
-  @GetMapping("/comments/{userId}")
+  @GetMapping("/comments/userId/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<CommentGetDTO> getCommentByUserId(@PathVariable Long userId) {

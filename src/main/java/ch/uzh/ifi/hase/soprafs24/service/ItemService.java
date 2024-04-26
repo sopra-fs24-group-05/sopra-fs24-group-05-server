@@ -69,8 +69,12 @@ public class ItemService {
         return itemRepository.findByTopicIdOrderByScoreDesc(topicId);
     }
 
-    public List<Item> getItemsByTopicId(Long topicId) {
-        return itemRepository.findByTopicId(topicId);
+    public List<Item> getItemsByItemTopicId(Long itemTopicId) {
+        return itemRepository.findByItemTopicId(itemTopicId);
+    }
+
+    public Item getItemByItemId(Long itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
     }
 
     public List<Item> getItemsByTopicName(String topicName) {

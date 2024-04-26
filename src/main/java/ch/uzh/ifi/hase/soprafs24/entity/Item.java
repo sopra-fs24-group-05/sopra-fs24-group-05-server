@@ -36,7 +36,7 @@ public class Item {
     @Column(nullable = false)
     private Long itemTopicId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;  // 关联的Topic
 

@@ -70,16 +70,18 @@ public interface DTOMapper {
   ItemGetDTO convertItemGetDTOtoEntity(Item item);
 
   @Mapping(source = "commentId", target = "commentId")
-  @Mapping(source = "userId", target = "userId")
-  @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "commentOwnerId", target = "commentOwnerId")
+  @Mapping(source = "commentOwnerName", target = "commentOwnerName")
+  @Mapping(source = "commentItemId", target = "commentItemId")
   @Mapping(source = "score", target = "score")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
 
   @Mapping(source = "commentId", target = "commentId")
-  @Mapping(source = "userId", target = "userId")
-  @Mapping(source = "itemId", target = "itemId")
+  @Mapping(source = "commentOwnerId", target = "commentOwnerId")
+  @Mapping(source = "commentOwnerName", target = "commentOwnerName")
+  @Mapping(source = "commentItemId", target = "commentItemId")
   @Mapping(source = "score", target = "score")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")

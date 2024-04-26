@@ -41,14 +41,24 @@ public class CommentService {
 
   public List<Comment> getCommentByItemIdOrderByThumbsUpNumDesc(Long itemId, int pageNumber, int pageSize){
     Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by("thumbsUpNum").descending());
-    return commentRepository.findByItemIdOrderByThumbsUpNumDesc(itemId,pageable);
+    return commentRepository.findByCommentItemIdOrderByThumbsUpNumDesc(itemId,pageable);
+  }
+
+  public List<Comment> getCommentByCommentItemId(Long commentItemId) {
+    List<Comment> commentList = commentRepository.findByCommentItemId(commentItemId);
+    if (commentList == null) {
+        throw new RuntimeException("Comment Not Found");
+    } else {
+        System.out.println(commentList.size());
+        return commentList;
+    }
   }
 
   public List<Comment> getCommentByUserId(Long userId){
-    if(!commentRepository.existsByUserId(userId)){
+    if(!commentRepository.existsByCommentOwnerId(userId)){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"comment not found");
     }
-    return commentRepository.findByUserId(userId);
+    return commentRepository.findByCommentOwnerId(userId);
   }
 
   /*
@@ -71,26 +81,28 @@ public class CommentService {
    * @throws ResponseStatusException
    */
   public Comment createComment(Comment newComment) throws ResponseStatusException{
-    if(!itemRepository.existsById(newComment.getItemId())){
+    if(!itemRepository.existsById(newComment.getCommentItemId())){
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
     }
     if(newComment.getContent().length()>newComment.MAX_LENGTH){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The comments exceeded the 150-character limit");
     }
-    boolean hasCommented = commentRepository.existsByUserIdAndItemId(newComment.getUserId(),newComment.getItemId());
+    boolean hasCommented = commentRepository.existsByCommentOwnerIdAndCommentItemId(newComment.getCommentOwnerId(),newComment.getCommentItemId());
     if(hasCommented){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User has already commented on this item");
     }
+
+    newComment.setCommentOwnerName(newComment.getCommentOwnerName());
     newComment.setThumbsUpNum(0L);
     newComment = commentRepository.saveAndFlush(newComment);
     return newComment;
   }
 
   public Double calculateAverageScoreByItemId(Long itemId){
-    if(!commentRepository.existsByItemId(itemId)){
+    if(!commentRepository.existsByCommentItemId(itemId)){
       return 0.0;
     }
-    return commentRepository.calculateAverageScoreByItemId(itemId);
+    return commentRepository.calculateAverageScoreByCommentItemId(itemId);
   }
 
 }

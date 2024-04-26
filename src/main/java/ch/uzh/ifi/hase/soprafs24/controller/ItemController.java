@@ -39,9 +39,15 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
-    @GetMapping("/by-topic-id")
-    public ResponseEntity<List<Item>> getItemsByTopicId(@RequestParam Long topicId) {
-        List<Item> items = itemService.getItemsByTopicId(topicId);
+    @GetMapping("/item/{itemId}")
+    public ResponseEntity<Item> getItemByItemId(@PathVariable Long itemId) {
+        Item item = itemService.getItemByItemId(itemId);
+        return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("/items/{topicId}")
+    public ResponseEntity<List<Item>> getItemsByItemTopicId(@PathVariable Long topicId) {
+        List<Item> items = itemService.getItemsByItemTopicId(topicId);
         return ResponseEntity.ok(items);
     }
 
