@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
@@ -73,6 +74,8 @@ public class UserService {
   public User createUser(User newUser) throws ResponseStatusException{
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
+    //default
+    newUser.setIdentity(UserIdentity.STUDENT);
 
     if(userRepository.existsByUsername(newUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
