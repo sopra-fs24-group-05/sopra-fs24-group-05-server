@@ -57,6 +57,9 @@ public class User implements Serializable {
   private UserStatus status;
 
   @Column(nullable = false)
+  private UserIdentity identity;
+
+  @Column(nullable = false)
   private String password;
 
   @Column(nullable = true)
@@ -87,16 +90,6 @@ public class User implements Serializable {
     this.userId = userId;
   }
 
-  /*
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-  */
-
   public String getUsername() {
     return username;
   }
@@ -121,31 +114,39 @@ public class User implements Serializable {
     this.status = status;
   }
 
-    public String getPassword() {
-        return password;
-    }
+  public UserIdentity getIdentity(){
+    return identity;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setIdentity(UserIdentity identity){
+    this.identity=identity;
+  }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
+  public String getPassword() {
+      return password;
+  }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
+  public void setPassword(String password) {
+      this.password = password;
+  }
 
-    public Date getBirthday() {
-        return birthday;
-    }
+  public Date getCreateDate() {
+      return createDate;
+  }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
+  public void setCreateDate(Date createDate) {
+      this.createDate = createDate;
+  }
 
-    public void setIdentity(UserIdentity identity) { this.identity = identity; }
+  public Date getBirthday() {
+      return birthday;
+  }
 
-    public UserIdentity getIdentity() { return identity; }
+  public void setBirthday(Date birthday) {
+      this.birthday = birthday;
+  }
+
+  public void setIdentity(UserIdentity identity) { this.identity = identity; }
+
+  public UserIdentity getIdentity() { return identity; }
 }

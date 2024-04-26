@@ -16,18 +16,8 @@ public class Comment {
   @Column(nullable = false)
   private String commentOwnerName;
 
-  // specify the foreign key mapping relationship
-  // no need to implement get() & set() methods, @ManyToOne provide a getUser() methods
-  @ManyToOne
-  @JoinColumn(name = "userId", referencedColumnName = "userId", insertable = false, updatable = false)
-  private User user;
-
   @Column(nullable = false)
   private Long commentItemId;
-
-  @ManyToOne
-  @JoinColumn(name = "itemId", referencedColumnName = "id", insertable = false, updatable = false)
-  private Item item;
 
   /**
    * score to the item by the user

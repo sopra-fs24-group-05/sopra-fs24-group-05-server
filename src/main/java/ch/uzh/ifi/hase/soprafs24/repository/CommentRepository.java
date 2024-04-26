@@ -11,9 +11,6 @@ import java.util.List;
 
 @Repository("commentRepository")
 public interface CommentRepository extends JpaRepository<Comment, Long>{
-
-
-
   /**
    * Return first n comments ordered by thumbsUpNum in descending order
    * Pegeable is used to specify page number of the return result, 
@@ -29,6 +26,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 
   @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId")
   List<Comment> findByCommentItemId(@Param("commentItemId") Long commentItemId);
+  
 
   @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId AND c.commentItemId = :commentItemId")
   boolean existsByCommentOwnerIdAndCommentItemId(@Param("commentOwnerId") Long commentOwnerId, @Param("commentItemId") Long commentItemId);
@@ -41,4 +39,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 
   @Query("SELECT AVG(c.score) FROM Comment c WHERE c.commentItemId = :commentItemId")
   Double calculateAverageScoreByCommentItemId(@Param("commentItemId") Long commentItemId);
+
 }

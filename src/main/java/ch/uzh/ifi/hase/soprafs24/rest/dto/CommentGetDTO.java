@@ -30,7 +30,7 @@ public class CommentGetDTO {
   public Long getCommentItemId(){
     return this.commentItemId;
   }
-
+  
   public void setCommentItemId(Long commentItemId){
     this.commentItemId = commentItemId;
   }
