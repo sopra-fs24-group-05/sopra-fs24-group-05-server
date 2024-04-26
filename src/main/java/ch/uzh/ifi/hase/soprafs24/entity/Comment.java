@@ -22,10 +22,6 @@ public class Comment {
   @Column(nullable = false)
   private Long itemId;
 
-  @ManyToOne
-  @JoinColumn(name = "itemId", referencedColumnName = "id", insertable = false, updatable = false)
-  private Item item;
-
   /**
    * score to the item by the user
    */
@@ -61,7 +57,7 @@ public class Comment {
     return this.itemId;
   }
 
-  public void setItemId(Long ItemId){ 
+  public void setItemId(Long itemId){ 
     this.itemId=itemId;
   }
 

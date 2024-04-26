@@ -25,7 +25,7 @@ public class CommentController {
     this.commentService=commentService;
   }
 
-  @GetMapping("/comments/{commentId}")
+  @GetMapping("/comments/findByCommentId/{commentId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public CommentGetDTO getCommentByCommentId(@PathVariable Long commentId){
@@ -33,7 +33,7 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
   }
 
-  @GetMapping("/comments/{itemId}")
+  @GetMapping("/comments/findByItemId/{itemId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<CommentGetDTO> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
@@ -55,7 +55,7 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
   }
 
-  @GetMapping("/comments/{userId}")
+  @GetMapping("/comments/findByUserId/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<CommentGetDTO> getCommentByUserId(@PathVariable Long userId) {

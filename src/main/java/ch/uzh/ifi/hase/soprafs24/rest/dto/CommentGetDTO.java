@@ -30,7 +30,7 @@ public class CommentGetDTO {
     return this.itemId;
   }
 
-  public void setItemId(Long ItemId){ 
+  public void setItemId(Long itemId){ 
     this.itemId=itemId;
   }
 
