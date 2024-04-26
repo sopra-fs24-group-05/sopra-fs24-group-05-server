@@ -68,8 +68,6 @@ public class User implements Serializable {
   @Column(nullable = true)
   private Date birthday;
 
-  @Column(nullable = true)
-  private UserIdentity identity;
 
 //  @OneToMany(cascade = CascadeType.ALL)
 //  @JoinColumn(name = "userId")
@@ -112,14 +110,6 @@ public class User implements Serializable {
 
   public void setStatus(UserStatus status) {
     this.status = status;
-  }
-
-  public UserIdentity getIdentity(){
-    return identity;
-  }
-
-  public void setIdentity(UserIdentity identity){
-    this.identity=identity;
   }
 
   public String getPassword() {

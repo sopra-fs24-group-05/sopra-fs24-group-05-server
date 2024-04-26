@@ -47,12 +47,14 @@ public class CommentServiceIntegrationTest {
   @BeforeEach
   public void setup(){
     testComment = new Comment();
-    testComment.setCommentId(1L);
-    testComment.setUserId(1L);
-    testComment.setItemId(1L);
+    //testComment.setCommentId(1L); // calling the actual repository, no need to set this field
+    testComment.setCommentOwnerId(1L);
+    testComment.setCommentOwnerName("testComment owner");
+    testComment.setCommentItemId(1L);
     testComment.setScore(5L);
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
+    
     commentRepository.deleteAll();
   }
 
@@ -70,8 +72,8 @@ public class CommentServiceIntegrationTest {
 
     // then
     assertEquals(testComment.getCommentId(), createdComment.getCommentId());
-    assertEquals(testComment.getUserId(), createdComment.getUserId());
-    assertEquals(testComment.getItemId(), createdComment.getItemId());
+    assertEquals(testComment.getCommentOwnerId(), createdComment.getCommentOwnerId());
+    assertEquals(testComment.getCommentItemId(), createdComment.getCommentItemId());
     assertEquals(testComment.getScore(), createdComment.getScore());
     assertEquals(testComment.getContent(), createdComment.getContent());
     assertEquals(testComment.getThumbsUpNum(), createdComment.getThumbsUpNum());

@@ -47,8 +47,9 @@ public class CommentServiceTest {
     // given
     testComment = new Comment();
     testComment.setCommentId(1L);
-    testComment.setUserId(1L);
-    testComment.setItemId(1L);
+    testComment.setCommentOwnerId(1L);
+    testComment.setCommentOwnerName("testComment owner");
+    testComment.setCommentItemId(1L);
     testComment.setScore(5L);
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
@@ -60,16 +61,16 @@ public class CommentServiceTest {
     testItem = new Item();
     testItem.setId(1L);
     testItem.setLikes(0);
-    testItem.setName("testItemName");
+    testItem.setItemname("testItemName");
     testItem.setScore(0.0);
-    testItem.setDescription("test Item Description");
+    testItem.setItemIntroduction("test Item Description");
 
     Mockito.when(commentRepository.save(Mockito.any())).thenReturn(testComment);
-    Mockito.when(commentRepository.existsByUserIdAndItemId(Mockito.anyLong(), Mockito.anyLong())).thenReturn(false);
-    Mockito.when(commentRepository.calculateAverageScoreByItemId(Mockito.any())).thenReturn(testComment.getScore().doubleValue());
-    Mockito.when(commentRepository.existsByItemId(Mockito.anyLong())).thenReturn(true);
+    Mockito.when(commentRepository.existsByCommentOwnerIdAndCommentItemId(Mockito.anyLong(), Mockito.anyLong())).thenReturn(false);
+    Mockito.when(commentRepository.calculateAverageScoreByCommentItemId(Mockito.any())).thenReturn(testComment.getScore().doubleValue());
+    Mockito.when(commentRepository.existsByCommentItemId(Mockito.anyLong())).thenReturn(true);
     Mockito.when(commentRepository.findById(Mockito.anyLong())).thenReturn(optionalTestComment);
-    Mockito.when(commentRepository.findByUserId(Mockito.anyLong())).thenReturn(testCommentList);
+    Mockito.when(commentRepository.findByCommentOwnerId(Mockito.anyLong())).thenReturn(testCommentList);
     //Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
   }
 
@@ -82,8 +83,8 @@ public class CommentServiceTest {
     Mockito.verify(commentRepository,Mockito.times(1)).save(Mockito.any());// commentRepository.save() has been called once
 
     assertEquals(testComment.getCommentId(), createdComment.getCommentId());
-    assertEquals(testComment.getUserId(), createdComment.getUserId());
-    assertEquals(testComment.getItemId(), createdComment.getItemId());
+    assertEquals(testComment.getCommentOwnerId(), createdComment.getCommentOwnerId());
+    assertEquals(testComment.getCommentItemId(), createdComment.getCommentItemId());
     assertEquals(testComment.getScore(), createdComment.getScore());
     assertEquals(testComment.getContent(), createdComment.getContent());
     assertEquals(testComment.getThumbsUpNum(), createdComment.getThumbsUpNum());
@@ -91,10 +92,10 @@ public class CommentServiceTest {
 
   @Test
   public void calculateAverageScoreByItemId_validInput_success(){
-    Double avgScore = commentService.calculateAverageScoreByItemId(testComment.getItemId());
+    Double avgScore = commentService.calculateAverageScoreByItemId(testComment.getCommentItemId());
 
-    Mockito.verify(commentRepository,Mockito.times(1)).existsByItemId(Mockito.any());
-    Mockito.verify(commentRepository,Mockito.times(1)).calculateAverageScoreByItemId(Mockito.any());
+    Mockito.verify(commentRepository,Mockito.times(1)).existsByCommentItemId(Mockito.any());
+    Mockito.verify(commentRepository,Mockito.times(1)).calculateAverageScoreByCommentItemId(Mockito.any());
 
     assertEquals(avgScore, testComment.getScore().doubleValue());
   }
@@ -109,8 +110,8 @@ public class CommentServiceTest {
     Mockito.verify(commentRepository,Mockito.times(1)).findById(Mockito.anyLong());
 
     assertEquals(testComment.getCommentId(), getByCommentItComment.getCommentId());
-    assertEquals(testComment.getUserId(), getByCommentItComment.getUserId());
-    assertEquals(testComment.getItemId(), getByCommentItComment.getItemId());
+    assertEquals(testComment.getCommentOwnerId(), getByCommentItComment.getCommentOwnerId());
+    assertEquals(testComment.getCommentItemId(), getByCommentItComment.getCommentItemId());
     assertEquals(testComment.getScore(), getByCommentItComment.getScore());
     assertEquals(testComment.getContent(), getByCommentItComment.getContent());
     assertEquals(testComment.getThumbsUpNum(), getByCommentItComment.getThumbsUpNum());

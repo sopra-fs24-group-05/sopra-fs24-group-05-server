@@ -6,6 +6,8 @@ import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,21 +42,28 @@ public class CommentControllerTest {
   @MockBean
   private CommentService commentService;
 
-  @Test
-  public void createComment_validInput_commentCreated() throws Exception{
-    //given
-    Comment comment = new Comment();
+  private Comment comment;
+
+  @BeforeEach
+  public void setup(){
+    comment = new Comment();
     comment.setCommentId(1L);
-    comment.setUserId(1L);
-    comment.setItemId(1L);
+    comment.setCommentOwnerId(1L);
+    comment.setCommentOwnerName("commentOwner");
+    comment.setCommentItemId(1L);
     comment.setScore(5L);
     comment.setContent(null);
     comment.setThumbsUpNum(1L);
+  }
+
+  @Test
+  public void createComment_validInput_commentCreated() throws Exception{
+    //given
 
     CommentPostDTO commentPostDTO = new CommentPostDTO();
     commentPostDTO.setCommentId(1L);
-    commentPostDTO.setCUserId(1L);
-    commentPostDTO.setItemId(1L);
+    commentPostDTO.setCommentOwnerId(1L);
+    commentPostDTO.setCommentItemId(1L);
 
     given(commentService.createComment(Mockito.any())).willReturn(comment);
 
@@ -66,8 +74,8 @@ public class CommentControllerTest {
     mockMvc.perform(postRequest)
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.commentId", is(comment.getCommentId().intValue())))
-        .andExpect(jsonPath("$.userId", is(comment.getUserId().intValue())))
-        .andExpect(jsonPath("$.itemId", is(comment.getItemId().intValue())))
+        .andExpect(jsonPath("$.commentOwnerId", is(comment.getCommentOwnerId().intValue())))
+        .andExpect(jsonPath("$.commentItemId", is(comment.getCommentItemId().intValue())))
         .andExpect(jsonPath("$.score", is(comment.getScore().intValue())))
         .andExpect(jsonPath("$.content", is(comment.getContent())))
         .andExpect((jsonPath("$.thumbsUpNum", is(comment.getThumbsUpNum().intValue()))));
@@ -76,19 +84,12 @@ public class CommentControllerTest {
   @Test
   public void givenComments_whenGetCommentByUserId_thenReturnJsonArray() throws Exception{
     //given：some comments have been created 
-    Comment comment = new Comment();
-    comment.setCommentId(1L);
-    comment.setUserId(1L);
-    comment.setItemId(1L);
-    comment.setScore(5L);
-    comment.setContent(null);
-    comment.setThumbsUpNum(1L);
 
     List<Comment> commentsByUserId = Collections.singletonList(comment);
 
     given(commentService.getCommentByUserId(Mockito.anyLong())).willReturn(commentsByUserId);
 
-    MockHttpServletRequestBuilder getRequest = get("/comments/findByUserId/{userId}",1L)
+    MockHttpServletRequestBuilder getRequest = get("/comments/userId/{userId}",1L)
       .contentType(MediaType.APPLICATION_JSON)
       .content(asJsonString(commentsByUserId));
 
@@ -96,26 +97,19 @@ public class CommentControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$", hasSize(1)))
       .andExpect(jsonPath("$[0].commentId", is(comment.getCommentId().intValue())))
-      .andExpect(jsonPath("$[0].itemId", is(comment.getItemId().intValue())))
+      .andExpect(jsonPath("$[0].commentItemId", is(comment.getCommentItemId().intValue())))
       .andExpect(jsonPath("$[0].score", is(comment.getScore().intValue())));    
   }
 
   @Test
   public void givenComments_whenGetCommentByItemId_thenReturnJsonArray() throws Exception{
     //given：some comments have been created 
-    Comment comment = new Comment();
-    comment.setCommentId(1L);
-    comment.setUserId(1L);
-    comment.setItemId(1L);
-    comment.setScore(5L);
-    comment.setContent(null);
-    comment.setThumbsUpNum(1L);
 
     List<Comment> commentsByUserId = Collections.singletonList(comment);
 
     given(commentService.getCommentByItemIdOrderByThumbsUpNumDesc(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt())).willReturn(commentsByUserId);
 
-    MockHttpServletRequestBuilder getRequest = get("/comments/findByItemId/{itemId}",1L)
+    MockHttpServletRequestBuilder getRequest = get("/comments/itemId/{itemId}",1L)
       .contentType(MediaType.APPLICATION_JSON)
       .content(asJsonString(commentsByUserId));
 
@@ -123,31 +117,24 @@ public class CommentControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$", hasSize(1)))
       .andExpect(jsonPath("$[0].commentId", is(comment.getCommentId().intValue())))
-      .andExpect(jsonPath("$[0].itemId", is(comment.getItemId().intValue())))
+      .andExpect(jsonPath("$[0].commentItemId", is(comment.getCommentItemId().intValue())))
       .andExpect(jsonPath("$[0].score", is(comment.getScore().intValue())));    
   }
 
   @Test
   public void givenComments_whenGetCommentByCommentId_thenReturnJsonArray() throws Exception{
     //given：some comments have been created 
-    Comment comment = new Comment();
-    comment.setCommentId(1L);
-    comment.setUserId(1L);
-    comment.setItemId(1L);
-    comment.setScore(5L);
-    comment.setContent(null);
-    comment.setThumbsUpNum(1L);
 
     given(commentService.getCommentByCommentId(Mockito.anyLong())).willReturn(comment);
 
-    MockHttpServletRequestBuilder getRequest = get("/comments/findByCommentId/{commentId}",1L)
+    MockHttpServletRequestBuilder getRequest = get("/comments/commentId/{commentId}",1L)
       .contentType(MediaType.APPLICATION_JSON)
       .content(asJsonString(comment));
 
     mockMvc.perform(getRequest)
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.commentId", is(comment.getCommentId().intValue())))
-      .andExpect(jsonPath("$.itemId", is(comment.getItemId().intValue())))
+      .andExpect(jsonPath("$.commentItemId", is(comment.getCommentItemId().intValue())))
       .andExpect(jsonPath("$.score", is(comment.getScore().intValue())));    
   }
 
