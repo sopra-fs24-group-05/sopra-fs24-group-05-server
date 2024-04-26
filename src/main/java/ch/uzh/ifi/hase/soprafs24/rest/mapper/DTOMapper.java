@@ -59,7 +59,6 @@ public interface DTOMapper {
   @Mapping(source = "description", target = "description")
   @Mapping(source = "creationDate", target = "creationDate")
   @Mapping(target = "chatPool", ignore = true)
-  @Mapping(target = "items", ignore = true)
   Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
 
   @Mapping(source = "topicId" , target = "id")

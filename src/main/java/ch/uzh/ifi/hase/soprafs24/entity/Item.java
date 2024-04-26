@@ -1,18 +1,17 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
-
 import java.util.Date;
 
 
 @Entity
 @Table(name = "ITEM")
-public class Item implements Serializable {
+public class Item {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemId;
+    @GeneratedValue
+    @Column(name = "id") private Long itemId;
 
     @Column(nullable = false)
     private String itemName;
@@ -29,12 +28,12 @@ public class Item implements Serializable {
     @Column(nullable = false)
     private int likes = 0;
 
-    @Column(nullable = false)
+    @Column(name = "topicId")
     private Integer topicId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "topicName", nullable = false)
-    private Topic topic;  // 关联的Topic
+    @ManyToOne
+    @JoinColumn(name = "topicId", referencedColumnName = "topicId", nullable = false, insertable = false, updatable = false)
+    private Topic topic;
 
     // Getters and Setters
     public Long getItemId() {

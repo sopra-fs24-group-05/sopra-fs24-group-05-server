@@ -11,11 +11,10 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "TOPIC")
 public class Topic implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
-    private Integer topicId;
+    @Column Integer topicId;
 
     @Column(nullable = false, unique = true)
     private String topicName;
@@ -37,9 +36,6 @@ public class Topic implements Serializable {
 
     @Column
     private String description;
-
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Item> items;
 
 
     @ElementCollection
@@ -82,11 +78,4 @@ public class Topic implements Serializable {
     public List<String> getChatPool() { return chatPool; }
     public void setChatPool(List<String> chatPool) { this.chatPool = chatPool; }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
 }
