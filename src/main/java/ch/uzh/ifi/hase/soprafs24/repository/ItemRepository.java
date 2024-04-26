@@ -17,8 +17,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i WHERE i.topic.id = :topicId ORDER BY i.totalScore / i.scoreCount DESC")
     List<Item> findByTopicIdOrderByScoreDesc(@Param("topicId") Long topicId);
 
-    @Query("SELECT i FROM Item i WHERE i.topic.id = :topicId")
-    List<Item> findByTopicId(@Param("topicId") Long topicId);
+    @Query("SELECT i FROM Item i WHERE i.topic.topicId = :itemTopicId")
+    List<Item> findByItemTopicId(@Param("itemTopicId") Long topicId);
 
     @Query("SELECT i FROM Item i WHERE i.topic.topicName = :topicName")
     List<Item> findByTopicName(@Param("topicName") String topicName);

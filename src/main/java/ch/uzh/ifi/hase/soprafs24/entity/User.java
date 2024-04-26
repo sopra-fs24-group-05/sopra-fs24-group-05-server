@@ -5,7 +5,8 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Internal User Representation
@@ -66,6 +67,17 @@ public class User implements Serializable {
 
   @Column(nullable = true)
   private Date birthday;
+
+  @Column(nullable = true)
+  private UserIdentity identity;
+
+//  @OneToMany(cascade = CascadeType.ALL)
+//  @JoinColumn(name = "userId")
+//  private List<Item> followItemList;
+//
+//  @OneToMany(cascade = CascadeType.ALL)
+//  @JoinColumn(name = "userId")
+//  private List<User> followUserList;
 
   public Long getUserId() {
     return userId;
@@ -133,4 +145,8 @@ public class User implements Serializable {
   public void setBirthday(Date birthday) {
       this.birthday = birthday;
   }
+
+  public void setIdentity(UserIdentity identity) { this.identity = identity; }
+
+  public UserIdentity getIdentity() { return identity; }
 }

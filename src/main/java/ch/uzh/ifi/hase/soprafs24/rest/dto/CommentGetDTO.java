@@ -3,8 +3,9 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 public class CommentGetDTO {
 
   private Long commentId;
-  private Long userId;
-  private Long itemId;
+  private Long commentOwnerId;
+  private String commentOwnerName;
+  private Long commentItemId;
   private Long score;
   private String content;
   private Long thumbsUpNum;
@@ -18,22 +19,29 @@ public class CommentGetDTO {
     this.commentId=commentId;
   }
 
-  public Long getUserId(){
-    return this.userId;
+  public Long getCommentOwnerId(){
+    return this.commentOwnerId;
   }
 
-  public void setUserId(Long userId){
-    this.userId=userId;
+  public void setCommentOwnerId(Long commentOwnerId){
+    this.commentOwnerId = commentOwnerId;
   }
 
-  public Long getItemId(){
-    return this.itemId;
+  public Long getCommentItemId(){
+    return this.commentItemId;
+  }
+  
+  public void setCommentItemId(Long commentItemId){
+    this.commentItemId = commentItemId;
   }
 
-  public void setItemId(Long itemId){ 
-    this.itemId=itemId;
+  public String getCommentOwnerName() {
+      return this.commentOwnerName;
   }
 
+  public void setCommentOwnerName(String commentOwnerName) {
+      this.commentOwnerName = commentOwnerName;
+  }
   public Long getScore(){
     return this.score;
   }

@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 
+import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 
 import org.springframework.http.ResponseEntity;
@@ -13,21 +14,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/topics")
+//@RequestMapping("/api/topics")
 public class TopicController {
 
     private final TopicService topicService;
 
     @Autowired
-    public TopicController(TopicService topicService) {
-        this.topicService = topicService;
-    }
-
+    public TopicController(TopicService topicService) { this.topicService = topicService; }
 
     @GetMapping
     public ResponseEntity<List<Topic>> getAllTopics() {
         List<Topic> topics = topicService.getAllTopics();
         return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/topic/{topicId}")
+    public ResponseEntity<Topic> getTopicById(@PathVariable Long topicId) {
+        System.out.println("topic!"+topicId);
+        Topic topic = topicService.getTopicById(topicId);
+        return ResponseEntity.ok(topic);
     }
 
     @PostMapping

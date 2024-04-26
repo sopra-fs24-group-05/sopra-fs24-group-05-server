@@ -15,8 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -59,6 +60,7 @@ public class UserService {
     if(!userRepository.existsById(id)){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User Id not found");
     }
+    log.info("get!");
     return userRepository.findById(id).get();
   }
 
@@ -72,11 +74,23 @@ public class UserService {
    * @see UserRepository
    */
   public User createUser(User newUser) throws ResponseStatusException{
+    if (newUser.getToken() != null) {
+        switch (newUser.getToken()) {
+            case "teacher123":
+                newUser.setIdentity(UserIdentity.TEACHER);
+                break;
+            case "admin123":
+                newUser.setIdentity(UserIdentity.ADMIN);
+                break;
+        }
+    } else {
+        newUser.setIdentity(UserIdentity.STUDENT);
+    }
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
+    newUser.setCreateDate(new Date());
     //default
     newUser.setIdentity(UserIdentity.STUDENT);
-
     if(userRepository.existsByUsername(newUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
     }
@@ -169,5 +183,4 @@ public class UserService {
     userRepository.saveAndFlush(targetUser);
     return;
   }
-
 }

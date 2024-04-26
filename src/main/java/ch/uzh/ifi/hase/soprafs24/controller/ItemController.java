@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/items")
+//@RequestMapping("/api/items")
 public class ItemController {
 
     private final ItemService itemService;
@@ -39,9 +39,15 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
-    @GetMapping("/by-topic-id")
-    public ResponseEntity<List<Item>> getItemsByTopicId(@RequestParam Long topicId) {
-        List<Item> items = itemService.getItemsByTopicId(topicId);
+    @GetMapping("/item/{itemId}")
+    public ResponseEntity<Item> getItemByItemId(@PathVariable Long itemId) {
+        Item item = itemService.getItemByItemId(itemId);
+        return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("/items/{topicId}")
+    public ResponseEntity<List<Item>> getItemsByItemTopicId(@PathVariable Long topicId) {
+        List<Item> items = itemService.getItemsByItemTopicId(topicId);
         return ResponseEntity.ok(items);
     }
 
@@ -51,9 +57,15 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
-    @PostMapping
-    public ResponseEntity<Item> addItemToTopic(@PathVariable Long topicId, @RequestBody Item item) {
-        Item newItem = itemService.addItemToTopic(topicId, item);
+//    @PostMapping
+//    public ResponseEntity<Item> addItemToTopic(@PathVariable Long topicId, @RequestBody Item item) {
+//        Item newItem = itemService.addItemToTopic(topicId, item);
+//        return ResponseEntity.ok(newItem);
+//    }
+
+    @PostMapping("/items")
+    public ResponseEntity<Item> addItemToTopic(@RequestBody Item item) {
+        Item newItem = itemService.addItemToTopic(item);
         return ResponseEntity.ok(newItem);
     }
 

@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
@@ -19,11 +20,12 @@ public class CommentController {
 
   private final CommentService commentService;
 
+  @Autowired
   CommentController(CommentService commentService){
     this.commentService=commentService;
   }
 
-  @GetMapping("/comments/findByCommentId/{commentId}")
+  @GetMapping("/comments/commentId/{commentId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public CommentGetDTO getCommentByCommentId(@PathVariable Long commentId){
@@ -31,16 +33,17 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
   }
 
-  @GetMapping("/comments/findByItemId/{itemId}")
+
+  @GetMapping("/comments/itemId/{itemId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public List<CommentGetDTO> getCommentsByItemIdThumbsDesc(@PathVariable Long itemId){
-    List<Comment> comments=commentService.getCommentByItemIdOrderByThumbsUpNumDesc(itemId, 0, 5);
-    List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
-    for(Comment comment:comments){
-      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
-    }
-    return commentGetDTOs;
+  public List<CommentGetDTO> getCommentsByCommentItemId(@PathVariable Long itemId){
+      List<Comment> comments = commentService.getCommentByCommentItemId(itemId);
+      List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
+      for(Comment comment : comments){
+          commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+      }
+      return commentGetDTOs;
   }
 
   @PostMapping("/comments/create")
@@ -53,7 +56,7 @@ public class CommentController {
     return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
   }
 
-  @GetMapping("/comments/findByUserId/{userId}")
+  @GetMapping("/comments/userId/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<CommentGetDTO> getCommentByUserId(@PathVariable Long userId) {

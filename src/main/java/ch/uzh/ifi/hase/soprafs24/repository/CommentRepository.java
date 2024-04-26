@@ -11,22 +11,33 @@ import java.util.List;
 
 @Repository("commentRepository")
 public interface CommentRepository extends JpaRepository<Comment, Long>{
- 
-  @Query("SELECT c FROM Comment c WHERE c.itemId =:itemId ORDER BY c.thumbsUpNum DESC")
-  List<Comment> findByItemIdOrderByThumbsUpNumDesc(@Param("itemId")Long itemId,Pageable pageable);
+  /**
+   * Return first n comments ordered by thumbsUpNum in descending order
+   * Pegeable is used to specify page number of the return result, 
+   * number of elements per page, and sorting method
+   * @param pageable
+   * @return
+   */
+  @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId ORDER BY c.thumbsUpNum DESC")
+  List<Comment> findByCommentItemIdOrderByThumbsUpNumDesc(@Param("commentItemId") Long commentItemId,Pageable pageable);
 
-  @Query("SELECT c FROM Comment c WHERE c.userId =:userId ORDER BY c.thumbsUpNum DESC")
-  List<Comment> findByUserId(@Param("userId")Long userId);
+  @Query("SELECT c FROM Comment c WHERE c.commentOwnerId = :commentOwnerId ORDER BY c.thumbsUpNum DESC")
+  List<Comment> findByCommentOwnerId(@Param("commentOwnerId") Long commentOwnerId);
 
-  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.userId =:userId AND c.itemId =:itemId")
-  boolean existsByUserIdAndItemId(@Param("userId")Long userId,@Param("itemId")Long itemId);
+  @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId")
+  List<Comment> findByCommentItemId(@Param("commentItemId") Long commentItemId);
+  
 
-  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.userId =:userId")
-  boolean existsByUserId(@Param("userId")Long userId);
+  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId AND c.commentItemId = :commentItemId")
+  boolean existsByCommentOwnerIdAndCommentItemId(@Param("commentOwnerId") Long commentOwnerId, @Param("commentItemId") Long commentItemId);
 
-  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.itemId =:itemId")
-  boolean existsByItemId(@Param("itemId")Long itemId);
+  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId")
+  boolean existsByCommentOwnerId(@Param("commentOwnerId") Long commentOwnerId);
 
-  @Query("SELECT AVG(c.score) FROM Comment c WHERE c.itemId = :itemId")
-  Double calculateAverageScoreByItemId(@Param("itemId")Long itemId);
+  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentItemId = :commentItemId")
+  boolean existsByCommentItemId(@Param("commentItemId") Long commentItemId);
+
+  @Query("SELECT AVG(c.score) FROM Comment c WHERE c.commentItemId = :commentItemId")
+  Double calculateAverageScoreByCommentItemId(@Param("commentItemId") Long commentItemId);
+
 }

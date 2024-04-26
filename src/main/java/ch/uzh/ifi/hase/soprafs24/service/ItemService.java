@@ -39,15 +39,15 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item updateItem(Long itemId, Item updatedItem) {
-        return itemRepository.findById(itemId)
-                .map(item -> {
-                    item.setName(updatedItem.getName());
-                    item.setDescription(updatedItem.getDescription());
-                    return itemRepository.save(item);
-                })
-                .orElseThrow(() -> new RuntimeException("Item not found with id " + itemId));
-    }
+//    public Item updateItem(Long itemId, Item updatedItem) {
+//        return itemRepository.findById(itemId)
+//                .map(item -> {
+//                    item.setName(updatedItem.getName());
+//                    item.setDescription(updatedItem.getDescription());
+//                    return itemRepository.save(item);
+//                })
+//                .orElseThrow(() -> new RuntimeException("Item not found with id " + itemId));
+//    }
 
     public void deleteItem(Long itemId) {
         itemRepository.deleteById(itemId);
@@ -69,18 +69,32 @@ public class ItemService {
         return itemRepository.findByTopicIdOrderByScoreDesc(topicId);
     }
 
-    public List<Item> getItemsByTopicId(Long topicId) {
-        return itemRepository.findByTopicId(topicId);
+    public List<Item> getItemsByItemTopicId(Long itemTopicId) {
+        return itemRepository.findByItemTopicId(itemTopicId);
+    }
+
+    public Item getItemByItemId(Long itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
     }
 
     public List<Item> getItemsByTopicName(String topicName) {
         return itemRepository.findByTopicName(topicName);
     }
 
-    public Item addItemToTopic(Long topicId, Item item) {
-        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new RuntimeException("Topic not found"));
-        item.setTopic(topic);
+//    public Item addItemToTopic(Long topicId, Item item) {
+//        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new RuntimeException("Topic not found"));
+//        item.setTopic(topic);
+//        return itemRepository.save(item);
+//    }
+
+    public Item addItemToTopic(Item item) {
+        if(topicRepository.findByTopicId(item.getItemTopicId()) != null) {
+            System.out.println("!!!");
+            item.setTopic(topicRepository.findByTopicId(item.getItemTopicId()));
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found");
+        }
+
         return itemRepository.save(item);
     }
-
 }

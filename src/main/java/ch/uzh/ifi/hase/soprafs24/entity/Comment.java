@@ -11,15 +11,19 @@ public class Comment {
   private Long commentId;
 
   @Column(nullable = false)
-  private Long userId;
+  private Long commentOwnerId;
 
   @Column(nullable = false)
-  private Long itemId;
+  private String commentOwnerName;
+
+  @Column(nullable = false)
+  private Long commentItemId;
 
   /**
    * score to the item by the user
    */
-  @Column(nullable = false)
+//  @Column(nullable = false)
+  @Column(nullable = true)
   private Long score;
 
   public static final int MAX_LENGTH = 150;
@@ -39,20 +43,28 @@ public class Comment {
     this.commentId=commentId;
   }
 
-  public Long getUserId(){
-    return this.userId;
+  public Long getCommentOwnerId(){
+    return this.commentOwnerId;
   }
 
-  public void setUserId(Long userId){
-    this.userId=userId;
+  public void setCommentOwnerId(Long commentOwnerId){
+    this.commentOwnerId = commentOwnerId;
   }
 
-  public Long getItemId(){
-    return this.itemId;
+  public Long getCommentItemId(){
+    return this.commentItemId;
   }
 
-  public void setItemId(Long itemId){ 
-    this.itemId=itemId;
+  public void setCommentItemId(Long commentItemId){
+    this.commentItemId = commentItemId;
+  }
+
+  public String getCommentOwnerName() {
+      return this.commentOwnerName;
+  }
+
+  public void setCommentOwnerName(String commentOwnerName) {
+      this.commentOwnerName = commentOwnerName;
   }
 
   public Long getScore(){

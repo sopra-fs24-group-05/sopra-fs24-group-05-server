@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import java.util.Date;
 public class TopicGetDTO {
-    private Long id;
+    private Long topicId;
 
     private String topicName;
 
@@ -16,11 +16,11 @@ public class TopicGetDTO {
 
     private Boolean editAllowed;
 
-    private String content;
+    private String topicIntroduction;
 
-    public Long getId() {return id;}
+    public Long getTopicId() {return topicId;}
 
-    public void setId(Long id) {this.id = id;}
+    public void setTopicId(Long topicId) {this.topicId = topicId;}
 
     public String getTopicName() {return topicName;}
 
@@ -46,8 +46,8 @@ public class TopicGetDTO {
 
     public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
 
-    public String getContent() {return content;}
+    public String getTopicIntroduction() {return topicIntroduction;}
 
-    public void setContent(String content) {this.content = content;}
+    public void setTopicIntroduction(String topicIntroduction) {this.topicIntroduction = topicIntroduction;}
 
 }
