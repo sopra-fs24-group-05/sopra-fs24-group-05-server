@@ -4,8 +4,10 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -48,10 +50,12 @@ public class UserService {
   private final Logger log = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository userRepository;
+  private final ItemRepository itemRepository;
 
   @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("itemRepository") ItemRepository itemRepository) {
     this.userRepository = userRepository;
+    this.itemRepository = itemRepository;
   }
 
   public List<User> getUsers() {
@@ -137,7 +141,6 @@ public class UserService {
   }
 
   public void followUser(Long userId, String newFollowedUserId) {
-      System.out.println(newFollowedUserId);
       try {
           ObjectMapper objectMapper = new ObjectMapper();
           JsonNode jsonNode = objectMapper.readTree(newFollowedUserId);
@@ -157,10 +160,34 @@ public class UserService {
           } else {
               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
           }
-      } catch (Exception e) {
+      } catch (JsonProcessingException e) {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
       }
   }
+
+  public void followItem(Long userId, String newFollowedItemId) {
+      try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(newFollowedItemId);
+            Long followingItemId = jsonNode.get("followItemId").asLong();
+
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                List<Long> followedItems = user.getFollowItemList();
+                if (followedItems.contains(followingItemId)) {
+                  throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have followed this item!");
+                }
+                followedItems.add(followingItemId);
+                user.setFollowItemList(followedItems);
+                userRepository.save(user);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+            }
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
+        }
+    }
 
 //    public void removeUserFromFollowedList(Long userId, Long followedUserIdToRemove) {
 //        Optional<User> userOptional = userRepository.findById(userId);
@@ -184,6 +211,17 @@ public class UserService {
           userList.add(userToBeAdd);
       }
       return userList;
+  }
+
+  public List<Item> getFollowItems(Long userId) {
+      User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+      List<Long> itemIdList = user.getFollowItemList();
+      List<Item> itemList = new ArrayList<>();
+      for (Long itemId : itemIdList) {
+          Item itemToBeAdd = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("item not found"));
+          itemList.add(itemToBeAdd);
+      }
+      return itemList;
   }
 
   /**

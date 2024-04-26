@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,13 +40,13 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
-    @GetMapping("/item/{itemId}")
+    @GetMapping("/items/getByItemId/{itemId}")
     public ResponseEntity<Item> getItemByItemId(@PathVariable Long itemId) {
         Item item = itemService.getItemByItemId(itemId);
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/items/{topicId}")
+    @GetMapping("/items/getByItemTopicId/{topicId}")
     public ResponseEntity<List<Item>> getItemsByItemTopicId(@PathVariable Long topicId) {
         List<Item> items = itemService.getItemsByItemTopicId(topicId);
         return ResponseEntity.ok(items);

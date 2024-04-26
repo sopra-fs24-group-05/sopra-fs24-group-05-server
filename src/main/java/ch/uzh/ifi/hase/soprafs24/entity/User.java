@@ -78,6 +78,9 @@ public class User implements Serializable {
   @Column(columnDefinition = "TEXT", nullable = true)
   private String followUserList;
 
+  @Column(columnDefinition = "TEXT", nullable = true)
+  private String followCommentList;
+
   public Long getUserId() {
     return userId;
   }
@@ -167,7 +170,7 @@ public class User implements Serializable {
     public void setFollowItemList(List<Long> followedItems) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            this.followUserList = objectMapper.writeValueAsString(followedItems);
+            this.followItemList = objectMapper.writeValueAsString(followedItems);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -190,6 +193,28 @@ public class User implements Serializable {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             this.followUserList = objectMapper.writeValueAsString(followedUsers);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Long> getFollowCommentList() {
+        if (followCommentList == null) {
+            return new ArrayList<>();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(followCommentList, new TypeReference<List<Long>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public void setFollowCommentList(List<Long> followedComments) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            this.followCommentList = objectMapper.writeValueAsString(followedComments);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
