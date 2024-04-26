@@ -82,7 +82,9 @@ public class CommentService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User has already commented on this item");
     }
     newComment.setThumbsUpNum(0L);
-    newComment = commentRepository.saveAndFlush(newComment);
+    newComment = commentRepository.save(newComment);
+    commentRepository.flush();
+    //newComment = commentRepository.saveAndFlush(newComment); // .save will be called twice? in test if we wrote this
     return newComment;
   }
 
