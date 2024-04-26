@@ -1,22 +1,24 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
-
+import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import java.util.Date;
 
 
 @Entity
 @Table(name = "ITEM")
 public class Item {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @Column(name = "id") private Long itemId;
 
     @Column(nullable = false)
-    private String itemname;
+  
+    private String itemName;
 
     @Column(nullable = false)
-    private String itemIntroduction;
+    private String content;
 
     @Column(nullable = true)
     private Date creationDate;
@@ -25,44 +27,36 @@ public class Item {
     private double score = 0.0;
 
     @Column(nullable = false)
-    private double totalScore = 0.0;
-
-    @Column(nullable = false)
-    private int scoreCount = 0;
-
-    @Column(nullable = false)
     private int likes = 0;
 
-    @Column(nullable = false)
-    private Long itemTopicId;
+    @Column(name = "topicId")
+    private Integer topicId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "topic_id", nullable = false)
-    private Topic topic;  // 关联的Topic
+    @ManyToOne
+    @JoinColumn(name = "topicId", referencedColumnName = "topicId", nullable = false, insertable = false, updatable = false)
+    private Topic topic;
 
     // Getters and Setters
-    public Long getId() {
-        return id;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
-    public String getItemname() {
-        return itemname;
+    public String getItemName() {return itemName;}
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
-    public void setItemname(String itemname) {
-        this.itemname = itemname;
+    public String getContent() {
+        return content;
     }
 
-    public String getItemIntroduction() {
-        return itemIntroduction;
-    }
-
-    public void setItemIntroduction(String itemIntroduction) {
-        this.itemIntroduction = itemIntroduction;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Date getCreationDate() {
@@ -77,37 +71,15 @@ public class Item {
         return likes;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
+    public void setLikes(int likes) {this.likes = likes;}
 
-    public double getScore() {
-        return score;
-    }
+    public double getScore() {return score;}
 
-    public void setScore(double score) {
-        this.score = score;
-    }
+    public void setScore(double score) {this.score = score;}
 
     public void addLike() {
         this.likes++;
     }
-
-    public void addScore(double score) {
-        this.totalScore += score;
-        this.scoreCount++;
-    }
-
-    public double getAverageScore() {
-        if (scoreCount > 0) {
-            return totalScore / scoreCount;
-        }
-        return 0.0;
-    }
-
-    public Long getItemTopicId() { return itemTopicId; }
-
-    public void setItemTopicId(Long itemTopicId) { this.itemTopicId = itemTopicId; }
 
     public Topic getTopic() {
         return topic;
@@ -115,5 +87,16 @@ public class Item {
 
     public void setTopic(Topic topic) {
         this.topic = topic;
+    }
+
+    public Integer getTopicId() { return topicId; }
+
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
+    }
+
+    public void updateScore(CommentRepository commentRepository) {
+        Double averageScore = commentRepository.calculateAverageScoreByCommentItemId(itemId);
+        this.score = averageScore != null ? averageScore : 0.0;
     }
 }

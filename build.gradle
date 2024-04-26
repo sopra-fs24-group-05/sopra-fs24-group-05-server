@@ -61,6 +61,14 @@ sonar {
   }
 }
 
+sonarqube {
+    properties {
+        property "sonar.gradle.skipCompile", "true"
+    }
+}
+
+tasks.sonarqube.dependsOn(compileJava, compileTestJava)  // 确保编译任务在 SonarQube 分析之前完成
+
 jacocoTestReport {
     reports {
         xml.enabled true

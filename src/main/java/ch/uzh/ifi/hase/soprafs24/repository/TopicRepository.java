@@ -10,15 +10,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository("topicRepository")
-public interface TopicRepository extends JpaRepository<Topic, Long>, JpaSpecificationExecutor<Topic> {
-  Topic findByTopicName(String TopicName);
+public interface TopicRepository extends JpaRepository<Topic, Long> {
+    Topic findByTopicName(String TopicName);
 
-  Topic findByTopicId(Long id);
+  Topic findByTopicId(Integer id);
 
-  Topic findByOwnerId(Long ownerId);
+  Topic findByOwnerId(Integer ownerId);
 
   @Query("SELECT t FROM Topic t WHERE LOWER(t.topicName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Topic> searchByKeyword(@Param("keyword") String keyword);
@@ -33,31 +34,3 @@ public interface TopicRepository extends JpaRepository<Topic, Long>, JpaSpecific
     @Query("SELECT t FROM Topic t WHERE LOWER(SUBSTRING(t.topicName, 1, 1)) = LOWER(:prefix)")
     List<Topic> findByFirstLetter(@Param("prefix") String prefix);
 }
-
-/*
- * Some methods provided by JpaRepository and can be used to manipulate date in datebase
- * 
- * save(EntityClass entity): Saves the given entity. If the entity has not been persisted before, 
- * it will be saved as a new entity. If the entity has been persisted before, it will be updated.
- * 
- * saveAndFlush(EntityClass entity): save and entityManager.flush(sent sql need to be conducted to the database)
- * 
- * Delete:
-   deleteById(ID id): Deletes the entity with the given ID.
-   delete(T entity): Deletes the given entity.
-   deleteAll(): Deletes all entities managed by the repository.
-   
-   Find:
-   findById(ID id): Retrieves an entity by its ID.
-   findAll(): Retrieves all entities managed by the repository.
-   findAllById(Iterable<ID> ids): Retrieves entities by their IDs.
-   count(): Returns the number of entities managed by the repository.
-
-   Existence check:
-   existsById(ID id): Checks if an entity with the given ID exists.
-
-   Custom queries:
-   findByName(String name)
-   findByXXXAndYYY use the "And" keyword, similarly there are "Or"
-   findByZZZisNull
- */

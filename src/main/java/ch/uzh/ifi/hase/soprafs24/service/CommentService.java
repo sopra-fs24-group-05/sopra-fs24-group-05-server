@@ -94,7 +94,9 @@ public class CommentService {
 
     newComment.setCommentOwnerName(newComment.getCommentOwnerName());
     newComment.setThumbsUpNum(0L);
-    newComment = commentRepository.saveAndFlush(newComment);
+    newComment = commentRepository.save(newComment);
+    commentRepository.flush();
+    //newComment = commentRepository.saveAndFlush(newComment); // .save will be called twice? in test if we wrote this
     return newComment;
   }
 

@@ -7,21 +7,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-
-
 import java.util.List;
 
-@Repository
+@Repository("itemRepository")
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    @Query("SELECT i FROM Item i WHERE i.topic.id = :topicId ORDER BY i.totalScore / i.scoreCount DESC")
+    Item findByItemName(String itemName);
+
+    Item findByItemId(Long itemId);
+
+    @Query("SELECT i FROM Item i WHERE i.itemId = :itemId")
+    Item findByCustomQuery(@Param("itemId") Long itemId);
+
+    @Query("SELECT i FROM Item i WHERE i.topic.topicName = :topicId ORDER BY i.score DESC")
     List<Item> findByTopicIdOrderByScoreDesc(@Param("topicId") Long topicId);
 
-    @Query("SELECT i FROM Item i WHERE i.topic.topicId = :itemTopicId")
-    List<Item> findByItemTopicId(@Param("itemTopicId") Long topicId);
+    @Query("SELECT i FROM Item i WHERE i.topic.topicId = :topicId")
+    List<Item> findByTopicId(@Param("topicId") Integer topicId);
 
     @Query("SELECT i FROM Item i WHERE i.topic.topicName = :topicName")
     List<Item> findByTopicName(@Param("topicName") String topicName);
-
-
 }
