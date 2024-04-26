@@ -59,11 +59,11 @@ public class CommentServiceTest {
     optionalTestComment = Optional.of(testComment);
 
     testItem = new Item();
-    testItem.setId(1L);
+    testItem.setItemId(1L);
     testItem.setLikes(0);
-    testItem.setItemname("testItemName");
+    testItem.setItemName("testItemName");
     testItem.setScore(0.0);
-    testItem.setItemIntroduction("test Item Description");
+    testItem.setContent("test Item Description");
 
     Mockito.when(commentRepository.save(Mockito.any())).thenReturn(testComment);
     Mockito.when(commentRepository.existsByCommentOwnerIdAndCommentItemId(Mockito.anyLong(), Mockito.anyLong())).thenReturn(false);

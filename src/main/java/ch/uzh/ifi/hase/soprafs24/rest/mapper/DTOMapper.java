@@ -37,8 +37,6 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "token", target = "token")
   @Mapping(source = "password", target = "password")
-
-  @Mapping(target = "token", ignore = true)
   @Mapping(target = "status", ignore = true)
   @Mapping(target = "createDate", ignore = true)
   @Mapping(target = "birthday", ignore = true)
@@ -87,18 +85,6 @@ public interface DTOMapper {
   @Mapping(source = "topicId", target = "topicId")
   ItemGetDTO convertEntityToItemGetDTO(Item item);
   
-
-//  @Mapping(source = "itemId", target = "itemId")
-  @Mapping(source = "itemname", target = "itemname")
-  @Mapping(source = "itemTopicId", target = "itemTopicId")
-  @Mapping(source = "itemIntroduction", target = "itemIntroduction")
-  Item convertItemPostDTOtoEntity(ItemPostDTO ItemPostDTO);
-
-//  @Mapping(source = "itemId", target = "itemId")
-  @Mapping(source = "itemname", target = "itemname")
-  @Mapping(source = "itemTopicId", target = "itemTopicId")
-  @Mapping(source = "itemIntroduction", target = "itemIntroduction")
-  ItemGetDTO convertItemGetDTOtoEntity(Item item);
 
   @Mapping(source = "commentId", target = "commentId")
   @Mapping(source = "commentOwnerId", target = "commentOwnerId")

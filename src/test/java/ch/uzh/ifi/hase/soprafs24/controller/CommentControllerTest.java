@@ -2,13 +2,15 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
-import ch.uzh.ifi.hase.soprafs24.service.CommentService;
+import ch.uzh.ifi.hase.soprafs24.service.*;
+import ch.uzh.ifi.hase.soprafs24.repository.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,6 +43,15 @@ public class CommentControllerTest {
 
   @MockBean
   private CommentService commentService;
+
+  @MockBean
+  private TopicService topicService;
+
+  @MockBean
+  private ItemService itemService;
+
+  @MockBean 
+  private UserService userService;
 
   private Comment comment;
 
@@ -105,13 +116,13 @@ public class CommentControllerTest {
   public void givenComments_whenGetCommentByItemId_thenReturnJsonArray() throws Exception{
     //given：some comments have been created 
 
-    List<Comment> commentsByUserId = Collections.singletonList(comment);
+    List<Comment> commentsByItemId = Collections.singletonList(comment);
 
-    given(commentService.getCommentByItemIdOrderByThumbsUpNumDesc(Mockito.anyLong(),Mockito.anyInt(),Mockito.anyInt())).willReturn(commentsByUserId);
+    given(commentService.getCommentByCommentItemId(Mockito.anyLong())).willReturn(commentsByItemId);
 
     MockHttpServletRequestBuilder getRequest = get("/comments/itemId/{itemId}",1L)
-      .contentType(MediaType.APPLICATION_JSON)
-      .content(asJsonString(commentsByUserId));
+      .contentType(MediaType.APPLICATION_JSON);
+      //.content(asJsonString(commentsByItemId));
 
     mockMvc.perform(getRequest)
       .andExpect(status().isOk())

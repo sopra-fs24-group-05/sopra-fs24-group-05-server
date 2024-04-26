@@ -23,7 +23,7 @@ public class CommentListener {
     @PostUpdate
     @PostRemove
     public void handleCommentChange(Comment comment) {
-        Long itemId = comment.getItemId();
+        Long itemId = comment.getCommentItemId();
         Item item = itemRepository.findById(itemId).orElse(null);
         if (item != null) {
             item.updateScore(commentRepository);

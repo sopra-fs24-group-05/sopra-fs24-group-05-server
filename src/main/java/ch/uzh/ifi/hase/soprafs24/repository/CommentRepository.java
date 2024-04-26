@@ -26,7 +26,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 
   @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId")
   List<Comment> findByCommentItemId(@Param("commentItemId") Long commentItemId);
-  
 
   @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId AND c.commentItemId = :commentItemId")
   boolean existsByCommentOwnerIdAndCommentItemId(@Param("commentOwnerId") Long commentOwnerId, @Param("commentItemId") Long commentItemId);

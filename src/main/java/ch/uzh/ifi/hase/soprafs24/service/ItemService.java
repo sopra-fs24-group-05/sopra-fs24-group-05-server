@@ -87,7 +87,7 @@ public class ItemService {
     }
 
     public Double getItemAverageScore(Long itemId) {
-        return commentRepository.calculateAverageScoreByItemId(itemId);
+        return commentRepository.calculateAverageScoreByCommentItemId(itemId);
     }
 
     public void deleteItemByItemName(String itemName) {

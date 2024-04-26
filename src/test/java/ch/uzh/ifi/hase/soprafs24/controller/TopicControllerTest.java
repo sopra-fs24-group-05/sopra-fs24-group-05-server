@@ -7,6 +7,8 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.service.CommentService;
+import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,6 +54,12 @@ public class TopicControllerTest {
 
   @MockBean
   private TopicService topicService;
+
+  @MockBean
+  private CommentService commentService;
+
+  @MockBean
+  private ItemService itemService;
 
   @Test
   public void createTopic_whenValidInput_thenReturnCreated() throws Exception {

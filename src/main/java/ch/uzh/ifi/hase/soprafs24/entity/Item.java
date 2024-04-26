@@ -96,7 +96,7 @@ public class Item {
     }
 
     public void updateScore(CommentRepository commentRepository) {
-        Double averageScore = commentRepository.calculateAverageScoreByItemId(itemId);
+        Double averageScore = commentRepository.calculateAverageScoreByCommentItemId(itemId);
         this.score = averageScore != null ? averageScore : 0.0;
     }
 }
