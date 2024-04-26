@@ -59,6 +59,22 @@ public class ItemController {
         return ResponseEntity.ok(itemGetDTOs);
     }
 
+  //YZQ_DEV_M3
+    @GetMapping("/items/getByItemId/{itemId}")
+    public ResponseEntity<Item> getItemByItemId(@PathVariable Long itemId) {
+        Item item = itemService.getItemByItemId(itemId);
+        return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("/items/getByItemTopicId/{topicId}")
+    public ResponseEntity<List<Item>> getItemsByItemTopicId(@PathVariable Long topicId) {
+        List<Item> items = itemService.getItemsByItemTopicId(topicId);
+        return ResponseEntity.ok(items);
+      
+   //YZQ_DEV_M3
+
+  //main
+  /*
     @GetMapping("/items/byTopicId/{topicId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -79,6 +95,9 @@ public class ItemController {
                 .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(itemGetDTOs);
+      */
+     //main
+
     }
 
     @GetMapping("/{itemId}/score")

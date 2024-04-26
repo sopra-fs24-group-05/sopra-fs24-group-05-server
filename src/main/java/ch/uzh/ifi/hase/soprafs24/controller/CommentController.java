@@ -63,6 +63,7 @@ public class CommentController {
     List<Comment> comments=commentService.getCommentByUserId(userId);
     List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
     for(Comment comment:comments){
+      System.out.println(comment.getContent());
       commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
     }
     return commentGetDTOs;

@@ -72,6 +72,14 @@ public class UserController {
       return ResponseEntity.ok(followUsers);
   }
 
+  @GetMapping("/users/{userId}/followItems")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public ResponseEntity<List<Item>> getFollowItemList(@PathVariable Long userId) {
+      List<Item> followItems = userService.getFollowItems(userId);
+      return ResponseEntity.ok(followItems);
+  }
+
   @PostMapping("/users/registration")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
@@ -95,7 +103,7 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
   }
 
-  @PutMapping("/users/follow/{userId}")
+  @PutMapping("/users/followUser/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public void followUser(@PathVariable Long userId, @RequestBody String followUserId){
@@ -117,6 +125,13 @@ public class UserController {
   public void editUser(@RequestBody UserPostDTO userPostDTO, @RequestParam String token){
     User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
     userService.editUser(userInput, token);
+  }
+
+  @PutMapping("/users/followItem/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void followItem(@PathVariable Long userId, @RequestBody String followItemId){
+    userService.followItem(userId, followItemId);
   }
 
 }

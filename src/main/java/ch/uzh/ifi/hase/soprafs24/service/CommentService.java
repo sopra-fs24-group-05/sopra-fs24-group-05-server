@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,7 +57,8 @@ public class CommentService {
 
   public List<Comment> getCommentByUserId(Long userId){
     if(!commentRepository.existsByCommentOwnerId(userId)){
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"comment not found");
+//      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"comment not found");
+        return new ArrayList<>();
     }
     return commentRepository.findByCommentOwnerId(userId);
   }
