@@ -25,7 +25,6 @@
 
   progress on frontend and backend integration
 
-### Sprint 2
 
 #### Week 2 (24/04/17~24/04/24)
 
@@ -42,4 +41,22 @@
     Modify the function 'Ranking' and 'Get the average score' as per discussion with Zizhou.
 
     * Delete the function related code in item system and use it from Comment system.
+ 
+#### Week 4 (24/05/01~24/05/08)
+
+* Yiming Xiao
+
+    Finish test all functions in Topic Controller.
+
+    * Related files include `TopicController.java`, `TopicControllerTest.java`in the project.
+
+    Finish test all functions in Item Controller.
+
+    * Related files include  `ItemController.java`, `ItemControllerTest.java` in the project.
+
+    Add Translate funtion and finish testing.
+
+    * Related files include  `TranslateController.java`, `TranslateControllerTest.java` in the project.
+
+    
 
