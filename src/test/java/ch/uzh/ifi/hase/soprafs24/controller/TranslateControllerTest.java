@@ -34,21 +34,19 @@ public class TranslateControllerTest {
         // given
         String originalText = "Hello";
         String translatedText = "Hallo";
-        String targetLanguage = "de"; // German (德语)
+        String targetLanguage = "de"; // German
 
-        // 模拟 Google Translate 客户端返回的结果
         Translation mockTranslation = Mockito.mock(Translation.class);
         given(mockTranslation.getTranslatedText()).willReturn(translatedText);
         given(translate.translate(anyString(), any(Translate.TranslateOption[].class)))
                 .willReturn(mockTranslation);
 
-        // 构建 GET 请求
-        MockHttpServletRequestBuilder getRequest = get("/api/translate")
+        MockHttpServletRequestBuilder getRequest = get("/translate")
                 .param("text", originalText)
                 .param("targetLanguage", targetLanguage)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        // 进行请求并验证结果
+
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(translatedText)));
@@ -56,12 +54,10 @@ public class TranslateControllerTest {
 
     @Test
     public void translateText_whenMissingParameter_thenReturnBadRequest() throws Exception {
-        // 构建没有目标语言参数的请求
-        MockHttpServletRequestBuilder getRequest = get("/api/translate")
+        MockHttpServletRequestBuilder getRequest = get("/translate")
                 .param("text", "Hello")
                 .contentType(MediaType.APPLICATION_JSON);
 
-        // 执行请求，期望返回 400 Bad Request
         mockMvc.perform(getRequest)
                 .andExpect(status().isBadRequest());
     }
