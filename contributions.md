@@ -41,8 +41,10 @@
     Modify the function 'Ranking' and 'Get the average score' as per discussion with Zizhou.
 
     * Delete the function related code in item system and use it from Comment system.
- 
-#### Week 4 (24/05/01~24/05/08)
+
+## Sprint 2
+
+#### Week 1 (24/05/01~24/05/08)
 
 * Yiming Xiao
 
@@ -60,3 +62,13 @@
 
     
 
+### Week 2
+
+* Zizhou Luo
+
+  Change database from H2 to MySQL to persist the data
+
+  * Create Google Cloud MySQL instance and test connection
+  * modified configuration files `application.properties`&`build.gradle` and relative test `test\repository\*`
+
+  Learning WebSocket 
