@@ -72,3 +72,13 @@
   * modified configuration files `application.properties`&`build.gradle` and relative test `test\repository\*`
 
   Learning WebSocket 
+
+* Yiming Xiao(24/05/08~24/05/15)
+
+    Finish test all functions in TopicService and TopicRepository.
+
+    * Related files include `TopicService.java`, `TopicServiceTest.java`, `TopicRepository.java`, `TopicRepositoryTest.java`in the project.
+
+    Finish test all functions in ItemService and ItemRepository.
+
+    * Related files include `ItemService.java`, `ItemServiceTest.java`, `ItemRepository.java`, `ItemRepositoryTest.java`in the project.
