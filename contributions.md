@@ -82,3 +82,9 @@
     Finish test all functions in ItemService and ItemRepository.
 
     * Related files include `ItemService.java`, `ItemServiceTest.java`, `ItemRepository.java`, `ItemRepositoryTest.java`in the project.
+
+    Finish test Topic & Item parts in DTOMapper.
+
+    * Related file `DTOMapper.java` in the project.
+ 
+  
