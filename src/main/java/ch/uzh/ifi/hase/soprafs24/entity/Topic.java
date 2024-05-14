@@ -12,7 +12,7 @@ import java.util.ArrayList;
 @Table(name = "TOPIC")
 public class Topic implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column Integer topicId;
 
     @Column(nullable = false, unique = true)

@@ -43,7 +43,7 @@ public class User implements Serializable {
   public static Long getId;
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userId;
 
   /*

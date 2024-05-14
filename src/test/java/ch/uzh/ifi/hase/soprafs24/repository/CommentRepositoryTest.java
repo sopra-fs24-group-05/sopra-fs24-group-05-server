@@ -5,8 +5,10 @@ import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,8 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+//@Import(TestDataSourceConfig.class)
 @DataJpaTest
-public class CommentRepositoryIntegrationTest {
+@Transactional
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
+public class CommentRepositoryTest {
   
   @Autowired
   private TestEntityManager entityManager;
@@ -27,6 +32,9 @@ public class CommentRepositoryIntegrationTest {
 
   @BeforeEach
   public void setup(){
+
+    entityManager.getEntityManager().createQuery("DELETE FROM Comment").executeUpdate();//清空数据
+
     comment = new Comment();
     comment.setCommentOwnerId(1L);
     comment.setCommentOwnerName("comment owner");

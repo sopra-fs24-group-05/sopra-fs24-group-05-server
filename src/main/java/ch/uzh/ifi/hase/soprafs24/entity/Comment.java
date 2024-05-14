@@ -3,11 +3,11 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "COMMENTS")
+@Table(name = "comments")
 public class Comment {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long commentId;
 
   @Column(nullable = false)
