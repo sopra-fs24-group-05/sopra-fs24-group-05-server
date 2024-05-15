@@ -1,9 +1,17 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
+import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.service.CommentService;
+import ch.uzh.ifi.hase.soprafs24.service.ItemService;
+import ch.uzh.ifi.hase.soprafs24.service.TopicService;
+import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translation;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
+
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,6 +37,30 @@ public class TranslateControllerTest {
 
     @MockBean
     private Translate translate;
+
+    @MockBean
+    private CommentRepository commentRepository;
+
+    @MockBean
+    private CommentService commentService;
+
+    @MockBean
+    private ItemRepository itemRepository;
+
+    @MockBean
+    private ItemService itemService;
+
+    @MockBean
+    private TopicRepository topicRepository;
+
+    @MockBean
+    private TopicService topicService;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private UserService userService;
 
     @Test
     public void translateText_whenValidInput_thenReturnTranslatedText() throws Exception {

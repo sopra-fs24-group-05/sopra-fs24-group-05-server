@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 @ComponentScan("ch.uzh.ifi.hase.soprafs24.controller")
 @ComponentScan("ch.uzh.ifi.hase.soprafs24.service")
+@ComponentScan("ch.uzh.ifi.hase.soprafs24.repository")
 public class Application {
 
   public static void main(String[] args) {

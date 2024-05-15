@@ -5,9 +5,12 @@ import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ComponentScan(basePackages = "ch.uzh.ifi.hase.soprafs24", includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {ItemRepository.class, TopicRepository.class}))
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
 public class TopicRepositoryTest {
 
     @Autowired
@@ -35,6 +38,7 @@ public class TopicRepositoryTest {
         topic.setEditAllowed(true);
         topic.setDescription("This is a test topic");
         topicRepository.save(topic);
+
     }
 
     @Test
@@ -95,9 +99,10 @@ public class TopicRepositoryTest {
 
         List<Topic> popularTopics = topicRepository.findMostPopularTopics();
         assertFalse(popularTopics.isEmpty());
-        // 检查最流行的主题
+
         assertEquals(topic2.getTopicName(), popularTopics.get(0).getTopicName());
     }
+
 
     @Test
     public void findByFirstLetter_success() {

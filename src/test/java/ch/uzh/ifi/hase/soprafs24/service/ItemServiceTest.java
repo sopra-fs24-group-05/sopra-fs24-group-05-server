@@ -200,14 +200,14 @@ public class ItemServiceTest {
         Long itemId = 1L;
         Double averageScore = 4.5;
 
-        when(commentRepository.calculateAverageScoreByItemId(anyLong())).thenReturn(averageScore);
+        when(commentRepository.calculateAverageScoreByCommentItemId(anyLong())).thenReturn(averageScore);
 
         // when
         Double foundAverageScore = itemService.getItemAverageScore(itemId);
 
         // then
         assertEquals(averageScore, foundAverageScore);
-        verify(commentRepository, times(1)).calculateAverageScoreByItemId(anyLong());
+        verify(commentRepository, times(1)).calculateAverageScoreByCommentItemId(anyLong());
     }
 
     @Test

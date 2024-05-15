@@ -27,6 +27,7 @@ public class TopicController {
 
     private final TopicService topicService;
 
+    @Autowired
     TopicController(TopicService topicService) {
         this.topicService = topicService;
     }

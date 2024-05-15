@@ -36,6 +36,9 @@ public class Topic implements Serializable {
     @Column
     private String description;
 
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
+    private List<Item> items;
+
     @ElementCollection
     @CollectionTable(name = "topic_chatpools", joinColumns = @JoinColumn(name = "topic_id"))
     @Column(name = "message")
