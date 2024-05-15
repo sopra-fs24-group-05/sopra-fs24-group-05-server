@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs24.repository;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +11,16 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
@@ -25,7 +30,7 @@ public class TopicRepositoryTest {
     private TopicRepository topicRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
+    private TopicService topicService;
 
     private Topic topic;
 
@@ -37,6 +42,7 @@ public class TopicRepositoryTest {
         topic.setOwnerId(1);
         topic.setEditAllowed(true);
         topic.setDescription("This is a test topic");
+        topic.setSearchCount(0);
         topicRepository.save(topic);
 
     }
@@ -71,36 +77,42 @@ public class TopicRepositoryTest {
 
     @Test
     public void findMostPopularTopics_success() {
+        // Initialize test data
+        Topic topic1 = new Topic();
+        topic1.setTopicName("Topic 1");
+        topic1.setCreationDate(new Date());
+        topic1.setOwnerId(1);
+        topic1.setEditAllowed(true);
+        topic1.setSearchCount(10);
+
         Topic topic2 = new Topic();
-        topic2.setTopicName("Popular Topic");
+        topic2.setTopicName("Topic 2");
         topic2.setCreationDate(new Date());
         topic2.setOwnerId(2);
         topic2.setEditAllowed(true);
-        topic2.setDescription("This is a popular topic");
+        topic2.setSearchCount(20);
+
+        Topic topic3 = new Topic();
+        topic3.setTopicName("Topic 3");
+        topic3.setCreationDate(new Date());
+        topic3.setOwnerId(3);
+        topic3.setEditAllowed(true);
+        topic3.setSearchCount(5);
+
+        topicRepository.save(topic1);
         topicRepository.save(topic2);
+        topicRepository.save(topic3);
 
-        Item item1 = new Item();
-        item1.setItemName("Item 1");
-        item1.setContent("Content 1");
-        item1.setCreationDate(new Date());
-        item1.setScore(5.0);
-        item1.setLikes(10);
-        item1.setTopicId((int) topic.getTopicId().longValue());
-        itemRepository.save(item1);
-
-        Item item2 = new Item();
-        item2.setItemName("Item 2");
-        item2.setContent("Content 2");
-        item2.setCreationDate(new Date());
-        item2.setScore(15.0);
-        item2.setLikes(20);
-        item2.setTopicId((int) topic2.getTopicId().longValue());
-        itemRepository.save(item2);
-
+        // Execute the method to be tested
         List<Topic> popularTopics = topicRepository.findMostPopularTopics();
-        assertFalse(popularTopics.isEmpty());
 
-        assertEquals(topic2.getTopicName(), popularTopics.get(0).getTopicName());
+        // Verify the results
+        assertFalse(popularTopics.isEmpty());
+        assertEquals(4, popularTopics.size());
+        assertEquals("Topic 2", popularTopics.get(0).getTopicName());
+        assertEquals("Topic 1", popularTopics.get(1).getTopicName());
+        assertEquals("Topic 3", popularTopics.get(2).getTopicName());
+        assertEquals("Test Topic", popularTopics.get(3).getTopicName());
     }
 
 

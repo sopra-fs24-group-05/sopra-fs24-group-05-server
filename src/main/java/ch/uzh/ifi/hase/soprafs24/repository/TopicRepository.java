@@ -3,9 +3,11 @@ package ch.uzh.ifi.hase.soprafs24.repository;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,13 +21,15 @@ public interface TopicRepository extends JpaRepository<Topic, Long>, JpaSpecific
 
     Topic findByOwnerId(Integer ownerId);
 
-    @Query("SELECT t FROM Topic t WHERE LOWER(t.topicName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<Topic> searchByKeyword(@Param("keyword") String keyword);
+    @Query("SELECT t FROM Topic t WHERE t.topicName LIKE %:keyword%")
+    List<Topic> searchByKeyword(String keyword);
 
-    @Query(value = "SELECT t.*, SUM(i.likes + i.score) as popularity " +
-            "FROM Topic t JOIN Item i ON t.topic_id = i.topic_id " +
-            "GROUP BY t.topic_id " +
-            "ORDER BY popularity DESC", nativeQuery = true)
+    @Modifying
+    @Transactional
+    @Query("UPDATE Topic t SET t.searchCount = t.searchCount + 1 WHERE t.topicId IN :ids")
+    void incrementSearchCount(List<Integer> ids);
+
+    @Query("SELECT t FROM Topic t ORDER BY t.searchCount DESC")
     List<Topic> findMostPopularTopics();
 
     @Query("SELECT t FROM Topic t WHERE LOWER(SUBSTRING(t.topicName, 1, 1)) = LOWER(:prefix)")

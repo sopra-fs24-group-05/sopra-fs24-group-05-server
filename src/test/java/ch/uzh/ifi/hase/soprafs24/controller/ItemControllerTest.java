@@ -94,7 +94,7 @@ public class ItemControllerTest {
               .andExpect(jsonPath("$.itemId", is(item.getItemId().intValue())))
               .andExpect(jsonPath("$.itemName", is(item.getItemName())))
               .andExpect(jsonPath("$.content", is(item.getContent())))
-              .andExpect(jsonPath("$.score", is(item.getScore())))
+              .andExpect(jsonPath("$.averageScore", is(item.getScore())))
               .andExpect(jsonPath("$.topicId", is(item.getTopicId())));
   }
 
@@ -179,10 +179,10 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))  // Checking if the size of the list in the response is 2
                 .andExpect(jsonPath("$[0].itemId", is(item1.getItemId().intValue())))
                 .andExpect(jsonPath("$[0].itemName", is(item1.getItemName())))
-                .andExpect(jsonPath("$[0].score", is(item1.getScore())))
+                .andExpect(jsonPath("$[0].averageScore", is(item1.getScore())))
                 .andExpect(jsonPath("$[1].itemId", is(item2.getItemId().intValue())))
                 .andExpect(jsonPath("$[1].itemName", is(item2.getItemName())))
-                .andExpect(jsonPath("$[1].score", is(item2.getScore())));
+                .andExpect(jsonPath("$[1].averageScore", is(item2.getScore())));
     }
 
     @Test
@@ -257,10 +257,10 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))  // Check if the size of the list in the response is 2
                 .andExpect(jsonPath("$[0].itemId", is(item1.getItemId().intValue())))
                 .andExpect(jsonPath("$[0].itemName", is(item1.getItemName())))
-                .andExpect(jsonPath("$[0].score", is(item1.getScore())))
+                .andExpect(jsonPath("$[0].averageScore", is(item1.getScore())))
                 .andExpect(jsonPath("$[1].itemId", is(item2.getItemId().intValue())))
                 .andExpect(jsonPath("$[1].itemName", is(item2.getItemName())))
-                .andExpect(jsonPath("$[1].score", is(item2.getScore())));
+                .andExpect(jsonPath("$[1].averageScore", is(item2.getScore())));
     }
 
     @Test

@@ -18,6 +18,8 @@ public class TopicGetDTO {
 
     private String description;
 
+    private int searchCount;
+
     public Integer getId() {return topicId;}
 
     public void setId(Integer topicId) {this.topicId = topicId;}
@@ -50,4 +52,7 @@ public class TopicGetDTO {
 
     public void setDescription(String description) {this.description = description;}
 
+    public int getSearchCount() {return searchCount;}
+
+    public void setSearchCount(int searchCount) {this.searchCount = searchCount;}
 }

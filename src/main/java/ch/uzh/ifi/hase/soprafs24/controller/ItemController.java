@@ -66,13 +66,6 @@ public class ItemController {
         return ResponseEntity.ok(item);
     }
 
-    @GetMapping("/items/getByItemTopicId/{topicId}")
-    public ResponseEntity<List<Item>> getItemsByItemTopicId(@PathVariable Long topicId) {
-        List<Item> items = itemService.getItemsByTopicId(topicId.intValue());
-        return ResponseEntity.ok(items);
-    }
-   //YZQ_DEV_M3
-
   //main
   
     @GetMapping("/items/byTopicId/{topicId}")

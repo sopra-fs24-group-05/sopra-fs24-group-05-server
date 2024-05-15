@@ -14,7 +14,7 @@ public class ItemGetDTO {
 
     private Date creationDate;
 
-    private double score = 0.0;
+    private double averageScore = 0.0;
 
     private int likes = 0;
 
@@ -61,9 +61,9 @@ public class ItemGetDTO {
 
     public void setLikes(int likes) {this.likes = likes;}
 
-    public double getScore() {return score;}
+    public double getAverageScore() {return averageScore;}
 
-    public void setScore(double score) {this.score = score;}
+    public void setAverageScore(double averageScore) {this.averageScore = averageScore;}
 
     public void addLike() {
         this.likes++;

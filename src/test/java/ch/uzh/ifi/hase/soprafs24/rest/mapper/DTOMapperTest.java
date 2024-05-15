@@ -130,7 +130,7 @@ public class DTOMapperTest {
         assertEquals(item.getItemName(), itemGetDTO.getItemName());
         assertEquals(item.getContent(), itemGetDTO.getContent());
         assertEquals(item.getCreationDate(), itemGetDTO.getCreationDate());
-        assertEquals(item.getScore(), itemGetDTO.getScore());
+        assertEquals(item.getScore(), itemGetDTO.getAverageScore());
         assertEquals(item.getLikes(), itemGetDTO.getLikes());
         assertEquals(item.getTopicId(), itemGetDTO.getTopicId());
     }

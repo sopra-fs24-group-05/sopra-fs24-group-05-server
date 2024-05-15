@@ -20,6 +20,7 @@ public class TopicPostDTO {
 
     private String description;
 
+    private int searchCount;
 
     // Getter and Setter
     public Integer getTopicId() {
@@ -82,5 +83,8 @@ public class TopicPostDTO {
         this.description = description;
     }
 
+    public int getSearchCount() {return searchCount;}
+
+    public void setSearchCount(int searchCount) {this.searchCount = searchCount;}
 }
 

@@ -39,6 +39,9 @@ public class Topic implements Serializable {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<Item> items;
 
+    @Column(name = "search_count")
+    private int searchCount; // New field for search count
+
     @ElementCollection
     @CollectionTable(name = "topic_chatpools", joinColumns = @JoinColumn(name = "topic_id"))
     @Column(name = "message")
@@ -78,5 +81,9 @@ public class Topic implements Serializable {
 
     public List<String> getChatPool() { return chatPool; }
     public void setChatPool(List<String> chatPool) { this.chatPool = chatPool; }
+
+    public int getSearchCount() {return searchCount;}
+
+    public void setSearchCount(int searchCount) {this.searchCount = searchCount;}
 
 }

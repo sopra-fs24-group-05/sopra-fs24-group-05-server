@@ -56,6 +56,7 @@ public interface DTOMapper {
   @Mapping(source = "editAllowed", target = "editAllowed")
   @Mapping(source = "description", target = "description")
   @Mapping(source = "creationDate", target = "creationDate")
+  @Mapping(source = "searchCount", target = "searchCount")
   @Mapping(target = "chatPool", ignore = true)
   Topic convertTopicPostDTOtoEntity(TopicPostDTO topicPostDTO);
 
@@ -65,6 +66,7 @@ public interface DTOMapper {
   @Mapping(source = "ownerId", target = "ownerId")
   @Mapping(source = "editAllowed", target = "editAllowed")
   @Mapping(source = "description", target = "description")
+  @Mapping(source = "searchCount", target = "searchCount")
   TopicGetDTO convertEntityToTopicGetDTO(Topic topic);
 
 
@@ -80,7 +82,7 @@ public interface DTOMapper {
   @Mapping(source = "itemName", target = "itemName")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "creationDate", target = "creationDate")
-  @Mapping(source = "score", target = "score")
+  @Mapping(source = "score", target = "averageScore")
   @Mapping(source = "likes", target = "likes")
   @Mapping(source = "topicId", target = "topicId")
   ItemGetDTO convertEntityToItemGetDTO(Item item);

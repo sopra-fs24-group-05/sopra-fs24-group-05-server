@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -65,11 +66,13 @@ public class TopicService {
 
     public Topic getTopicById(int topicId) {
         Topic topic = topicRepository.findByTopicId(topicId);
+        topic.setSearchCount(topic.getSearchCount() + 1);
         return topic;
     }
 
     public Topic getTopicByTopicName(String topicName) {
         Topic topic = topicRepository.findByTopicName(topicName);
+        topic.setSearchCount(topic.getSearchCount() + 1);
         return topic;
     }
     public Topic getTopicByOwnerId(int ownerId) {
@@ -111,8 +114,10 @@ public class TopicService {
     }
 
     public List<Topic> searchTopics(String keyword) {
-
-        return topicRepository.searchByKeyword(keyword);
+        List<Topic> topics = topicRepository.searchByKeyword(keyword);
+        List<Integer> ids = topics.stream().map(Topic::getTopicId).collect(Collectors.toList());
+        topicRepository.incrementSearchCount(ids);
+        return topics;
     }
 
 /*    public List<Topic> filterTopics(String name, Boolean editAllowed) {
@@ -129,12 +134,10 @@ public class TopicService {
     }*/
 
     public List<Topic> getMostPopularTopics() {
-
         return topicRepository.findMostPopularTopics();
     }
 
     public List<Topic> getTopicsByFirstLetter(String prefix) {
-
         return topicRepository.findByFirstLetter(prefix);
     }
 
