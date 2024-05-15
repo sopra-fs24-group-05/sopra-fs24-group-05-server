@@ -1,10 +1,16 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Date;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Internal User Representation
@@ -34,13 +40,16 @@ import java.util.Date;
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
+  public static Long getId;
 
   @Id
-  @GeneratedValue
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long userId;
 
+  /*
   @Column(nullable = true)
   private String name;
+  */
 
   @Column(nullable = false, unique = true)
   private String username;
@@ -52,6 +61,9 @@ public class User implements Serializable {
   private UserStatus status;
 
   @Column(nullable = false)
+  private UserIdentity identity;
+
+  @Column(nullable = false)
   private String password;
 
   @Column(nullable = true)
@@ -60,23 +72,25 @@ public class User implements Serializable {
   @Column(nullable = true)
   private Date birthday;
 
-  public Long getId() {
-    return id;
+
+  @Column(columnDefinition = "TEXT", nullable = true)
+  private String followItemList;
+
+  @Column(columnDefinition = "TEXT", nullable = true)
+  private String followUserList;
+
+  @Column(columnDefinition = "TEXT", nullable = true)
+  private String followCommentList;
+
+  public Long getUserId() {
+    return userId;
   }
 
   /* 
    * Only to be used in test
   */
-  public void setId(Long id) {
-    this.id = id;
-  }
-  
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
   public String getUsername() {
@@ -126,4 +140,150 @@ public class User implements Serializable {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
+    public void setIdentity(UserIdentity identity) { this.identity = identity; }
+
+    public UserIdentity getIdentity() { return identity; }
+
+    public List<Long> getFollowItemList() {
+        if (followItemList == null) {
+            return new ArrayList<>();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(followItemList, new TypeReference<List<Long>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public void setFollowItemList(List<Long> followedItems) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            this.followItemList = objectMapper.writeValueAsString(followedItems);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Long> getFollowUserList() {
+        if (followUserList == null) {
+            return new ArrayList<>();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(followUserList, new TypeReference<List<Long>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public void setFollowUserList(List<Long> followedUsers) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            this.followUserList = objectMapper.writeValueAsString(followedUsers);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Long> getFollowCommentList() {
+        if (followCommentList == null) {
+            return new ArrayList<>();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(followCommentList, new TypeReference<List<Long>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public void setFollowCommentList(List<Long> followedComments) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            this.followCommentList = objectMapper.writeValueAsString(followedComments);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+  /* main
+  public String getPassword() {
+      return password;
+  }
+
+  public void setPassword(String password) {
+      this.password = password;
+  }
+
+  public Date getCreateDate() {
+      return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+      this.createDate = createDate;
+  }
+
+  public Date getBirthday() {
+      return birthday;
+  }
+
+  public void setBirthday(Date birthday) {
+      this.birthday = birthday;
+  }
+
+  public void setIdentity(UserIdentity identity) { this.identity = identity; }
+
+
+  public UserIdentity getIdentity() { return identity; }
+
+  public List<Long> getFollowItemList() {
+      if (followItemList == null) {
+          return new ArrayList<>();
+      }
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          return objectMapper.readValue(followItemList, new TypeReference<List<Long>>() {});
+      } catch (IOException e) {
+          e.printStackTrace();
+          return new ArrayList<>();
+      }
+  }
+
+  public void setFollowItemList(List<Long> followedItems) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          this.followUserList = objectMapper.writeValueAsString(followedItems);
+      } catch (JsonProcessingException e) {
+          e.printStackTrace();
+      }
+  }
+
+  public List<Long> getFollowUserList() {
+      if (followUserList == null) {
+          return new ArrayList<>();
+      }
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          return objectMapper.readValue(followUserList, new TypeReference<List<Long>>() {});
+      } catch (IOException e) {
+          e.printStackTrace();
+          return new ArrayList<>();
+      }
+  }
+
+  public void setFollowUserList(List<Long> followedUsers) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+          this.followUserList = objectMapper.writeValueAsString(followedUsers);
+      } catch (JsonProcessingException e) {
+          e.printStackTrace();
+      }
+  }
+  */
+
 }

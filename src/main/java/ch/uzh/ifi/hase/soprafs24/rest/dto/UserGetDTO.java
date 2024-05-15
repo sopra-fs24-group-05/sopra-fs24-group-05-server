@@ -1,34 +1,27 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 
 import java.util.Date;
 
 public class UserGetDTO {
 
-  private Long id;
-  private String name;
+  private Long userId;
   private String username;
   private UserStatus status;
   private String password;
   private Date createDate;
   private Date birthday;
   private String token;
+  private UserIdentity identity;
 
-  public Long getId() {
-    return id;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
   public String getUsername() {
@@ -78,4 +71,8 @@ public class UserGetDTO {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public void setIdentity(UserIdentity identity) { this.identity = identity; }
+
+    public UserIdentity getIdentity() { return identity; }
 }

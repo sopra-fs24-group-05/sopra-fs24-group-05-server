@@ -3,34 +3,32 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "COMMENTS")
+@Table(name = "comments")
 public class Comment {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long commentId;
 
   @Column(nullable = false)
-  private Long userId;
-
-  // specify the foreign key mapping relationship
-  // no need to implement get() & set() methods, @ManyToOne provide a getUser() methods
-  @ManyToOne
-  @JoinColumn(name = "userId", referencedColumnName = "id", insertable = false, updatable = false)
-  private User user;
+  private Long commentOwnerId;
 
   @Column(nullable = false)
-  private Long itemId;
+  private String commentOwnerName;
 
-  //ToDO: specify the foreign key mapping relationship to items
-  /*
-   * @ManyToOne
-   * @JoinColumn()
+  @Column(nullable = false)
+  private Long commentItemId;
+
+  /**
+   * score to the item by the user
    */
+//  @Column(nullable = false)
+  @Column(nullable = true)
+  private Long score;
 
   public static final int MAX_LENGTH = 150;
   
-  @Column(nullable = false, length = MAX_LENGTH)
+  @Column(nullable = true, length = MAX_LENGTH)
   private String content;
 
   @Column(nullable = false)
@@ -45,20 +43,36 @@ public class Comment {
     this.commentId=commentId;
   }
 
-  public Long getUserId(){
-    return this.userId;
+  public Long getCommentOwnerId(){
+    return this.commentOwnerId;
   }
 
-  public void setUserId(Long userId){
-    this.userId=userId;
+  public void setCommentOwnerId(Long commentOwnerId){
+    this.commentOwnerId = commentOwnerId;
   }
 
-  public Long getItemId(){
-    return this.itemId;
+  public Long getCommentItemId(){
+    return this.commentItemId;
   }
 
-  public void setItemId(Long ItemId){ 
-    this.itemId=itemId;
+  public void setCommentItemId(Long commentItemId){
+    this.commentItemId = commentItemId;
+  }
+
+  public String getCommentOwnerName() {
+      return this.commentOwnerName;
+  }
+
+  public void setCommentOwnerName(String commentOwnerName) {
+      this.commentOwnerName = commentOwnerName;
+  }
+
+  public Long getScore(){
+    return this.score;
+  }
+
+  public void setScore(Long score){ 
+    this.score=score;
   }
 
   public String getContent(){

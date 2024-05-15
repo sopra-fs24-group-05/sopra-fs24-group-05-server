@@ -1,30 +1,28 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 
 @Entity
 @Table(name = "TOPIC")
 public class Topic implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column Integer topicId;
+
+    @Column(nullable = false, unique = true)
+    private String topicName;
 
     @Column(nullable = false)
-    private String TopicName;
+    private Date creationDate;
 
     @Column(nullable = false)
-    private Date CreationDate;
-
-    @Column(nullable = false)
-    private Long ownerId;
+    private Integer ownerId;
 
     @Column
     private Long fatherTopicId;
@@ -36,23 +34,28 @@ public class Topic implements Serializable {
     private Boolean editAllowed;
 
     @Column
-    private String content;
+    private String description;
 
-    public void setId(Long id) {this.id = id;}
+    @ElementCollection
+    @CollectionTable(name = "topic_chatpools", joinColumns = @JoinColumn(name = "topic_id"))
+    @Column(name = "message")
+    private List<String> chatPool = new ArrayList<>();
 
-    public Long getId() {return id;}
+    public void setTopicId(Integer topicId) {this.topicId = topicId;}
 
-    public String getTopicName() {return TopicName;}
+    public Integer getTopicId() {return topicId;}
 
-    public void setTopicName(String topicName) {TopicName = topicName;}
+    public String getTopicName() {return topicName;}
 
-    public Date getCreationDate() {return CreationDate;}
+    public void setTopicName(String topicName) {this.topicName = topicName;}
 
-    public void setCreationDate(Date creationDate) {CreationDate = creationDate;}
+    public Date getCreationDate() {return creationDate;}
 
-    public Long getOwnerId() {return ownerId;}
+    public void setCreationDate(Date creation_date) {this.creationDate = creation_date;}
 
-    public void setOwnerId(Long ownerId) {this.ownerId = ownerId;}
+    public Integer getOwnerId() {return ownerId;}
+
+    public void setOwnerId(Integer ownerId) {this.ownerId = ownerId;}
 
     public Long getFatherTopicId() {return fatherTopicId;}
 
@@ -66,8 +69,11 @@ public class Topic implements Serializable {
 
     public void setEditAllowed(Boolean editAllowed) {this.editAllowed = editAllowed;}
 
-    public String getContent() {return content;}
+    public String getDescription() {return description;}
 
-    public void setContent(String content) {this.content = content;}
+    public void setDescription(String description) {this.description = description;}
+
+    public List<String> getChatPool() { return chatPool; }
+    public void setChatPool(List<String> chatPool) { this.chatPool = chatPool; }
 
 }

@@ -1,21 +1,28 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
-import java.util.List;
-import java.util.UUID;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
 
 /**
  * User Service
@@ -43,10 +50,12 @@ public class UserService {
   private final Logger log = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository userRepository;
+  private final ItemRepository itemRepository;
 
   @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("itemRepository") ItemRepository itemRepository) {
     this.userRepository = userRepository;
+    this.itemRepository = itemRepository;
   }
 
   public List<User> getUsers() {
@@ -57,6 +66,7 @@ public class UserService {
     if(!userRepository.existsById(id)){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User Id not found");
     }
+    log.info("get!");
     return userRepository.findById(id).get();
   }
 
@@ -70,14 +80,33 @@ public class UserService {
    * @see UserRepository
    */
   public User createUser(User newUser) throws ResponseStatusException{
+    if (newUser.getToken() != null) {
+        switch (newUser.getToken()) {
+            case "teacher123":
+                newUser.setIdentity(UserIdentity.TEACHER);
+                break;
+            case "admin123":
+                newUser.setIdentity(UserIdentity.ADMIN);
+                break;
+        }
+    } else {
+        newUser.setIdentity(UserIdentity.STUDENT);
+    }
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.OFFLINE);
-
+    newUser.setCreateDate(new Date());
+    //default
+    newUser.setIdentity(UserIdentity.STUDENT);
     if(userRepository.existsByUsername(newUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
-    }else if(userRepository.findByName(newUser.getName())!=null){
+    }
+    
+    /*
+    else if(userRepository.findByName(newUser.getName())!=null){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
+    */
+
     //checkIfUserExists(newUser); // original check for the username uniqueness
     
     // saves the given entity but data is only persisted in the database once
@@ -113,6 +142,90 @@ public class UserService {
     return userByUsername;
   }
 
+  public void followUser(Long userId, String newFollowedUserId) {
+      try {
+          ObjectMapper objectMapper = new ObjectMapper();
+          JsonNode jsonNode = objectMapper.readTree(newFollowedUserId);
+          Long followingUserId = jsonNode.get("followUserId").asLong();
+
+          Optional<User> userOptional = userRepository.findById(userId);
+          if (userOptional.isPresent()) {
+              User user = userOptional.get();
+              List<Long> followedUsers = user.getFollowUserList();
+              if (followedUsers.contains(followingUserId)) {
+                  return;
+//                  throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have followed this user!");
+              }
+              followedUsers.add(followingUserId);
+              user.setFollowUserList(followedUsers);
+              userRepository.save(user);
+          } else {
+              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+          }
+      } catch (JsonProcessingException e) {
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
+      }
+  }
+
+  public void followItem(Long userId, String newFollowedItemId) {
+      try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(newFollowedItemId);
+            Long followingItemId = jsonNode.get("followItemId").asLong();
+
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                List<Long> followedItems = user.getFollowItemList();
+                if (followedItems.contains(followingItemId)) {
+                  throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have followed this item!");
+                }
+                followedItems.add(followingItemId);
+                user.setFollowItemList(followedItems);
+                userRepository.save(user);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+            }
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
+        }
+    }
+
+//    public void removeUserFromFollowedList(Long userId, Long followedUserIdToRemove) {
+//        Optional<User> userOptional = userRepository.findById(userId);
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            List<Long> followedUsers = user.getFollowedUsers();
+//            followedUsers.remove(followedUserIdToRemove);
+//            user.setFollowedUsers(followedUsers);
+//            userRepository.save(user);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+//        }
+//    }
+
+  public List<User> getFollowUsers(Long userId) {
+      User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+      List<Long> userIdList = user.getFollowUserList();
+      List<User> userList = new ArrayList<>();
+      for (Long id : userIdList) {
+          User userToBeAdd = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+          userList.add(userToBeAdd);
+      }
+      return userList;
+  }
+
+  public List<Item> getFollowItems(Long userId) {
+      User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+      List<Long> itemIdList = user.getFollowItemList();
+      List<Item> itemList = new ArrayList<>();
+      for (Long itemId : itemIdList) {
+          Item itemToBeAdd = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("item not found"));
+          itemList.add(itemToBeAdd);
+      }
+      return itemList;
+  }
+
   /**
    * This method is similar to loginUser but do the oppsite job
    * invalid input need to be handle is also different
@@ -125,13 +238,13 @@ public class UserService {
    * 
    */
   public void logoutUser(User logoutUser) throws ResponseStatusException{
-    User userByUsername = userRepository.findByUsername(logoutUser.getUsername());
-    if(userByUsername == null){
+    User userByToken = userRepository.findByToken(logoutUser.getToken());
+    if(userByToken == null){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "username not found");
     }
 
-    userByUsername.setStatus(UserStatus.OFFLINE);
-    userRepository.saveAndFlush(userByUsername);
+    userByToken.setStatus(UserStatus.OFFLINE);
+    userRepository.saveAndFlush(userByToken);
   }
 
   /**
@@ -142,14 +255,14 @@ public class UserService {
    * @throws org.springframework.web.server.ResponseStatusException
    */
   public void editUser(User editUser, String token){
-    if(userRepository.existsById(editUser.getId())){
+    if(userRepository.existsById(editUser.getUserId())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
     }else if(userRepository.existsByUsername(editUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
-    }else if(userRepository.findById(editUser.getId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
+    }else if(userRepository.findById(editUser.getUserId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"access deny");
     }
-    User targetUser = userRepository.findById(editUser.getId()).get();
+    User targetUser = userRepository.findById(editUser.getUserId()).get();
     if(editUser.getUsername()!=null){
       targetUser.setUsername(editUser.getUsername());
     }
