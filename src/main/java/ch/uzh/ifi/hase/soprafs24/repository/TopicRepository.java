@@ -7,27 +7,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository("topicRepository")
-public interface TopicRepository extends JpaRepository<Topic, Long> {
+public interface TopicRepository extends JpaRepository<Topic, Long>, JpaSpecificationExecutor<Topic> {
+
     Topic findByTopicName(String TopicName);
 
-  Topic findByTopicId(Integer id);
+    Topic findByTopicId(Integer id);
 
-  Topic findByOwnerId(Integer ownerId);
+    Topic findByOwnerId(Integer ownerId);
 
-  @Query("SELECT t FROM Topic t WHERE LOWER(t.topicName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT t FROM Topic t WHERE LOWER(t.topicName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Topic> searchByKeyword(@Param("keyword") String keyword);
 
-
-    @Query(value = "SELECT t.*, SUM(i.likes + i.score_count) as popularity " +
-            "FROM Topic t JOIN Item i ON t.id = i.topic_id " +
-            "GROUP BY t.id " +
+    @Query(value = "SELECT t.*, SUM(i.likes + i.score) as popularity " +
+            "FROM Topic t JOIN Item i ON t.topic_id = i.topic_id " +
+            "GROUP BY t.topic_id " +
             "ORDER BY popularity DESC", nativeQuery = true)
     List<Topic> findMostPopularTopics();
 

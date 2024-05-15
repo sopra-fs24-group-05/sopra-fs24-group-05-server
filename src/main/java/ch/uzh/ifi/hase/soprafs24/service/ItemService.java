@@ -69,7 +69,7 @@ public class ItemService {
     }
 
     public List<Item> getItemsByTopicSortedByScore(Integer topicId) {
-        return itemRepository.findByTopicIdOrderByScoreDesc(Long.valueOf(topicId));
+        return itemRepository.findByTopicIdOrderByScoreDesc((topicId));
     }
 
     public List<Item> getItemsByTopicId(Integer topicId) {
