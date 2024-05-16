@@ -18,10 +18,10 @@ public class Topic implements Serializable {
     @Column(nullable = false, unique = true)
     private String topicName;
 
-    @Column(nullable = false)
+    @Column
     private Date creationDate;
 
-    @Column(nullable = false)
+    @Column
     private Integer ownerId;
 
     @Column

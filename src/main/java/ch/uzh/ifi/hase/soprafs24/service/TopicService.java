@@ -29,6 +29,21 @@ public class TopicService {
     public TopicService(User user, TopicRepository topicRepository) {
         this.currentUser = user;
         this.topicRepository = topicRepository;
+        Topic mensa = new Topic();
+        mensa.setTopicName("MENSA");
+        mensa.setEditAllowed(true);
+        mensa.setTopicId(1);
+        mensa.setDescription("In this topic, different mensas in UZH are displayed. You can comment and rate here!");
+
+        Topic course = new Topic();
+        course.setTopicName("COURSE");
+        course.setEditAllowed(true);
+        course.setTopicId(2);
+
+        course.setDescription("In this topic, different courses in UZH are displayed. You can comment and rate here!");
+
+        topicRepository.save(mensa);
+        topicRepository.save(course);
     }
     private final Logger log = LoggerFactory.getLogger(TopicService.class);
 
