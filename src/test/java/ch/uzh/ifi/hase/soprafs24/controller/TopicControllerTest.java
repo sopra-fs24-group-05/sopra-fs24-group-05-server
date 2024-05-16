@@ -290,5 +290,17 @@ public class TopicControllerTest {
                 .andExpect(jsonPath("$[1].topicName", is("Test Topic 2")));
     }
 
+    @Test
+    public void initializeTopics_whenCalled_thenTopicsInitialized() throws Exception {
+        // Given
+        doNothing().when(topicService).initializeTopics();
+
+        // When & Then
+        mockMvc.perform(post("/topics/initialize")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(topicService).initializeTopics();
+    }
   }
 

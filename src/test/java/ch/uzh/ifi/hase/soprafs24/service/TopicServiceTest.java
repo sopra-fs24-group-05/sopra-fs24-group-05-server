@@ -54,7 +54,7 @@ public class TopicServiceTest {
         Topic createdTopic = topicService.createTopic(testTopic);
 
         // then
-        Mockito.verify(topicRepository, Mockito.times(3)).save(Mockito.any());
+        Mockito.verify(topicRepository, Mockito.times(1)).save(Mockito.any());
 
         assertEquals(testTopic.getTopicId(), createdTopic.getTopicId());
         assertEquals(testTopic.getTopicName(), createdTopic.getTopicName());
@@ -107,7 +107,7 @@ public class TopicServiceTest {
         // then
         assertEquals(newTopic.getTopicName(), createdTopic.getTopicName());
         assertEquals(newTopic.getDescription(), createdTopic.getDescription());
-        verify(topicRepository, times(3)).save(any());
+        verify(topicRepository, times(1)).save(any());
     }
 
     @Test
@@ -178,7 +178,7 @@ public class TopicServiceTest {
         // then
         assertEquals(topicInput.getTopicName(), updatedTopic.getTopicName());
         assertEquals(topicInput.getDescription(), updatedTopic.getDescription());
-        verify(topicRepository, times(3)).save(any());
+        verify(topicRepository, times(1)).save(any());
     }
 
     @Test

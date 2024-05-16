@@ -103,14 +103,6 @@ public class TopicController {
     }
 
 
-/*    @GetMapping("/topics/filter")
-    public ResponseEntity<List<Topic>> filterTopics(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Boolean editAllowed) {
-        List<Topic> topics = topicService.filterTopics(name, editAllowed);
-        return ResponseEntity.ok(topics);
-    }*/
-
     @GetMapping("/topics/popular")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -159,5 +151,9 @@ public class TopicController {
         topicService.deleteTopicByTopicId(topicId);
     }
 
-
+    @PostMapping("/topics/initialize")
+    public ResponseEntity<Void> initializeTopics() {
+        topicService.initializeTopics();
+        return ResponseEntity.ok().build();
+    }
 }

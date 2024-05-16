@@ -11,14 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 
-import org.springframework.data.jpa.domain.Specification;
-import javax.persistence.criteria.Predicate;
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,21 +25,6 @@ public class TopicService {
     public TopicService(User user, TopicRepository topicRepository) {
         this.currentUser = user;
         this.topicRepository = topicRepository;
-        Topic mensa = new Topic();
-        mensa.setTopicName("MENSA");
-        mensa.setEditAllowed(true);
-        mensa.setTopicId(1);
-        mensa.setDescription("In this topic, different mensas in UZH are displayed. You can comment and rate here!");
-
-        Topic course = new Topic();
-        course.setTopicName("COURSE");
-        course.setEditAllowed(true);
-        course.setTopicId(2);
-
-        course.setDescription("In this topic, different courses in UZH are displayed. You can comment and rate here!");
-
-        topicRepository.save(mensa);
-        topicRepository.save(course);
     }
     private final Logger log = LoggerFactory.getLogger(TopicService.class);
 
@@ -111,14 +92,6 @@ public class TopicService {
         }
         else {
             topicRepository.delete(topic);
-        /*}
-        if (topic.getOwnerId().equals(userService.getCurrentUser().getId())) {
-            topicRepository.delete(topic);
-            log.debug("Deleted Topic: {}", topic);
-        } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to delete this topic");
-        }*/
-            //Need a method from userService!
         }
     }
     public void deleteTopicByTopicId(Integer topicId) {
@@ -135,18 +108,6 @@ public class TopicService {
         return topics;
     }
 
-/*    public List<Topic> filterTopics(String name, Boolean editAllowed) {
-        return topicRepository.findAll((Specification<Topic>) (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            if (name != null) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("topicName")), "%" + name.toLowerCase() + "%"));
-            }
-            if (editAllowed != null) {
-                predicates.add(criteriaBuilder.equal(root.get("editAllowed"), editAllowed));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
-    }*/
 
     public List<Topic> getMostPopularTopics() {
         return topicRepository.findMostPopularTopics();
@@ -156,4 +117,28 @@ public class TopicService {
         return topicRepository.findByFirstLetter(prefix);
     }
 
+    @PostConstruct
+    public void initializeTopics() {
+        if (topicRepository.findByTopicName("MENSA") == null) {
+            Topic mensa = new Topic();
+            mensa.setTopicName("MENSA");
+            mensa.setEditAllowed(true);
+            mensa.setTopicId(101);
+            mensa.setDescription("In this topic, different mensas in UZH are displayed. You can comment and rate here!");
+            mensa.setCreationDate(new Date());
+            mensa.setOwnerId(1001);
+            topicRepository.save(mensa);
+        }
+
+        if (topicRepository.findByTopicName("COURSE") == null) {
+            Topic course = new Topic();
+            course.setTopicName("COURSE");
+            course.setEditAllowed(true);
+            course.setTopicId(102);
+            course.setDescription("In this topic, different courses in UZH are displayed. You can comment and rate here!");
+            course.setCreationDate(new Date());
+            course.setOwnerId(1001);
+            topicRepository.save(course);
+        }
+    }
 }
