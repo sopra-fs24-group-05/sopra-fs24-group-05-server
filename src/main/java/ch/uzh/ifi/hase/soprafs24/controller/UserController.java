@@ -134,4 +134,11 @@ public class UserController {
     userService.followItem(userId, followItemId);
   }
 
+  @PutMapping("/users/editAvatar/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void editAvatar(@PathVariable Long userId, @RequestParam String avatar){
+    userService.setAvater(userId, avatar);
+  }
+
 }

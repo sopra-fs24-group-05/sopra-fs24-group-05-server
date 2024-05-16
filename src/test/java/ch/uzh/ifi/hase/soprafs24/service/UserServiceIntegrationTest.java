@@ -1,8 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 
 /**
  * Test class for the UserResource REST resource.
@@ -29,21 +34,35 @@ public class UserServiceIntegrationTest {
   @Autowired
   private UserService userService;
 
+  private List<User> backUpData;
+
+  private User testUser;
+
   @BeforeEach
   public void setup() {
+    backUpData=userRepository.findAll();
     userRepository.deleteAll();
+
+    testUser = new User();
+    testUser.setUsername("firstname@lastname");
+    testUser.setPassword("testpassword");
+    testUser.setStatus(UserStatus.OFFLINE);
+    testUser.setToken("1");
+    testUser.setIdentity(UserIdentity.STUDENT);
+    testUser.setAvater("this is a image text");
+
+  }
+
+  @AfterEach
+  public void deleteAndRecover(){
+    userRepository.deleteAll();
+    userRepository.saveAll(backUpData);
   }
 
   @Test
   public void createUser_validInputs_success() {
     // given
     assertNull(userRepository.findByUsername("testUsername"));
-
-    User testUser = new User();
-    //testUser.setName("testName");
-    testUser.setUsername("testUsername");
-    testUser.setPassword("testPassword");
-    testUser.setStatus(UserStatus.OFFLINE);
 
     // when
     User createdUser = userService.createUser(testUser);
@@ -59,19 +78,20 @@ public class UserServiceIntegrationTest {
   public void createUser_duplicateUsername_throwsException() {
     assertNull(userRepository.findByUsername("testUsername"));
 
-    User testUser = new User();
-    //testUser.setName("testName");
-    testUser.setUsername("testUsername");
-    testUser.setPassword("testPassword");
-    testUser.setStatus(UserStatus.OFFLINE);
     User createdUser = userService.createUser(testUser);
 
     // attempt to create second user with same username
     User testUser2 = new User();
+    testUser2.setUsername("firstname@lastname");
+    testUser2.setPassword("testpassword");
+    testUser2.setStatus(UserStatus.OFFLINE);
+    testUser2.setToken("1");
+    testUser2.setIdentity(UserIdentity.STUDENT);
+    testUser2.setAvater("this is a image text");
 
     // change the name but forget about the username
     //testUser2.setName("testName2");
-    testUser2.setUsername("testUsername");
+    testUser2.setUsername("firstname@lastname");
 
     // check that an error is thrown
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));

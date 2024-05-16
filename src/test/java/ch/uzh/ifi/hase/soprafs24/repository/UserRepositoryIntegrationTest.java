@@ -14,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 @DataJpaTest
@@ -27,20 +32,33 @@ public class UserRepositoryIntegrationTest {
   @Autowired
   private UserRepository userRepository;
 
-  @BeforeEach
-  public void setup(){
-    entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();//清空数据
+  private List<User> backUpData;
+
+  private User user;
+
+  @AfterEach
+  public void recover(){
+    userRepository.deleteAll();
+    userRepository.saveAll(backUpData);
   }
 
-  @Test
-  public void findByUserName_success() {
-    // given
-    User user = new User();
+  @BeforeEach
+  public void setup(){
+
+    backUpData = userRepository.findAll(); // 保存数据
+    entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();//清空数据
+    //given
+    user = new User();
     user.setUsername("firstname@lastname");
     user.setPassword("testpassword");
     user.setStatus(UserStatus.OFFLINE);
     user.setToken("1");
     user.setIdentity(UserIdentity.STUDENT);
+    user.setAvater("this is a image text");
+  }
+
+  @Test
+  public void findByUserName_success() {
 
     entityManager.persist(user);
     entityManager.flush();
@@ -59,13 +77,6 @@ public class UserRepositoryIntegrationTest {
 
   @Test
   public void findByToken_success() {
-    // given
-    User user = new User();
-    user.setUsername("firstname@lastname");
-    user.setPassword("testpassword");
-    user.setStatus(UserStatus.OFFLINE);
-    user.setToken("1");
-    user.setIdentity(UserIdentity.STUDENT);
 
     entityManager.persist(user);
     entityManager.flush();
@@ -84,13 +95,6 @@ public class UserRepositoryIntegrationTest {
 
   @Test
   public void existsByUsername_success() {
-    // given
-    User user = new User();
-    user.setUsername("firstname@lastname");
-    user.setPassword("testpassword");
-    user.setStatus(UserStatus.OFFLINE);
-    user.setToken("1");
-    user.setIdentity(UserIdentity.STUDENT);
 
     entityManager.persist(user);
     entityManager.flush();
