@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.repository;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +34,7 @@ public class CommentRepositoryIntegrationTest_3 {
         comment.setScore(5L);
         comment.setContent("This is a test comment.");
         comment.setThumbsUpNum(0L);
+        comment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L,2L,3L)));
 
         commentRepository.save(comment);
         assertNotNull(comment.getCommentId());

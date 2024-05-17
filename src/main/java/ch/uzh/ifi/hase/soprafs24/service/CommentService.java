@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import org.slf4j.Logger;
@@ -63,17 +64,6 @@ public class CommentService {
     return commentRepository.findByCommentOwnerId(userId);
   }
 
-  /*
-   * another implement way
-   * ToDo: if we want to display many comments and distribute them every n comments each page
-   * maybe we should implement this way
-   * 
-   * public List<Comment> getCommentOrderByThumbsUpNumDesc(int pageNumber, int pageSize){
-    Pageable pageable = PageRequest.of(pageNumber,pageSize,Sort.by("thumbsUpNum").descending());
-    Page<Comment> page=commentRepository.findAll(pageable);
-    return page.getContent();
-  }
-   */
   /**
    * Service methods for creating Comment
    * check if the content exceed max length
@@ -107,6 +97,29 @@ public class CommentService {
       return 0.0;
     }
     return commentRepository.calculateAverageScoreByCommentItemId(itemId);
+  }
+
+  public boolean checkUserLiked(Long UserId, Long CommentId){
+    Comment commentById = commentRepository.findById(CommentId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment Not found"));
+    return commentById.getLikedUserList().contains(UserId);
+  }
+
+  public int calculateThumbsUpNum(Long CommentId){
+    Comment commentById = commentRepository.findById(CommentId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment Not found"));
+    return commentById.getLikedUserList().size();
+  }
+
+  public void addUserIdToLikedList(Long UserId, Long CommentId){
+    Comment commentById = commentRepository.findById(CommentId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment Not found"));
+    List<Long> LikedUserList = commentById.getLikedUserList();
+    if(checkUserLiked(UserId, CommentId)){
+      return;
+    }
+    LikedUserList.add(UserId);
+    commentById.setThumbsUpNum(Long.valueOf(LikedUserList.size()));
+    commentById.setLikedUserList(LikedUserList);
+    commentRepository.save(commentById);
+    commentRepository.flush();
   }
 
 }

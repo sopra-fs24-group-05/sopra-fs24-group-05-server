@@ -19,15 +19,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,6 +71,7 @@ public class CommentControllerTest {
     comment.setScore(5L);
     comment.setContent(null);
     comment.setThumbsUpNum(1L);
+    comment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)));
   }
 
   @Test
@@ -164,6 +171,29 @@ public class CommentControllerTest {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           String.format("The request body could not be created.%s", e.toString()));
     }
+  }
+
+  @Test
+  public void putMethodName_validInput_commentStatusReturned() throws Exception {
+      // set requested userId(not in LikedUserList), commentId and expected result
+      Long userId = 4L;
+      Long commentId = 1L;
+      boolean isAlreadyLiked = false;
+      int thumbsUpNum = 2;
+
+      given(commentService.checkUserLiked(userId, commentId)).willReturn(isAlreadyLiked);
+      given(commentService.calculateThumbsUpNum(commentId)).willReturn(thumbsUpNum);
+
+      // Mock the request object
+      MockHttpServletRequestBuilder putRequest = put("/comments/LikeComment/{commentId}/{userId}", commentId, userId)
+              .contentType(MediaType.APPLICATION_JSON)
+              .accept(MediaType.APPLICATION_JSON);
+
+      // Act & Assert
+      mockMvc.perform(putRequest)
+              .andExpect(status().isOk())
+              .andExpect(jsonPath("$.isAlreadyLiked").value(isAlreadyLiked))
+              .andExpect(jsonPath("$.thumbsUpNum").value(thumbsUpNum));
   }
   
 }

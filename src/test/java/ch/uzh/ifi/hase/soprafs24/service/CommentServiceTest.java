@@ -13,10 +13,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import static org.hamcrest.Matchers.array;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +56,8 @@ public class CommentServiceTest {
     testComment.setScore(5L);
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
+    testComment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)));
+
 
     testCommentList = Collections.singletonList(testComment);
 
@@ -125,4 +130,64 @@ public class CommentServiceTest {
 
     assertThrows(ResponseStatusException.class, ()->commentService.getCommentByCommentId(1L));
   }
+
+  @Test
+  public void checkUserLiked_validInput_success() {
+      Long commentId = testComment.getCommentId();
+
+      // Mock the repository response
+      Mockito.when(commentRepository.findById(commentId)).thenReturn(Optional.of(testComment));
+
+      // Case 1: UserId is in LikedUserList
+      boolean result1 = commentService.checkUserLiked(1L, commentId);
+
+      // Assert
+      assertTrue(result1);
+
+      // Case 2: UserId is not in LikedUserList
+      boolean result2 = commentService.checkUserLiked(4L, commentId);
+
+      // Assert
+      assertFalse(result2);
+  }
+
+  @Test
+  public void calculateThumbsUpNum_validInput_success() {
+    // set requested commentId
+    Long commentId = testComment.getCommentId();
+
+    // mocked repository response has been set in setup()
+
+    // Act
+    int thumbsUpNum = commentService.calculateThumbsUpNum(commentId);
+
+    // Assert
+    assertEquals(3, thumbsUpNum); // Expecting 3 thumbs up
+  }
+
+  @Test
+  public void addUserIdToLikedList_validInput_success() {
+      // set a userId not in LikedUserList
+      Long userId = 4L;
+      // set requested commentId
+      Long commentId = testComment.getCommentId();
+
+
+      // Mock the repository response
+
+      // Act
+      commentService.addUserIdToLikedList(userId, commentId);
+
+      // Assert
+      assertTrue(testComment.getLikedUserList().contains(userId)); // userId has been correctly added to 
+      Mockito.verify(commentRepository,Mockito.times(1)).save(Mockito.any());
+      Mockito.verify(commentRepository,Mockito.times(1)).flush();
+
+      // If we try to add userId(has been added to LikedUserList) again
+      commentService.addUserIdToLikedList(userId, commentId);
+      // times of calling save() & flush() will not increase
+      Mockito.verify(commentRepository,Mockito.times(1)).save(Mockito.any());
+      Mockito.verify(commentRepository,Mockito.times(1)).flush();
+  }
+
 }

@@ -106,4 +106,8 @@ public interface DTOMapper {
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   CommentGetDTO converEntityToCommentGetDTO(Comment comment);
 
+  @Mapping(source = "isAlreadyLiked", target = "isAlreadyLiked")
+  @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
+  CommentStatusGetDTO converParamToCommentStatusGetDTO(Boolean isAlreadyLiked, Integer thumbsUpNum);
+
 }

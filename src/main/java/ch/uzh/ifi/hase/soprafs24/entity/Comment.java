@@ -2,6 +2,9 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -26,13 +29,18 @@ public class Comment {
   @Column(nullable = true)
   private Long score;
 
-  public static final int MAX_LENGTH = 150;
+  public static final int MAX_LENGTH = 250;
   
-  @Column(nullable = true, length = MAX_LENGTH)
+  @Column(nullable = true, columnDefinition = "TEXT", length = MAX_LENGTH)
   private String content;
 
   @Column(nullable = false)
-  private Long thumbsUpNum;
+  private Long thumbsUpNum = 0L;
+
+  @ElementCollection
+  @CollectionTable(name = "comment_liked_users", joinColumns = @JoinColumn(name = "comment_id"))
+  @Column(name = "user_id", nullable = false)
+  private List<Long> LikedUserList = new ArrayList<Long>();
 
   //methods
   public Long getCommentId(){
@@ -73,6 +81,14 @@ public class Comment {
 
   public void setScore(Long score){ 
     this.score=score;
+  }
+
+  public List<Long> getLikedUserList(){
+    return this.LikedUserList;
+  }
+
+  public void setLikedUserList(List<Long> LikedUserList){
+    this.LikedUserList=LikedUserList;
   }
 
   public String getContent(){

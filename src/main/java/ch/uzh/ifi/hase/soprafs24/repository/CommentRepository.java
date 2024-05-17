@@ -39,5 +39,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 
   @Query("SELECT AVG(c.score) FROM Comment c WHERE c.commentItemId = :commentItemId")
   Double calculateAverageScoreByCommentItemId(@Param("commentItemId") Long commentItemId);
-
 }
