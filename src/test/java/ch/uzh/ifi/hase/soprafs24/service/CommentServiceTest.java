@@ -82,6 +82,7 @@ public class CommentServiceTest {
   @Test
   public void createComment_validInput_success(){
     Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
+    Mockito.when(itemRepository.findByItemId(Mockito.any())).thenReturn(testItem);
 
     Comment createdComment = commentService.createComment(testComment);
 

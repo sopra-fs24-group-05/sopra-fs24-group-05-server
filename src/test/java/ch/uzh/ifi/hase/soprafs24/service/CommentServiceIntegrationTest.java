@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -43,9 +44,14 @@ public class CommentServiceIntegrationTest {
   private ItemRepository itemRepository;
 
   private Comment testComment;
+  private List<Comment> backUpData;
+  private Item testItem;
 
   @BeforeEach
   public void setup(){
+
+    backUpData = commentRepository.findAll();
+    commentRepository.deleteAll();
     testComment = new Comment();
     //testComment.setCommentId(1L); // calling the actual repository, no need to set this field
     testComment.setCommentOwnerId(1L);
@@ -54,8 +60,21 @@ public class CommentServiceIntegrationTest {
     testComment.setScore(5L);
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
+
+    testItem = new Item();
+    testItem.setItemId(1L);
+    testItem.setLikes(0);
+    testItem.setItemName("testItemName");
+    testItem.setScore(0.0);
+    testItem.setContent("test Item Description");
     
     commentRepository.deleteAll();
+  }
+
+  @AfterEach
+  public void recover(){
+    commentRepository.deleteAll();
+    commentRepository.saveAll(backUpData);
   }
 
   @Test
@@ -66,6 +85,7 @@ public class CommentServiceIntegrationTest {
     // given
 
     Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
+    Mockito.when(itemRepository.findByItemId(Mockito.any())).thenReturn(testItem);
 
     // when
     Comment createdComment = commentService.createComment(testComment);
@@ -93,6 +113,7 @@ public class CommentServiceIntegrationTest {
     assertEquals(commentRepository.findById(1L),Optional.empty());
 
     Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
+    Mockito.when(itemRepository.findByItemId(Mockito.any())).thenReturn(testItem);
     
     commentService.createComment(testComment);
     

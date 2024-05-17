@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import org.slf4j.Logger;
@@ -77,18 +78,21 @@ public class CommentService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
     }
     if(newComment.getContent().length()>newComment.MAX_LENGTH){
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The comments exceeded the 150-character limit");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The comments exceeded the 250-character limit");
     }
     boolean hasCommented = commentRepository.existsByCommentOwnerIdAndCommentItemId(newComment.getCommentOwnerId(),newComment.getCommentItemId());
     if(hasCommented){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User has already commented on this item");
     }
 
+    Item itemOfComment = itemRepository.findByItemId(newComment.getCommentItemId());
     newComment.setCommentOwnerName(newComment.getCommentOwnerName());
     newComment.setThumbsUpNum(0L);
     newComment = commentRepository.save(newComment);
     commentRepository.flush();
-    //newComment = commentRepository.saveAndFlush(newComment); // .save will be called twice? in test if we wrote this
+    itemOfComment.setScore(commentRepository.calculateAverageScoreByCommentItemId(newComment.getCommentItemId()));
+    itemRepository.save(itemOfComment);
+    itemRepository.flush();
     return newComment;
   }
 

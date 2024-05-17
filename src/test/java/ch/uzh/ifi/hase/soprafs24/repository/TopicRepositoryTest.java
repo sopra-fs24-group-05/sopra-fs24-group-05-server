@@ -83,21 +83,21 @@ public class TopicRepositoryTest {
         topic1.setCreationDate(new Date());
         topic1.setOwnerId(1);
         topic1.setEditAllowed(true);
-        topic1.setSearchCount(100);
+        topic1.setSearchCount(10000);
 
         Topic topic2 = new Topic();
         topic2.setTopicName("Topic 2");
         topic2.setCreationDate(new Date());
         topic2.setOwnerId(2);
         topic2.setEditAllowed(true);
-        topic2.setSearchCount(200);
+        topic2.setSearchCount(20000);
 
         Topic topic3 = new Topic();
         topic3.setTopicName("Topic 3");
         topic3.setCreationDate(new Date());
         topic3.setOwnerId(3);
         topic3.setEditAllowed(true);
-        topic3.setSearchCount(50);
+        topic3.setSearchCount(5000);
 
         topicRepository.save(topic1);
         topicRepository.save(topic2);
