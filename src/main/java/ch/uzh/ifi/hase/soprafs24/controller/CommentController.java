@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentStatusGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.ReplyGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 
 
@@ -86,6 +91,31 @@ public class CommentController {
     int thumbsUpNum = commentService.calculateThumbsUpNum(commentId);
     return DTOMapper.INSTANCE.converParamToCommentStatusGetDTO(isAlreadyLiked, thumbsUpNum);
   }
+
+  @PostMapping("reply/create")
+  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseBody
+  public void createReply(@RequestBody CommentPostDTO replyPostDTO) {
+    Comment replyToBeCreate = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(replyPostDTO);
+    commentService.createReply(replyToBeCreate);
+      
+  }
+
+  @GetMapping("reply/get/{fatherCommentId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<ReplyGetDTO> getReplyByFatherCommentId(@PathVariable Long fatherCommentId){
+    List<Comment> replys=commentService.getReplyByFatherCommentId(fatherCommentId);
+    List<ReplyGetDTO> replyGetDTOs=new ArrayList<>();
+    for(Comment reply:replys){
+      System.out.println(reply.getContent());
+      replyGetDTOs.add(DTOMapper.INSTANCE.converEntityReplyGetDTO(reply));
+    }
+    return replyGetDTOs;
+  }
+  
+
+  
   
   
 }

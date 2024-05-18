@@ -65,6 +65,11 @@ public class CommentService {
     return commentRepository.findByCommentOwnerId(userId);
   }
 
+  public List<Comment> getReplyByFatherCommentId(Long fatherCommentId){
+    // todo
+    return commentRepository.findByFatherCommentId(fatherCommentId);
+  }
+
   /**
    * Service methods for creating Comment
    * check if the content exceed max length
@@ -86,7 +91,7 @@ public class CommentService {
     }
 
     Item itemOfComment = itemRepository.findByItemId(newComment.getCommentItemId());
-    newComment.setCommentOwnerName(newComment.getCommentOwnerName());
+    //newComment.setCommentOwnerName(newComment.getCommentOwnerName());
     newComment.setThumbsUpNum(0L);
     newComment = commentRepository.save(newComment);
     commentRepository.flush();
@@ -94,6 +99,20 @@ public class CommentService {
     itemRepository.save(itemOfComment);
     itemRepository.flush();
     return newComment;
+  }
+
+  public void createReply(Comment reply) throws ResponseStatusException{
+    if(!itemRepository.existsById(reply.getCommentItemId())){
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found");
+    }
+    if(reply.getContent().length()>reply.MAX_LENGTH){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The reply exceeded the 250-character limit");
+    }
+    if(reply.getFatherCommentId().equals(null)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"fatherCommentId missing");
+    }
+    commentRepository.save(reply);
+    commentRepository.flush();
   }
 
   public Double calculateAverageScoreByItemId(Long itemId){

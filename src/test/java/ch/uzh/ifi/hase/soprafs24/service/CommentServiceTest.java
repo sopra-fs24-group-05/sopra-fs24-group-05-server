@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.array;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class CommentServiceTest {
   private CommentService commentService;
 
   private Comment testComment;
+  private Comment reply;
 
   private Optional<Comment> optionalTestComment;
 
@@ -57,6 +59,16 @@ public class CommentServiceTest {
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
     testComment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)));
+
+    reply = new Comment();
+    reply.setCommentId(2L);
+    reply.setCommentOwnerId(2L);
+    reply.setCommentOwnerName("reply owner");
+    reply.setCommentItemId(1L);
+    reply.setScore(null);
+    reply.setContent("reply content");
+    reply.setThumbsUpNum(1L);
+    reply.setFatherCommentId(testComment.getCommentId());
 
 
     testCommentList = Collections.singletonList(testComment);
@@ -97,6 +109,30 @@ public class CommentServiceTest {
   }
 
   @Test
+  public void createReply_validInput_replyCreated() {
+    Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
+    Mockito.when(itemRepository.findByItemId(Mockito.any())).thenReturn(testItem);
+    Mockito.when(commentRepository.findByFatherCommentId(Mockito.anyLong())).thenReturn(Collections.singletonList(reply));
+    // given
+    Long fatherCommentId = testComment.getCommentId();
+
+    // when
+    commentService.createReply(reply);
+
+    // then
+    List<Comment> foundReplies = commentRepository.findByFatherCommentId(fatherCommentId);
+    assertEquals(1, foundReplies.size()); // Ensure only one reply is created
+    Comment createdReply = foundReplies.get(0);
+    assertEquals(reply.getCommentOwnerId(), createdReply.getCommentOwnerId());
+    assertEquals(reply.getCommentOwnerName(), createdReply.getCommentOwnerName());
+    assertEquals(reply.getCommentItemId(), createdReply.getCommentItemId());
+    assertEquals(reply.getScore(), createdReply.getScore());
+    assertEquals(reply.getContent(), createdReply.getContent());
+    assertEquals(reply.getThumbsUpNum(), createdReply.getThumbsUpNum());
+    assertEquals(testComment.getCommentId(),createdReply.getFatherCommentId()); // Ensure the fatherCommentId is not set for replies
+  }
+
+  @Test
   public void calculateAverageScoreByItemId_validInput_success(){
     Double avgScore = commentService.calculateAverageScoreByItemId(testComment.getCommentItemId());
 
@@ -130,6 +166,21 @@ public class CommentServiceTest {
     Mockito.verify(commentRepository,Mockito.times(0)).findById(Mockito.anyLong());
 
     assertThrows(ResponseStatusException.class, ()->commentService.getCommentByCommentId(1L));
+  }
+
+  @Test
+  public void getReplyByFatherCommentId_validInput_success(){
+    Mockito.when(commentRepository.findByFatherCommentId(Mockito.anyLong())).thenReturn(Collections.singletonList(reply));
+    List<Comment> foundReplies = commentService.getReplyByFatherCommentId(testComment.getCommentId());
+
+    Mockito.verify(commentRepository, times(1)).findByFatherCommentId(testComment.getCommentId());
+
+    assertNotNull(foundReplies);
+    assertEquals(1, foundReplies.size());
+    assertEquals(reply.getCommentId(), foundReplies.get(0).getCommentId());
+    assertEquals(reply.getCommentOwnerId(), foundReplies.get(0).getCommentOwnerId());
+    assertEquals(reply.getContent(), foundReplies.get(0).getContent());
+    assertEquals(reply.getFatherCommentId(), foundReplies.get(0).getFatherCommentId());
   }
 
   @Test

@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.repository;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,15 @@ public class CommentRepositoryTest {
   private CommentRepository commentRepository;
 
   private Comment comment;
+  private Comment childComment;
+
+  private List<Comment> backUpData;
 
   @BeforeEach
   public void setup(){
-
-    entityManager.getEntityManager().createQuery("DELETE FROM Comment").executeUpdate();//清空数据
+    backUpData = commentRepository.findAll();
+    commentRepository.deleteAll();
+    //entityManager.getEntityManager().createQuery("DELETE FROM Comment").executeUpdate();//清空数据
 
     comment = new Comment();
     comment.setCommentOwnerId(1L);
@@ -42,6 +47,26 @@ public class CommentRepositoryTest {
     comment.setScore(5L);
     comment.setContent("test content");
     comment.setThumbsUpNum(1L);
+
+    commentRepository.saveAndFlush(comment);
+
+    childComment = new Comment();
+    childComment.setCommentOwnerId(1L);
+    childComment.setCommentOwnerName("comment owner");
+    childComment.setCommentItemId(1L);
+    childComment.setScore(15L);
+    childComment.setContent("test child content");
+    childComment.setThumbsUpNum(1L);
+    childComment.setFatherCommentId(comment.getCommentId());
+
+    commentRepository.saveAndFlush(childComment);
+  }
+
+  @AfterEach
+  public void recover(){
+    commentRepository.deleteAll();
+    commentRepository.saveAll(backUpData);
+
   }
 
   @Test
@@ -55,7 +80,7 @@ public class CommentRepositoryTest {
     List<Comment> found = commentRepository.findByCommentOwnerId(comment.getCommentOwnerId());
 
     // then
-    assertEquals(found.size(), 1);
+    assertEquals(2, found.size());
     assertNotNull(found.get(0).getCommentId());
     assertEquals(found.get(0).getCommentItemId(), comment.getCommentItemId());
     assertEquals(found.get(0).getCommentOwnerId(), comment.getCommentOwnerId());
@@ -102,30 +127,39 @@ public class CommentRepositoryTest {
 
   @Test
   public void calculateAverageScoreByItemId_success(){
-    // given
-    Comment comment1 = new Comment();
-    comment1.setCommentOwnerId(1L);
-    comment1.setCommentOwnerName("comment1 owner");
-    comment1.setCommentItemId(1L);
-    comment1.setScore(5L);
-    comment1.setContent("test content");
-    comment1.setThumbsUpNum(1L);
-
     Comment comment2 = new Comment();
     comment2.setCommentOwnerId(1L);
-    comment2.setCommentOwnerName("comment2 owner");
+    comment2.setCommentOwnerName("comment owner");
     comment2.setCommentItemId(1L);
     comment2.setScore(15L);
     comment2.setContent("test content");
     comment2.setThumbsUpNum(1L);
 
-    entityManager.persist(comment1);
-    entityManager.persist(comment2);
-    entityManager.flush();
+    commentRepository.saveAndFlush(comment2);
 
-    Double avgScore = commentRepository.calculateAverageScoreByCommentItemId(comment1.getCommentItemId());
+    Double avgScore = commentRepository.calculateAverageScoreByCommentItemId(comment.getCommentItemId());
 
-    assertEquals(avgScore, (comment1.getScore()+comment2.getScore())/2);
+    assertEquals(avgScore, (comment.getScore()+comment2.getScore())/2);
   }
 
+  @Test
+  public void findByFatherCommentId_success() {
+    commentRepository.saveAndFlush(comment);
+    commentRepository.saveAndFlush(childComment);
+
+    // when
+    List<Comment> foundReplies = commentRepository.findByFatherCommentId(comment.getCommentId());
+
+    // then
+    assertEquals(1, foundReplies.size());
+    Comment foundReply = foundReplies.get(0);
+    assertNotNull(foundReply.getCommentId());
+    assertEquals(childComment.getCommentId(), foundReply.getCommentId());
+    assertEquals(childComment.getCommentOwnerId(), foundReply.getCommentOwnerId());
+    assertEquals(childComment.getCommentItemId(), foundReply.getCommentItemId());
+    assertEquals(childComment.getScore(), foundReply.getScore());
+    assertEquals(childComment.getContent(), foundReply.getContent());
+    assertEquals(childComment.getThumbsUpNum(), foundReply.getThumbsUpNum());
+    assertEquals(childComment.getFatherCommentId(), foundReply.getFatherCommentId());
+  }
 }

@@ -28,7 +28,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
   @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId")
   List<Comment> findByCommentItemId(@Param("commentItemId") Long commentItemId);
 
-  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId AND c.commentItemId = :commentItemId")
+  @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId AND c.commentItemId = :commentItemId AND c.fatherCommentId IS NULL")
   boolean existsByCommentOwnerIdAndCommentItemId(@Param("commentOwnerId") Long commentOwnerId, @Param("commentItemId") Long commentItemId);
 
   @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentOwnerId = :commentOwnerId")
@@ -37,6 +37,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
   @Query("SELECT COUNT(c)>0 FROM Comment c WHERE c.commentItemId = :commentItemId")
   boolean existsByCommentItemId(@Param("commentItemId") Long commentItemId);
 
-  @Query("SELECT AVG(c.score) FROM Comment c WHERE c.commentItemId = :commentItemId")
+  @Query("SELECT AVG(c.score) FROM Comment c WHERE c.commentItemId = :commentItemId AND c.fatherCommentId IS NULL")
   Double calculateAverageScoreByCommentItemId(@Param("commentItemId") Long commentItemId);
+
+  @Query
+  List<Comment> findByFatherCommentId(Long fatherCommentId);
 }

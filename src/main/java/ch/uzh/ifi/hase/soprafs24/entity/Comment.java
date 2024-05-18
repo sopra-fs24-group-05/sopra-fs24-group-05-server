@@ -42,6 +42,9 @@ public class Comment {
   @Column(name = "user_id", nullable = false)
   private List<Long> LikedUserList = new ArrayList<Long>();
 
+  @Column
+  private Long fatherCommentId;
+
   //methods
   public Long getCommentId(){
     return this.commentId;
@@ -105,6 +108,14 @@ public class Comment {
 
   public void setThumbsUpNum(Long thumbsUpNum){
     this.thumbsUpNum=thumbsUpNum;
+  }
+
+  public Long getFatherCommentId() {
+      return this.fatherCommentId;
+  }
+
+  public void setFatherCommentId(Long fatherCommentId) {
+      this.fatherCommentId = fatherCommentId;
   }
 
 }
