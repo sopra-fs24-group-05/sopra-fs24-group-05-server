@@ -114,5 +114,6 @@ public interface DTOMapper {
   @Mapping(source = "commentOwnerId", target = "commentOwnerId")
   @Mapping(source = "commentOwnerName", target = "commentOwnerName")
   @Mapping(source = "content", target = "content")
+  @Mapping(source = "fatherCommentId", target = "fatherCommentId")
   ReplyGetDTO converEntityReplyGetDTO(Comment reply);
 }

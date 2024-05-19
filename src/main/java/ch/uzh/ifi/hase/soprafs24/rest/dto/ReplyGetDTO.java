@@ -6,6 +6,7 @@ public class ReplyGetDTO {
   private Long commentOwnerId;
   private String commentOwnerName;
   private Long commentItemId;
+  private Long fatherCommentId;
   //private Long score;
   private String content;
   //private Long thumbsUpNum;
@@ -29,6 +30,13 @@ public class ReplyGetDTO {
   }
   public String getCommentOwnerName(){
     return this.commentOwnerName;
+  }
+
+  public void setFatherCommentId(Long fatherCommentId){
+    this.fatherCommentId = fatherCommentId;
+  }
+  public Long getFatherCommentId(){
+    return this.fatherCommentId;
   }
 
   public void setContent(String content){
