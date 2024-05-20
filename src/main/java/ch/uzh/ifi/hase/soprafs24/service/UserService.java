@@ -135,54 +135,35 @@ public class UserService {
     return userByUsername;
   }
 
-  public void followUser(Long userId, String newFollowedUserId) {
-      try {
-          ObjectMapper objectMapper = new ObjectMapper();
-          JsonNode jsonNode = objectMapper.readTree(newFollowedUserId);
-          Long followingUserId = jsonNode.get("followUserId").asLong();
-
-          Optional<User> userOptional = userRepository.findById(userId);
-          if (userOptional.isPresent()) {
-              User user = userOptional.get();
-              List<Long> followedUsers = user.getFollowUserList();
-              if (followedUsers.contains(followingUserId)) {
-                  return;
-//                  throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have followed this user!");
-              }
-              followedUsers.add(followingUserId);
-              user.setFollowUserList(followedUsers);
-              userRepository.save(user);
-          } else {
-              throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
-          }
-      } catch (JsonProcessingException e) {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
-      }
+  public void followUser(Long userId, Long followUserId){
+    User currentUser = userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId not found"));
+    if(!userRepository.existsById(followUserId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "target userId not found");
+    }
+    List<Long> followUserList = currentUser.getFollowUserList();
+    if(followUserList.contains(followUserId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "already followed target user");
+    }
+    followUserList.add(followUserId);
+    currentUser.setFollowUserList(followUserList);
+    userRepository.save(currentUser);
+    userRepository.flush();
   }
 
-  public void followItem(Long userId, String newFollowedItemId) {
-      try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(newFollowedItemId);
-            Long followingItemId = jsonNode.get("followItemId").asLong();
-
-            Optional<User> userOptional = userRepository.findById(userId);
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                List<Long> followedItems = user.getFollowItemList();
-                if (followedItems.contains(followingItemId)) {
-                  throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have followed this item!");
-                }
-                followedItems.add(followingItemId);
-                user.setFollowItemList(followedItems);
-                userRepository.save(user);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
-            }
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid followUserId format");
-        }
+  public void followItem(Long userId, Long newFollowedItemId) {
+    User currentUser = userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId not found"));
+    if(!itemRepository.existsById(newFollowedItemId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "target item not found");
     }
+    List<Long> followItemList = currentUser.getFollowItemList();
+    if(followItemList.contains(newFollowedItemId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "already followed target item");
+    }
+    followItemList.add(newFollowedItemId);
+    currentUser.setFollowItemList(followItemList);
+    userRepository.save(currentUser);
+    userRepository.flush();
+  }
 
   public void setAvater(Long userId, String avatar){
     User editUser=userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found"));

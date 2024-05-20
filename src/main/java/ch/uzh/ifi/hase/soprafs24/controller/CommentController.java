@@ -83,7 +83,7 @@ public class CommentController {
   @PutMapping("comments/LikeComment/{commentId}/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public CommentStatusGetDTO putMethodName(@PathVariable Long userId, @PathVariable Long commentId) {
+  public CommentStatusGetDTO addUserIdToLikedList(@PathVariable Long userId, @PathVariable Long commentId) {
     boolean isAlreadyLiked = commentService.checkUserLiked(userId, commentId);
     if(!isAlreadyLiked){
       commentService.addUserIdToLikedList(userId, commentId);
@@ -109,7 +109,7 @@ public class CommentController {
     List<ReplyGetDTO> replyGetDTOs=new ArrayList<>();
     for(Comment reply:replys){
       System.out.println(reply.getContent());
-      replyGetDTOs.add(DTOMapper.INSTANCE.converEntityReplyGetDTO(reply));
+      replyGetDTOs.add(DTOMapper.INSTANCE.converEntityToReplyGetDTO(reply));
     }
     return replyGetDTOs;
   }

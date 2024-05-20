@@ -213,48 +213,50 @@ public class CommentControllerTest {
 
   @Test
   public void LikeComments_validInput_commentStatusReturned() throws Exception {
-      // set requested userId(not in LikedUserList), commentId and expected result
-      Long userId = 4L;
-      Long commentId = 1L;
-      boolean isAlreadyLiked = false;
-      int thumbsUpNum = 2;
+    // set requested userId(not in LikedUserList), commentId and expected result
+    Long userId = 4L;
+    Long commentId = 1L;
+    boolean isAlreadyLiked = false;
+    int thumbsUpNum = 2;
 
-      given(commentService.checkUserLiked(userId, commentId)).willReturn(isAlreadyLiked);
-      given(commentService.calculateThumbsUpNum(commentId)).willReturn(thumbsUpNum);
+    given(commentService.checkUserLiked(userId, commentId)).willReturn(isAlreadyLiked);
+    given(commentService.calculateThumbsUpNum(commentId)).willReturn(thumbsUpNum);
 
-      // Mock the request object
-      MockHttpServletRequestBuilder putRequest = put("/comments/LikeComment/{commentId}/{userId}", commentId, userId)
-              .contentType(MediaType.APPLICATION_JSON)
-              .accept(MediaType.APPLICATION_JSON);
+    // Mock the request object
+    MockHttpServletRequestBuilder putRequest = put("/comments/LikeComment/{commentId}/{userId}", commentId, userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
 
-      // Act & Assert
-      mockMvc.perform(putRequest)
-              .andExpect(status().isOk())
-              .andExpect(jsonPath("$.isAlreadyLiked").value(isAlreadyLiked))
-              .andExpect(jsonPath("$.thumbsUpNum").value(thumbsUpNum));
+    // Act & Assert
+    mockMvc.perform(putRequest)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isAlreadyLiked").value(isAlreadyLiked))
+            .andExpect(jsonPath("$.thumbsUpNum").value(thumbsUpNum));
   }
 
   @Test
-    public void givenReplies_whenGetReplyByFatherCommentId_thenReturnJsonArray() throws Exception {
-      List<Comment> replies = Collections.singletonList(reply);
-      //List<ReplyGetDTO> replyGetDTOs = Collections.singletonList(replyGetDTO);
+  public void givenReplies_whenGetReplyByFatherCommentId_thenReturnJsonArray() throws Exception {
+    List<Comment> replies = Collections.singletonList(reply);
+    //List<ReplyGetDTO> replyGetDTOs = Collections.singletonList(replyGetDTO);
 
-      given(commentService.getReplyByFatherCommentId(Mockito.anyLong())).willReturn(replies);
-      //given(DTOMapper.INSTANCE.converEntityReplyGetDTO(Mockito.any(Comment.class))).willReturn(replyGetDTO);
+    given(commentService.getReplyByFatherCommentId(Mockito.anyLong())).willReturn(replies);
+    //given(DTOMapper.INSTANCE.converEntityReplyGetDTO(Mockito.any(Comment.class))).willReturn(replyGetDTO);
 
-      MockHttpServletRequestBuilder getRequest = get("/reply/get/{fatherCommentId}", 1L)
-              .contentType(MediaType.APPLICATION_JSON);
+    MockHttpServletRequestBuilder getRequest = get("/reply/get/{fatherCommentId}", 1L)
+            .contentType(MediaType.APPLICATION_JSON);
 
-      mockMvc.perform(getRequest)
-              .andExpect(status().isOk())
-              .andExpect(jsonPath("$", hasSize(1)))
-              .andExpect(jsonPath("$[0].commentId", is(reply.getCommentId().intValue())))
-              .andExpect(jsonPath("$[0].commentOwnerId", is(reply.getCommentOwnerId().intValue())))
-              .andExpect(jsonPath("$[0].commentOwnerName", is(reply.getCommentOwnerName())))
-              //.andExpect(jsonPath("$[0].commentItemId", is(reply.getCommentItemId().intValue())))
-              .andExpect(jsonPath("$[0].content", is(reply.getContent())));
-              //.andExpect(jsonPath("$[0].thumbsUpNum", is(reply.getThumbsUpNum().intValue())))
-              //.andExpect(jsonPath("$[0].fatherCommentId", is(reply.getFatherCommentId().intValue())));
-    }
+    mockMvc.perform(getRequest)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].commentId", is(reply.getCommentId().intValue())))
+            .andExpect(jsonPath("$[0].commentOwnerId", is(reply.getCommentOwnerId().intValue())))
+            .andExpect(jsonPath("$[0].commentOwnerName", is(reply.getCommentOwnerName())))
+            //.andExpect(jsonPath("$[0].commentItemId", is(reply.getCommentItemId().intValue())))
+            .andExpect(jsonPath("$[0].content", is(reply.getContent())));
+            //.andExpect(jsonPath("$[0].thumbsUpNum", is(reply.getThumbsUpNum().intValue())))
+            //.andExpect(jsonPath("$[0].fatherCommentId", is(reply.getFatherCommentId().intValue())));
+  }
+
+  
   
 }

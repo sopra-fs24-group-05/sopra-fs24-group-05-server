@@ -78,11 +78,18 @@ public class User implements Serializable {
   @Column(nullable = false, columnDefinition = "TEXT")
   private String avatar;
 
-  @Column(columnDefinition = "TEXT", nullable = true)
-  private String followItemList;
+  //@Column(columnDefinition = "TEXT", nullable = true)
+  //private String followItemList;
 
-  @Column(columnDefinition = "TEXT", nullable = true)
-  private String followUserList;
+  @ElementCollection
+  @CollectionTable(name = "follow_Item_List", joinColumns = @JoinColumn(name = "user_id"))
+  @Column(name = "follow_item_id", nullable = false)
+  private List<Long> followItemList = new ArrayList<Long>();
+
+  @ElementCollection
+  @CollectionTable(name = "follow_User_List", joinColumns = @JoinColumn(name = "user_id"))
+  @Column(name = "follow_user_id", nullable = false)
+  private List<Long> followUserList = new ArrayList<Long>();
 
   @Column(columnDefinition = "TEXT", nullable = true)
   private String followCommentList;
@@ -155,51 +162,20 @@ public class User implements Serializable {
     }
 
     public void setIdentity(UserIdentity identity) { this.identity = identity; }
-
     public UserIdentity getIdentity() { return identity; }
 
     public List<Long> getFollowItemList() {
-        if (followItemList == null) {
-            return new ArrayList<>();
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(followItemList, new TypeReference<List<Long>>() {});
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        return this.followItemList;
+    }
+    public void setFollowItemList(List<Long> followItemList) {
+        this.followItemList = followItemList;
     }
 
-    public void setFollowItemList(List<Long> followedItems) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            this.followItemList = objectMapper.writeValueAsString(followedItems);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public List<Long> getFollowUserList(){
+        return this.followUserList;
     }
-
-    public List<Long> getFollowUserList() {
-        if (followUserList == null) {
-            return new ArrayList<>();
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(followUserList, new TypeReference<List<Long>>() {});
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public void setFollowUserList(List<Long> followedUsers) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            this.followUserList = objectMapper.writeValueAsString(followedUsers);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void setFollowUserList(List<Long> followUserList){
+        this.followUserList = followUserList;
     }
 
     public List<Long> getFollowCommentList() {

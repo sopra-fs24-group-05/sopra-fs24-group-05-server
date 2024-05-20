@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowUserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
@@ -20,14 +22,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -126,4 +132,193 @@ public class UserControllerTest {
           String.format("The request body could not be created.%s", e.toString()));
     }
   }
+
+  @Test
+  public void followUser_validInput_success() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followUserId = 2L;
+    Mockito.doNothing().when(userService).followUser(userId, followUserId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followUsers", userId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(followUserId));
+
+    // Then
+    mockMvc.perform(putRequest)
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void followUser_userNotFound_throwsException() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followUserId = 2L;
+    doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId not found"))
+        .when(userService).followUser(userId, followUserId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followUsers", userId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(followUserId));
+
+    // Then
+    mockMvc.perform(putRequest)
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void followUser_targetUserNotFound_throwsException() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followUserId = 3L;
+    doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "target userId not found"))
+        .when(userService).followUser(userId, followUserId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followUsers", userId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(followUserId));
+
+    // Then
+    mockMvc.perform(putRequest)
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void followUser_alreadyFollowing_throwsException() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followUserId = 2L;
+    doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "already followed target user"))
+        .when(userService).followUser(userId, followUserId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followUsers", userId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(followUserId));
+
+    // Then
+    mockMvc.perform(putRequest)
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void getFollowUserList_validInput_success() throws Exception {
+      // Given
+      Long userId = 1L;
+      User followUser = new User();
+      followUser.setUserId(2L);
+      followUser.setUsername("testUser");
+      List<User> followUsers = Collections.singletonList(followUser);
+
+      given(userService.getFollowUsers(userId)).willReturn(followUsers);
+
+      // When
+      MockHttpServletRequestBuilder getRequest = get("/users/{userId}/followUsers", userId)
+          .contentType(MediaType.APPLICATION_JSON);
+
+      // Then
+      mockMvc.perform(getRequest)
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$", hasSize(1)))
+          .andExpect(jsonPath("$[0].followUserId", is(followUser.getUserId().intValue())))
+          .andExpect(jsonPath("$[0].followUsername", is(followUser.getUsername())));
+  }
+
+  @Test
+public void followItem_validInput_success() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followItemId = 100L;
+    doNothing().when(userService).followItem(userId, followItemId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followItems", userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(followItemId));
+
+    // Then
+    mockMvc.perform(putRequest)
+            .andExpect(status().isOk());
+}
+
+@Test
+public void followItem_userNotFound_throwsException() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followItemId = 100L;
+    doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId not found"))
+            .when(userService).followItem(userId, followItemId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followItems", userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(followItemId));
+
+    // Then
+    mockMvc.perform(putRequest)
+            .andExpect(status().isBadRequest());
+}
+
+@Test
+public void followItem_itemNotFound_throwsException() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followItemId = 200L;
+    doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "target item not found"))
+            .when(userService).followItem(userId, followItemId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followItems", userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(followItemId));
+
+    // Then
+    mockMvc.perform(putRequest)
+            .andExpect(status().isBadRequest());
+}
+
+@Test
+public void followItem_alreadyFollowing_throwsException() throws Exception {
+    // Given
+    Long userId = 1L;
+    Long followItemId = 100L;
+    doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "already followed target item"))
+            .when(userService).followItem(userId, followItemId);
+
+    // When
+    MockHttpServletRequestBuilder putRequest = put("/users/{userId}/followItems", userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(followItemId));
+
+    // Then
+    mockMvc.perform(putRequest)
+            .andExpect(status().isBadRequest());
+}
+
+  @Test
+  public void getFollowItemList_validInput_success() throws Exception {
+    // Given
+    Long userId = 1L;
+    Item followItem = new Item();
+    followItem.setItemId(2L);
+    followItem.setItemName("testItem");
+    List<Item> followItems = Collections.singletonList(followItem);
+
+    given(userService.getFollowItems(userId)).willReturn(followItems);
+
+    // When
+    MockHttpServletRequestBuilder getRequest = get("/users/{userId}/followItems", userId)
+        .contentType(MediaType.APPLICATION_JSON);
+
+    // Then
+    mockMvc.perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(1)))
+        .andExpect(jsonPath("$[0].followItemId", is(followItem.getItemId().intValue())))
+        .andExpect(jsonPath("$[0].followItemname", is(followItem.getItemName())));
+  }
+
 }

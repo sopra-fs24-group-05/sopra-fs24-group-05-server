@@ -5,12 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -115,5 +110,13 @@ public interface DTOMapper {
   @Mapping(source = "commentOwnerName", target = "commentOwnerName")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "fatherCommentId", target = "fatherCommentId")
-  ReplyGetDTO converEntityReplyGetDTO(Comment reply);
+  ReplyGetDTO converEntityToReplyGetDTO(Comment reply);
+
+  @Mapping(source = "userId", target = "followUserId")
+  @Mapping(source = "username", target = "followUsername")
+  FollowUserGetDTO converEntityToFollowUserGetDTO(User user);
+
+  @Mapping(source = "itemId", target = "followItemId")
+  @Mapping(source = "itemName", target = "followItemname")
+  FollowItemGetDTO converEntityToFollowItemGetDTO(Item item);
 }

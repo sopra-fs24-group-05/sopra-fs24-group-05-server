@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowItemGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowUserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
@@ -67,17 +69,25 @@ public class UserController {
   @GetMapping("/users/{userId}/followUsers")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public ResponseEntity<List<User>> getFollowUserList(@PathVariable Long userId) {
-      List<User> followUsers = userService.getFollowUsers(userId);
-      return ResponseEntity.ok(followUsers);
+  public List<FollowUserGetDTO> getFollowUserList(@PathVariable Long userId) {
+    List<User> followUsers = userService.getFollowUsers(userId);
+    List<FollowUserGetDTO> followUserGetDTOs = new ArrayList<>();
+    for(User followUser : followUsers){
+      followUserGetDTOs.add(DTOMapper.INSTANCE.converEntityToFollowUserGetDTO(followUser));
+    }
+    return followUserGetDTOs;
   }
 
   @GetMapping("/users/{userId}/followItems")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public ResponseEntity<List<Item>> getFollowItemList(@PathVariable Long userId) {
-      List<Item> followItems = userService.getFollowItems(userId);
-      return ResponseEntity.ok(followItems);
+  public List<FollowItemGetDTO> getFollowItemList(@PathVariable Long userId) {
+    List<Item> followItems = userService.getFollowItems(userId);
+    List<FollowItemGetDTO> followItemGetDTOs = new ArrayList<>();
+    for(Item item : followItems){
+      followItemGetDTOs.add(DTOMapper.INSTANCE.converEntityToFollowItemGetDTO(item));
+    }
+    return followItemGetDTOs;
   }
 
   @PostMapping("/users/registration")
@@ -103,11 +113,11 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(loginUser);
   }
 
-  @PutMapping("/users/followUser/{userId}")
+  @PutMapping("/users/{userId}/followUsers")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void followUser(@PathVariable Long userId, @RequestBody String followUserId){
-      userService.followUser(userId, followUserId);
+  public void followUser(@PathVariable Long userId, @RequestBody Long followUserId){
+    userService.followUser(userId, followUserId);
   }
 
   //frontend should correspondingly delete token
@@ -127,10 +137,10 @@ public class UserController {
     userService.editUser(userInput, token);
   }
 
-  @PutMapping("/users/followItem/{userId}")
+  @PutMapping("/users/{userId}/followItems")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void followItem(@PathVariable Long userId, @RequestBody String followItemId){
+  public void followItem(@PathVariable Long userId, @RequestBody Long followItemId){
     userService.followItem(userId, followItemId);
   }
 
