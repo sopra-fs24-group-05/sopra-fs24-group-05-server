@@ -328,4 +328,62 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.score", is(item.getScore())))
                 .andExpect(jsonPath("$.topicId", is(item.getTopicId())));
     }
+
+    @Test
+    public void searchItemsByKeyword_whenValidKeyword_thenReturnsItems() throws Exception {
+        // given
+        String keyword = "Test";
+        Item item1 = new Item();
+        item1.setItemId(1L);
+        item1.setItemName("Test Item 1");
+        Item item2 = new Item();
+        item2.setItemId(2L);
+        item2.setItemName("Test Item 2");
+
+        List<Item> itemList = Arrays.asList(item1, item2);
+        List<ItemGetDTO> itemGetDTOs = itemList.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+
+        when(itemService.searchItemsByKeyword(anyString())).thenReturn(itemList);
+
+        // when & then
+        mockMvc.perform(get("/items/search")
+                        .param("keyword", keyword)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].itemId", is(item1.getItemId().intValue())))
+                .andExpect(jsonPath("$[0].itemName", is(item1.getItemName())))
+                .andExpect(jsonPath("$[1].itemId", is(item2.getItemId().intValue())))
+                .andExpect(jsonPath("$[1].itemName", is(item2.getItemName())));
+    }
+
+    @Test
+    public void getItemsSortedByCommentCountAndTopicId_whenValidRequest_thenReturnsItems() throws Exception {
+        // given
+        Integer topicId = 1;
+        Item item1 = new Item();
+        item1.setItemId(1L);
+        item1.setItemName("Item 1");
+        item1.setTopicId(topicId);
+
+        Item item2 = new Item();
+        item2.setItemId(2L);
+        item2.setItemName("Item 2");
+        item2.setTopicId(topicId);
+
+        List<Item> items = Arrays.asList(item1, item2);
+        when(itemService.getItemsSortedByCommentCountAndTopicId(topicId)).thenReturn(items);
+
+        // when & then
+        mockMvc.perform(get("/items/sortedByCommentCount/{topicId}", topicId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].itemId", is(item1.getItemId().intValue())))
+                .andExpect(jsonPath("$[0].itemName", is(item1.getItemName())))
+                .andExpect(jsonPath("$[1].itemId", is(item2.getItemId().intValue())))
+                .andExpect(jsonPath("$[1].itemName", is(item2.getItemName())));
+    }
 }

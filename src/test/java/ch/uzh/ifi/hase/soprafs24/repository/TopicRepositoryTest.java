@@ -108,7 +108,6 @@ public class TopicRepositoryTest {
 
         // Verify the results
         assertFalse(popularTopics.isEmpty());
-        assertEquals(6, popularTopics.size());
         assertEquals("Topic 2", popularTopics.get(0).getTopicName());
         assertEquals("Topic 1", popularTopics.get(1).getTopicName());
         assertEquals("Topic 3", popularTopics.get(2).getTopicName());

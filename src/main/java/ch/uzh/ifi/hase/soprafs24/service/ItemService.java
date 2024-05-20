@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
@@ -14,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -109,5 +112,29 @@ public class ItemService {
     
     public Item getItemByItemId(Long itemId){
         return itemRepository.findByItemId(itemId);
+    }
+
+    public List<Item> searchItemsByKeyword(String keyword) {
+        return itemRepository.findByKeyword(keyword);
+    }
+
+    public List<Item> getItemsSortedByCommentCountAndTopicId(Integer topicId) {
+        List<Comment> comments = commentRepository.findAll();
+
+        // 过滤同一 Topic 下的评论
+        Map<Long, Long> itemCommentCountMap = comments.stream()
+                .filter(comment -> {
+                    Optional<Item> item = itemRepository.findById(comment.getCommentItemId());
+                    return item.isPresent() && item.get().getTopicId().equals(topicId);
+                })
+                .collect(Collectors.groupingBy(Comment::getCommentItemId, Collectors.counting()));
+
+        // 按评论数量排序
+        List<Long> sortedItemIds = itemCommentCountMap.entrySet().stream()
+                .sorted(Map.Entry.<Long, Long>comparingByValue().reversed())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        return itemRepository.findAllById(sortedItemIds);
     }
 }

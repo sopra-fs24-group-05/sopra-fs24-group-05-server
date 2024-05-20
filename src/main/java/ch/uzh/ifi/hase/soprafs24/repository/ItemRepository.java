@@ -27,4 +27,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i WHERE i.topic.topicName = :topicName")
     List<Item> findByTopicName(@Param("topicName") String topicName);
+
+    @Query("SELECT i FROM Item i WHERE i.itemName LIKE %:keyword%")
+    List<Item> findByKeyword(@Param("keyword") String keyword);
 }
