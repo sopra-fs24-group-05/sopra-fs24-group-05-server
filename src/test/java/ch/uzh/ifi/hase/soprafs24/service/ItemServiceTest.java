@@ -12,11 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -243,5 +239,72 @@ public class ItemServiceTest {
         verify(itemRepository, times(1)).existsById(anyLong());
         verify(itemRepository, times(1)).deleteById(anyLong());
     }
+
+    @Test
+    public void getItemByItemId_validId_success() {
+        // given
+        Long itemId = 1L;
+        Item item = new Item();
+        item.setItemId(itemId);
+        item.setItemName("Test Item");
+
+        when(itemRepository.findByItemId(anyLong())).thenReturn(item);
+
+        // when
+        Item foundItem = itemService.getItemByItemId(itemId);
+
+        // then
+        assertEquals(itemId, foundItem.getItemId());
+        assertEquals("Test Item", foundItem.getItemName());
+        verify(itemRepository, times(1)).findByItemId(anyLong());
+    }
+
+    @Test
+    public void deleteItemByItemId_itemNotFound_throwsException() {
+        // given
+        Long itemId = 1L;
+        when(itemRepository.existsById(anyLong())).thenReturn(false);
+
+        // when & then
+        assertThrows(ResponseStatusException.class, () -> {
+            itemService.deleteItemByItemId(itemId);
+        });
+
+        verify(itemRepository, times(1)).existsById(anyLong());
+        verify(itemRepository, times(0)).deleteById(anyLong());
+    }
+
+    @Test
+    public void updateItem_itemNotFound_throwsException() {
+        // given
+        Item itemInput = new Item();
+        itemInput.setItemId(1L);
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(NoSuchElementException.class, () -> {
+            itemService.updateItem(itemInput);
+        });
+
+        verify(itemRepository, times(1)).findById(anyLong());
+        verify(itemRepository, times(0)).save(any());
+    }
+
+
+    @Test
+    public void likeItem_itemNotFound_throwsException() {
+        // given
+        Long itemId = 1L;
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(RuntimeException.class, () -> {
+            itemService.likeItem(itemId);
+        });
+
+        verify(itemRepository, times(1)).findById(anyLong());
+        verify(itemRepository, times(0)).save(any());
+    }
+
 
 }

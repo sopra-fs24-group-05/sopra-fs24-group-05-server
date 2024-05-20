@@ -304,4 +304,28 @@ public class ItemControllerTest {
         // verify that the service method was called with the correct parameter
         verify(itemService, times(1)).deleteItemByItemId(eq(itemId));
     }
+
+    @Test
+    public void getItemByItemId_whenValidItemId_thenReturnsItem() throws Exception {
+        // given
+        Long itemId = 1L;
+        Item item = new Item();
+        item.setItemId(itemId);
+        item.setItemName("Test Item");
+        item.setContent("Description");
+        item.setScore(9.0);
+        item.setTopicId(1);
+
+        when(itemService.getItemByItemId(itemId)).thenReturn(item);
+
+        // when & then
+        mockMvc.perform(get("/items/getByItemId/{itemId}", itemId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId", is(item.getItemId().intValue())))
+                .andExpect(jsonPath("$.itemName", is(item.getItemName())))
+                .andExpect(jsonPath("$.content", is(item.getContent())))
+                .andExpect(jsonPath("$.score", is(item.getScore())))
+                .andExpect(jsonPath("$.topicId", is(item.getTopicId())));
+    }
 }

@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.entity.listener;
+package ch.uzh.ifi.hase.soprafs24.entity;
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;

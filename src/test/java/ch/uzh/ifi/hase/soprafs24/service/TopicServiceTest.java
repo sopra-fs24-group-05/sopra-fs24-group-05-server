@@ -221,9 +221,11 @@ public class TopicServiceTest {
         // given
         String keyword = "Test";
         Topic topic = new Topic();
+        topic.setTopicId(1);
         topic.setTopicName("Test Topic");
+        List<Topic> topicList = Collections.singletonList(topic);
 
-        when(topicRepository.searchByKeyword(anyString())).thenReturn(Collections.singletonList(topic));
+        when(topicRepository.searchByKeyword(anyString())).thenReturn(topicList);
 
         // when
         List<Topic> foundTopics = topicService.searchTopics(keyword);
@@ -232,6 +234,7 @@ public class TopicServiceTest {
         assertEquals(1, foundTopics.size());
         assertEquals("Test Topic", foundTopics.get(0).getTopicName());
         verify(topicRepository, times(1)).searchByKeyword(anyString());
+        verify(topicRepository, times(1)).incrementSearchCount(anyList());
     }
 
     @Test
@@ -275,4 +278,41 @@ public class TopicServiceTest {
         verify(topicRepository, times(1)).findByFirstLetter(anyString());
     }
 
+    @Test
+    public void initializeTopics_createsTopicsIfNotExist() {
+        // given
+        when(topicRepository.findByTopicName("MENSA")).thenReturn(null);
+        when(topicRepository.findByTopicName("COURSE")).thenReturn(null);
+
+        // when
+        topicService.initializeTopics();
+
+        // then
+        verify(topicRepository, times(1)).findByTopicName("MENSA");
+        verify(topicRepository, times(1)).findByTopicName("COURSE");
+        verify(topicRepository, times(2)).save(any(Topic.class));
+    }
+
+    @Test
+    public void deleteTopicByTopicId_topicNotFound_throwsException() {
+        // given
+        Integer topicId = 1;
+        when(topicRepository.existsById(anyLong())).thenReturn(false);
+
+        // when & then
+        assertThrows(ResponseStatusException.class, () -> topicService.deleteTopicByTopicId(topicId));
+        verify(topicRepository, times(1)).existsById(anyLong());
+    }
+
+    @Test
+    public void updateTopic_topicNotFound_throwsException() {
+        // given
+        Topic topicInput = new Topic();
+        topicInput.setTopicId(1);
+        when(topicRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(NoSuchElementException.class, () -> topicService.updateTopic(topicInput));
+        verify(topicRepository, times(1)).findById(anyLong());
+    }
 }
