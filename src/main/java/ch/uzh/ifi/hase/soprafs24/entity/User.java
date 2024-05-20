@@ -78,9 +78,6 @@ public class User implements Serializable {
   @Column(nullable = false, columnDefinition = "TEXT")
   private String avatar;
 
-  //@Column(columnDefinition = "TEXT", nullable = true)
-  //private String followItemList;
-
   @ElementCollection
   @CollectionTable(name = "follow_Item_List", joinColumns = @JoinColumn(name = "user_id"))
   @Column(name = "follow_item_id", nullable = false)
@@ -91,8 +88,13 @@ public class User implements Serializable {
   @Column(name = "follow_user_id", nullable = false)
   private List<Long> followUserList = new ArrayList<Long>();
 
-  @Column(columnDefinition = "TEXT", nullable = true)
-  private String followCommentList;
+  @ElementCollection
+  @CollectionTable(name = "follow_Topic_List", joinColumns = @JoinColumn(name = "user_id"))
+  @Column(name = "follow_topic_id", nullable = false)
+  private List<Long> followTopicList = new ArrayList<Long>();
+
+  //@Column(columnDefinition = "TEXT", nullable = true)
+  //private String followTopicList;
 
   public Long getUserId() {
     return userId;
@@ -178,26 +180,10 @@ public class User implements Serializable {
         this.followUserList = followUserList;
     }
 
-    public List<Long> getFollowCommentList() {
-        if (followCommentList == null) {
-            return new ArrayList<>();
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(followCommentList, new TypeReference<List<Long>>() {});
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+    public void setFollowTopicList(List<Long> followTopicList){
+        this.followTopicList = followTopicList;
     }
-
-    public void setFollowCommentList(List<Long> followedComments) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            this.followCommentList = objectMapper.writeValueAsString(followedComments);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public List<Long> getFollowTopicList(){
+        return this.followTopicList;
     }
-
 }

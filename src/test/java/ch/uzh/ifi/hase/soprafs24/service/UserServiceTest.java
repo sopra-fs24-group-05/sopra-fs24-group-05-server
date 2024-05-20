@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ public class UserServiceTest {
   @Mock
   private ItemRepository itemRepository;
 
+  @Mock
+  private TopicRepository topicRepository;
+
   @InjectMocks
   private UserService userService;
 
@@ -40,6 +44,10 @@ public class UserServiceTest {
   private Long validItemId;
   private Long invalidItemId;
   private Long alreadyFollowedItemId;
+
+  private Long validTopicId;
+  private Long invalidTopicId;
+  private Long alreadyFollowedTopicId;
 
   @BeforeEach
   public void setup() {
@@ -62,6 +70,11 @@ public class UserServiceTest {
     alreadyFollowedItemId = 300L;
     testUser.getFollowItemList().add(alreadyFollowedItemId);
 
+    validTopicId = 100L;
+    invalidTopicId = 200L;
+    alreadyFollowedTopicId = 300L;
+    testUser.getFollowTopicList().add(alreadyFollowedTopicId);
+
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
     Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
@@ -74,6 +87,11 @@ public class UserServiceTest {
     Mockito.when(itemRepository.existsById(validItemId)).thenReturn(true);
     Mockito.when(itemRepository.existsById(invalidItemId)).thenReturn(false);
     Mockito.when(itemRepository.existsById(alreadyFollowedItemId)).thenReturn(true);
+
+    when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+    when(topicRepository.existsById(validTopicId)).thenReturn(true);
+    when(topicRepository.existsById(invalidTopicId)).thenReturn(false);
+    when(topicRepository.existsById(alreadyFollowedTopicId)).thenReturn(true);
   }
 
   @Test
@@ -219,5 +237,48 @@ public class UserServiceTest {
 
     assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     assertEquals("already followed target item", exception.getReason());
+  }
+
+  @Test
+  public void followTopic_validTopic_success() {
+    userService.followTopic(testUser.getUserId(), validTopicId);
+
+    assertEquals(2, testUser.getFollowTopicList().size());
+    assertEquals(validTopicId, testUser.getFollowTopicList().get(1));
+    verify(userRepository, times(1)).save(testUser);
+    verify(userRepository, times(1)).flush();
+  }
+
+  @Test
+  public void followTopic_userNotFound_throwsException() {
+    Long nonExistentUserId = 2L;
+    when(userRepository.findById(nonExistentUserId)).thenReturn(Optional.empty());
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.followTopic(nonExistentUserId, validTopicId);
+    });
+
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("userId not found", exception.getReason());
+  }
+
+  @Test
+  public void followTopic_topicNotFound_throwsException() {
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.followTopic(testUser.getUserId(), invalidTopicId);
+    });
+
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("target topic not found", exception.getReason());
+  }
+
+  @Test
+  public void followTopic_alreadyFollowingTopic_throwsException() {
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.followTopic(testUser.getUserId(), alreadyFollowedTopicId);
+    });
+
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("already followed target topic", exception.getReason());
   }
 }

@@ -4,7 +4,9 @@ import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,11 +53,13 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final ItemRepository itemRepository;
+  private final TopicRepository topicRepository;
 
   @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("itemRepository") ItemRepository itemRepository) {
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("itemRepository") ItemRepository itemRepository, @Qualifier("topicRepository") TopicRepository topicRepository) {
     this.userRepository = userRepository;
     this.itemRepository = itemRepository;
+    this.topicRepository = topicRepository;
   }
 
   public List<User> getUsers() {
@@ -173,25 +177,51 @@ public class UserService {
   }
 
   public List<User> getFollowUsers(Long userId) {
-      User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-      List<Long> userIdList = user.getFollowUserList();
-      List<User> userList = new ArrayList<>();
-      for (Long id : userIdList) {
-          User userToBeAdd = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-          userList.add(userToBeAdd);
-      }
-      return userList;
+    User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    List<Long> userIdList = user.getFollowUserList();
+    List<User> userList = new ArrayList<>();
+    for (Long id : userIdList) {
+      User userToBeAdd = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+      userList.add(userToBeAdd);
+    }
+    return userList;
   }
 
   public List<Item> getFollowItems(Long userId) {
-      User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-      List<Long> itemIdList = user.getFollowItemList();
-      List<Item> itemList = new ArrayList<>();
-      for (Long itemId : itemIdList) {
-          Item itemToBeAdd = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("item not found"));
-          itemList.add(itemToBeAdd);
-      }
-      return itemList;
+    User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    List<Long> itemIdList = user.getFollowItemList();
+    List<Item> itemList = new ArrayList<>();
+    for (Long itemId : itemIdList) {
+      Item itemToBeAdd = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("item not found"));
+      itemList.add(itemToBeAdd);
+    }
+    return itemList;
+  }
+
+  public List<Topic> getFollowTopics(Long userId){
+    User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    List<Long> topicIdList = user.getFollowTopicList();
+    List<Topic> topicList = new ArrayList<>();
+    for(Long topicId : topicIdList){
+      Topic topicToBeAdd = topicRepository.findById(topicId).orElseThrow(() -> new EntityNotFoundException("topic not found"));
+      topicList.add(topicToBeAdd);
+    }
+    return topicList;
+  }
+
+  public void followTopic(Long userId, Long newFollowedTopicId){
+    User currentUser = userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId not found"));
+    if(!topicRepository.existsById(newFollowedTopicId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "target topic not found");
+    }
+    List<Long> followTopicList = currentUser.getFollowTopicList();
+    if(followTopicList.contains(newFollowedTopicId)){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "already followed target topic");
+    }
+    followTopicList.add(newFollowedTopicId);
+    currentUser.setFollowTopicList(followTopicList);
+    userRepository.save(currentUser);
+    userRepository.flush();
   }
 
   /**

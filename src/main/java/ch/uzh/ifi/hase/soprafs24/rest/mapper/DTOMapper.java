@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-import ch.uzh.ifi.hase.soprafs24.entity.Item;
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -119,4 +118,8 @@ public interface DTOMapper {
   @Mapping(source = "itemId", target = "followItemId")
   @Mapping(source = "itemName", target = "followItemname")
   FollowItemGetDTO converEntityToFollowItemGetDTO(Item item);
+
+  @Mapping(source = "topicId", target = "followTopicId")
+  @Mapping(source = "topicName", target = "followTopicname")
+  FollowTopicGetDTO converEntityToFollowTopicGetDTO(Topic topic);
 }

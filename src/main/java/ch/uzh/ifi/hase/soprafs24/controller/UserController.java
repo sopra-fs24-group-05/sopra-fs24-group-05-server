@@ -2,8 +2,10 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowItemGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowUserGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowTopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
@@ -142,6 +144,25 @@ public class UserController {
   @ResponseBody
   public void followItem(@PathVariable Long userId, @RequestBody Long followItemId){
     userService.followItem(userId, followItemId);
+  }
+
+  @PutMapping("/users/{userId}/followTopics")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void followTopic(@PathVariable Long userId, @RequestBody Long followTopicId){
+    userService.followTopic(userId, followTopicId);
+  }
+  
+  @GetMapping("/users/{userId}/followTopics")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<FollowTopicGetDTO> getFollowTopicList(@PathVariable Long userId){
+    List<Topic> followTopics = userService.getFollowTopics(userId);
+    List<FollowTopicGetDTO> followTopicGetDTOs = new ArrayList<>();
+    for(Topic topic : followTopics){
+      followTopicGetDTOs.add(DTOMapper.INSTANCE.converEntityToFollowTopicGetDTO(topic));
+    }
+    return followTopicGetDTOs;
   }
 
   @PutMapping("/users/editAvatar/{userId}")
