@@ -6,9 +6,14 @@ import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +28,9 @@ public class CommentRepositoryIntegrationTest_3 {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @MockBean
+    private ServerEndpointExporter serverEndpointExporter;
 
     @Test
     public void testSaveComment() {

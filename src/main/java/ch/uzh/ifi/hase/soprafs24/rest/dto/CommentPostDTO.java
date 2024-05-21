@@ -9,6 +9,7 @@ public class CommentPostDTO {
   private Long score;
   private String content;
   private Long thumbsUpNum;
+  private Long fatherCommentId;
 
   // get & set methods
   public Long getCommentId(){
@@ -62,8 +63,14 @@ public class CommentPostDTO {
   public Long getThumbsUpNum(){
     return this.thumbsUpNum;
   }
-
   public void setThumbsUpNum(Long thumbsUpNum){
     this.thumbsUpNum=thumbsUpNum;
+  }
+
+  public void setFatherCommentId(Long fatherCommentId){
+    this.fatherCommentId = fatherCommentId;
+  }
+  public Long getFatherCommentId(){
+    return this.fatherCommentId;
   }
 }

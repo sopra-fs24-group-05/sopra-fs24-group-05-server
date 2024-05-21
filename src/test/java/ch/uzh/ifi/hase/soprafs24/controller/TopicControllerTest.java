@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
+import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
@@ -60,6 +61,9 @@ public class TopicControllerTest {
 
   @MockBean
   private ItemService itemService;
+
+  @MockBean
+  private ChatService chatService;
 
   @Test
   public void createTopic_whenValidInput_thenReturnCreated() throws Exception {

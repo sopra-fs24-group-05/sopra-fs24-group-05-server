@@ -46,7 +46,9 @@ public class UserRepositoryIntegrationTest {
   public void setup(){
 
     backUpData = userRepository.findAll(); // 保存数据
-    entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();//清空数据
+    userRepository.deleteAll();
+    //entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();// may cause inconsistence in database
+
     //given
     user = new User();
     user.setUsername("firstname@lastname");
@@ -54,7 +56,7 @@ public class UserRepositoryIntegrationTest {
     user.setStatus(UserStatus.OFFLINE);
     user.setToken("1");
     user.setIdentity(UserIdentity.STUDENT);
-    user.setAvater("this is a image text");
+    user.setAvatar("this is a image text");
   }
 
   @Test

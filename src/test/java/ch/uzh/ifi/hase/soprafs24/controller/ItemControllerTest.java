@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
@@ -63,6 +64,9 @@ public class ItemControllerTest {
 
   @MockBean
   private CommentService commentService;
+  
+  @MockBean
+  private ChatService chatService;
 
   @Test
   public void addItem_whenValidInput_thenReturnCreated() throws Exception {

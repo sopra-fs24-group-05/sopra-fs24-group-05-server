@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.config.WebSocketConfig;
 import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,6 +33,9 @@ public class UserServiceIntegrationTest {
   @Autowired
   private UserRepository userRepository;
 
+  @MockBean
+  private WebSocketConfig webSocketConfig;
+
   @Autowired
   private UserService userService;
 
@@ -49,7 +54,7 @@ public class UserServiceIntegrationTest {
     testUser.setStatus(UserStatus.OFFLINE);
     testUser.setToken("1");
     testUser.setIdentity(UserIdentity.STUDENT);
-    testUser.setAvater("this is a image text");
+    testUser.setAvatar("this is a image text");
 
   }
 
@@ -87,7 +92,7 @@ public class UserServiceIntegrationTest {
     testUser2.setStatus(UserStatus.OFFLINE);
     testUser2.setToken("1");
     testUser2.setIdentity(UserIdentity.STUDENT);
-    testUser2.setAvater("this is a image text");
+    testUser2.setAvatar("this is a image text");
 
     // change the name but forget about the username
     //testUser2.setName("testName2");

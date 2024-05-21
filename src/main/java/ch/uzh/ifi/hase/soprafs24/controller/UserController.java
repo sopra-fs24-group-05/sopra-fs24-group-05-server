@@ -168,7 +168,7 @@ public class UserController {
   @PutMapping("/users/editAvatar/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public void editAvatar(@PathVariable Long userId, @RequestParam String avatar){
+  public void editAvatar(@PathVariable Long userId, @RequestBody String avatar){
     userService.setAvater(userId, avatar);
   }
 

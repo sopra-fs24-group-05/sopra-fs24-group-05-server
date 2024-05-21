@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowTopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.FollowUserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
@@ -62,6 +63,9 @@ public class UserControllerTest {
 
   @MockBean
   private ItemService itemService;
+
+  @MockBean
+  private ChatService chatService;
 
   @Test
   public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {

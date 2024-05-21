@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 public class ItemGetDTO {

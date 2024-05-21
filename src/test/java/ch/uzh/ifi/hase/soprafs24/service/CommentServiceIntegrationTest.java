@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.config.WebSocketConfig;
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
@@ -42,6 +43,9 @@ public class CommentServiceIntegrationTest {
 
   @MockBean
   private ItemRepository itemRepository;
+
+  @MockBean
+  private WebSocketConfig webSocketConfig;
 
   private Comment testComment;
   private List<Comment> backUpData;

@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
@@ -61,6 +62,9 @@ public class TranslateControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private ChatService chatService;
 
     @Test
     public void translateText_whenValidInput_thenReturnTranslatedText() throws Exception {

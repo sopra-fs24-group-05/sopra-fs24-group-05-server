@@ -96,72 +96,32 @@ public class User implements Serializable {
   //@Column(columnDefinition = "TEXT", nullable = true)
   //private String followTopicList;
 
-  public Long getUserId() {
-    return userId;
-  }
-
+  public Long getUserId() { return userId; }
   /* 
    * Only to be used in test
   */
-  public void setUserId(Long userId) {
-    this.userId = userId;
-  }
+  public void setUserId(Long userId) { this.userId = userId; }
 
-  public String getUsername() {
-    return username;
-  }
+  public String getUsername() { return username; }
+  public void setUsername(String username) { this.username = username; }
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+  public String getToken() { return token; }
+  public void setToken(String token) { this.token = token; }
 
-  public String getToken() {
-    return token;
-  }
+  public UserStatus getStatus() { return status; }
+  public void setStatus(UserStatus status) { this.status = status; }
 
-  public void setToken(String token) {
-    this.token = token;
-  }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-  public UserStatus getStatus() {
-    return status;
-  }
+    public Date getCreateDate() { return createDate; }
+    public void setCreateDate(Date createDate) { this.createDate = createDate; }
 
-  public void setStatus(UserStatus status) {
-    this.status = status;
-  }
+    public Date getBirthday() { return birthday; }
+    public void setBirthday(Date birthday) { this.birthday = birthday; }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getAvater(){
-        return this.avatar;
-    }
-
-    public void setAvater(String avatar){
-        this.avatar=avatar;
-    }
+    public String getAvatar(){ return this.avatar; }
+    public void setAvatar(String avatar){ this.avatar=avatar; }
 
     public void setIdentity(UserIdentity identity) { this.identity = identity; }
     public UserIdentity getIdentity() { return identity; }

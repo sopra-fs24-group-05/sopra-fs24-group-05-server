@@ -15,11 +15,11 @@ public class UserGetDTO {
   private Date birthday;
   private String token;
   private UserIdentity identity;
+  private String avatar;
 
   public Long getUserId() {
     return userId;
   }
-
   public void setUserId(Long userId) {
     this.userId = userId;
   }
@@ -27,7 +27,6 @@ public class UserGetDTO {
   public String getUsername() {
     return username;
   }
-
   public void setUsername(String username) {
     this.username = username;
   }
@@ -35,7 +34,6 @@ public class UserGetDTO {
   public UserStatus getStatus() {
     return status;
   }
-
   public void setStatus(UserStatus status) {
     this.status = status;
   }
@@ -43,36 +41,34 @@ public class UserGetDTO {
   public String getPassword() {
         return password;
     }
+  public void setPassword(String password) {
+      this.password = password;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public Date getCreateDate() {
+      return createDate;
+  }
+  public void setCreateDate(Date createDate) {
+      this.createDate = createDate;
+  }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
+  public Date getBirthday() {
+      return birthday;
+  }
+  public void setBirthday(Date birthday) {
+      this.birthday = birthday;
+  }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
+  public String getToken() {
+      return token;
+  }
+  public void setToken(String token) {
+      this.token = token;
+  }
 
-    public Date getBirthday() {
-        return birthday;
-    }
+  public void setIdentity(UserIdentity identity) { this.identity = identity; }
+  public UserIdentity getIdentity() { return this.identity; }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public void setIdentity(UserIdentity identity) { this.identity = identity; }
-
-    public UserIdentity getIdentity() { return identity; }
+  public void setAvatar(String avatar){ this.avatar = avatar;}
+  public String getAvatar(){ return this.avatar;}
 }

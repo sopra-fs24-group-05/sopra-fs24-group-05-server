@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
-
-
 @RestController
 public class CommentController {
 
@@ -80,7 +76,7 @@ public class CommentController {
   }
 
   
-  @PutMapping("comments/LikeComment/{commentId}/{userId}")
+  @PutMapping("/comments/LikeComment/{commentId}/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public CommentStatusGetDTO addUserIdToLikedList(@PathVariable Long userId, @PathVariable Long commentId) {
@@ -92,16 +88,15 @@ public class CommentController {
     return DTOMapper.INSTANCE.converParamToCommentStatusGetDTO(isAlreadyLiked, thumbsUpNum);
   }
 
-  @PostMapping("reply/create")
+  @PostMapping("/reply/create")
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public void createReply(@RequestBody CommentPostDTO replyPostDTO) {
     Comment replyToBeCreate = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(replyPostDTO);
     commentService.createReply(replyToBeCreate);
-      
   }
 
-  @GetMapping("reply/get/{fatherCommentId}")
+  @GetMapping("/reply/get/{fatherCommentId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public List<ReplyGetDTO> getReplyByFatherCommentId(@PathVariable Long fatherCommentId){

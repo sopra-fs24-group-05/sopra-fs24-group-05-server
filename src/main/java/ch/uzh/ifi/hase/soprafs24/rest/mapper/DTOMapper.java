@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 
+import ch.uzh.ifi.hase.soprafs24.entity.ChatMessage;
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
@@ -42,6 +43,7 @@ public interface DTOMapper {
   @Mapping(source = "token", target = "token")
   @Mapping(source = "status", target = "status")
   @Mapping(source = "identity", target = "identity")
+  @Mapping(source = "avatar", target = "avatar")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
 
@@ -89,6 +91,7 @@ public interface DTOMapper {
   @Mapping(source = "score", target = "score")
   @Mapping(source = "content", target = "content")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
+  @Mapping(source = "fatherCommentId", target = "fatherCommentId")
   Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
 
   @Mapping(source = "commentId", target = "commentId")
@@ -122,4 +125,22 @@ public interface DTOMapper {
   @Mapping(source = "topicId", target = "followTopicId")
   @Mapping(source = "topicName", target = "followTopicname")
   FollowTopicGetDTO converEntityToFollowTopicGetDTO(Topic topic);
+
+  @Mapping(source = "messageId", target = "messageId")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source  = "itemId", target = "itemId")
+  @Mapping(source = "userId", target = "userId")
+  //@Mapping(source = "userAvatar", target = "userAvatar")
+  //@Mapping(source = "messageTime", target = "messageTime")
+  ChatMessage converMessagePostDTOToChatMessage(MessagePostDTO messagePostDTO);
+  
+  @Mapping(source = "messageId", target = "messageId")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source  = "itemId", target = "itemId")
+  @Mapping(source = "userId", target = "userId")
+  // the following three field will be set when creating message and before saving it to database
+  @Mapping(source = "userName", target = "userName")
+  @Mapping(source = "userAvatar", target = "userAvatar")
+  @Mapping(source = "messageTime", target = "messageTime")
+  MessageGetDTO converChatMessageToMessageGetDTO(ChatMessage chatMessage);
 }

@@ -108,7 +108,7 @@ public class CommentService {
     if(reply.getContent().length()>reply.MAX_LENGTH){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The reply exceeded the 250-character limit");
     }
-    if(reply.getFatherCommentId().equals(null)){
+    if(reply.getFatherCommentId()==null){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"fatherCommentId missing");
     }
     commentRepository.save(reply);
