@@ -113,4 +113,22 @@ public class ItemController {
         itemService.deleteItemByItemId(itemId);
     }
 
+    @GetMapping("/items/search")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ItemGetDTO>> searchItemsByKeyword(@RequestParam String keyword) {
+        List<Item> items = itemService.searchItemsByKeyword(keyword);
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(itemGetDTOs);
+    }
+
+    @GetMapping("/items/sortedByCommentCount/{topicId}")
+    public ResponseEntity<List<ItemGetDTO>> getItemsSortedByCommentCountAndTopicId(@PathVariable Integer topicId) {
+        List<Item> items = itemService.getItemsSortedByCommentCountAndTopicId(topicId);
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(itemGetDTOs);
+    }
 }

@@ -102,4 +102,12 @@ public class ItemRepositoryTest {
         assertEquals(1, items.size());
         assertEquals(item.getItemName(), items.get(0).getItemName());
     }
+
+    @Test
+    public void findByKeyword_success() {
+        List<Item> found = itemRepository.findByKeyword("Test");
+        assertNotNull(found);
+        assertFalse(found.isEmpty());
+        assertTrue(found.stream().anyMatch(item -> item.getItemName().contains("Test")));
+    }
 }

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
@@ -306,5 +307,61 @@ public class ItemServiceTest {
         verify(itemRepository, times(0)).save(any());
     }
 
+    @Test
+    public void searchItemsByKeyword_validKeyword_success() {
+        // given
+        String keyword = "Test";
+        Item item1 = new Item();
+        item1.setItemName("Test Item 1");
+        Item item2 = new Item();
+        item2.setItemName("Test Item 2");
 
+        List<Item> items = Arrays.asList(item1, item2);
+
+        when(itemRepository.findByKeyword(anyString())).thenReturn(items);
+
+        // when
+        List<Item> foundItems = itemService.searchItemsByKeyword(keyword);
+
+        // then
+        assertEquals(2, foundItems.size());
+        assertEquals("Test Item 1", foundItems.get(0).getItemName());
+        assertEquals("Test Item 2", foundItems.get(1).getItemName());
+    }
+
+    @Test
+    public void getItemsSortedByCommentCountAndTopicId_success() {
+        // given
+        Integer topicId = 1;
+
+        Comment comment1 = new Comment();
+        comment1.setCommentItemId(1L);
+
+        Comment comment2 = new Comment();
+        comment2.setCommentItemId(1L);
+
+        Comment comment3 = new Comment();
+        comment3.setCommentItemId(2L);
+
+        Item item1 = new Item();
+        item1.setItemId(1L);
+        item1.setTopicId(topicId);
+
+        Item item2 = new Item();
+        item2.setItemId(2L);
+        item2.setTopicId(topicId);
+
+        when(commentRepository.findAll()).thenReturn(Arrays.asList(comment1, comment2, comment3));
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
+        when(itemRepository.findById(2L)).thenReturn(Optional.of(item2));
+        when(itemRepository.findAllById(anyList())).thenReturn(Arrays.asList(item1, item2));
+
+        // when
+        List<Item> items = itemService.getItemsSortedByCommentCountAndTopicId(topicId);
+
+        // then
+        assertEquals(2, items.size());
+        assertEquals(1L, items.get(0).getItemId());
+        assertEquals(2L, items.get(1).getItemId());
+    }
 }
