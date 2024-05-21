@@ -390,4 +390,60 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$[1].itemId", is(item2.getItemId().intValue())))
                 .andExpect(jsonPath("$[1].itemName", is(item2.getItemName())));
     }
+
+    @Test
+    public void getItemByItemId_incrementsPopularity() throws Exception {
+        Long itemId = 1L;
+        Item item = new Item();
+        item.setItemId(itemId);
+        item.setItemName("Test Item");
+        item.setContent("Description");
+        item.setScore(9.0);
+        item.setTopicId(1);
+        item.setPopularity(5);
+
+        when(itemService.getItemByItemId(itemId)).thenReturn(item);
+
+        mockMvc.perform(get("/items/getByItemId/{itemId}", itemId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId", is(item.getItemId().intValue())))
+                .andExpect(jsonPath("$.itemName", is(item.getItemName())))
+                .andExpect(jsonPath("$.content", is(item.getContent())))
+                .andExpect(jsonPath("$.score", is(item.getScore())))
+                .andExpect(jsonPath("$.topicId", is(item.getTopicId())))
+                .andExpect(jsonPath("$.popularity", is(item.getPopularity())));
+    }
+
+    @Test
+    public void getItemsSortedByPopularity_success() throws Exception {
+        Item item1 = new Item();
+        item1.setItemId(1L);
+        item1.setItemName("Test Item 1");
+        item1.setPopularity(10);
+
+        Item item2 = new Item();
+        item2.setItemId(2L);
+        item2.setItemName("Test Item 2");
+        item2.setPopularity(5);
+
+        List<Item> items = Arrays.asList(item1, item2);
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+
+        when(itemService.getItemsSortedByPopularity()).thenReturn(items);
+
+        mockMvc.perform(get("/items/sortedByPopularity")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].itemId", is(item1.getItemId().intValue())))
+                .andExpect(jsonPath("$[0].itemName", is(item1.getItemName())))
+                .andExpect(jsonPath("$[0].popularity", is(item1.getPopularity())))
+                .andExpect(jsonPath("$[1].itemId", is(item2.getItemId().intValue())))
+                .andExpect(jsonPath("$[1].itemName", is(item2.getItemName())))
+                .andExpect(jsonPath("$[1].popularity", is(item2.getPopularity())));
+    }
+
 }

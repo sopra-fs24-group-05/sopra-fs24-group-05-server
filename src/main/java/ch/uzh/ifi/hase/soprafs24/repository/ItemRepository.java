@@ -30,4 +30,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i WHERE i.itemName LIKE %:keyword%")
     List<Item> findByKeyword(@Param("keyword") String keyword);
+
+    List<Item> findAllByOrderByPopularityDesc();
 }

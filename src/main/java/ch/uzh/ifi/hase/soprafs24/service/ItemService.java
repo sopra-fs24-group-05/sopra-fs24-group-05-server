@@ -80,7 +80,22 @@ public class ItemService {
     }
 
     public List<Item> getItemsByTopicName(String topicName) {
-        return itemRepository.findByTopicName(topicName);
+        List<Item> items = itemRepository.findByTopicName(topicName);
+        if (items.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No items found for topic: " + topicName);
+        }
+        items.forEach(item -> {
+            item.incrementPopularity();
+            itemRepository.save(item);
+        });
+        return items;
+    }
+
+    public Item getItemByItemId(Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found"));
+        item.incrementPopularity();
+        itemRepository.save(item);
+        return item;
     }
 
     public Item addItemToTopic(Integer topicId, Item item) {
@@ -109,10 +124,8 @@ public class ItemService {
         }
         itemRepository.deleteById(Long.valueOf(itemId));
     }
-    
-    public Item getItemByItemId(Long itemId){
-        return itemRepository.findByItemId(itemId);
-    }
+
+
 
     public List<Item> searchItemsByKeyword(String keyword) {
         return itemRepository.findByKeyword(keyword);
@@ -136,5 +149,10 @@ public class ItemService {
                 .collect(Collectors.toList());
 
         return itemRepository.findAllById(sortedItemIds);
+    }
+
+
+    public List<Item> getItemsSortedByPopularity() {
+        return itemRepository.findAllByOrderByPopularityDesc(); // 需要在 ItemRepository 中添加对应的方法
     }
 }

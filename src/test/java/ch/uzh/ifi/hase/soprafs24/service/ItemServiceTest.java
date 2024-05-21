@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -152,22 +153,7 @@ public class ItemServiceTest {
         assertEquals("Item 1", foundItems.get(0).getItemName());
     }
 
-    @Test
-    public void getItemsByTopicName_validName_success() {
-        // given
-        String topicName = "Test Topic";
-        Item item = new Item();
-        item.setItemName("Item 1");
 
-        when(itemRepository.findByTopicName(anyString())).thenReturn(Collections.singletonList(item));
-
-        // when
-        List<Item> foundItems = itemService.getItemsByTopicName(topicName);
-
-        // then
-        assertEquals(1, foundItems.size());
-        assertEquals("Item 1", foundItems.get(0).getItemName());
-    }
 
     @Test
     public void addItemToTopic_validInput_success() {
@@ -249,7 +235,7 @@ public class ItemServiceTest {
         item.setItemId(itemId);
         item.setItemName("Test Item");
 
-        when(itemRepository.findByItemId(anyLong())).thenReturn(item);
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
         // when
         Item foundItem = itemService.getItemByItemId(itemId);
@@ -257,7 +243,26 @@ public class ItemServiceTest {
         // then
         assertEquals(itemId, foundItem.getItemId());
         assertEquals("Test Item", foundItem.getItemName());
-        verify(itemRepository, times(1)).findByItemId(anyLong());
+        verify(itemRepository, times(1)).findById(anyLong());
+        verify(itemRepository, times(1)).save(item);
+    }
+
+    @Test
+    public void getItemByItemId_invalidId_throwsException() {
+        // given
+        Long itemId = 1L;
+
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            itemService.getItemByItemId(itemId);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Item not found", exception.getReason());
+        verify(itemRepository, times(1)).findById(anyLong());
+        verify(itemRepository, never()).save(any(Item.class));
     }
 
     @Test
@@ -363,5 +368,66 @@ public class ItemServiceTest {
         assertEquals(2, items.size());
         assertEquals(1L, items.get(0).getItemId());
         assertEquals(2L, items.get(1).getItemId());
+    }
+
+    @Test
+    public void getItemByItemId_incrementsPopularity() {
+        Long itemId = 1L;
+        Item item = new Item();
+        item.setItemId(itemId);
+        item.setPopularity(5);
+
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+        when(itemRepository.save(any(Item.class))).thenReturn(item);
+
+        itemService.getItemByItemId(itemId);
+
+        verify(itemRepository, times(1)).save(item);
+        assertEquals(6, item.getPopularity());
+    }
+
+    @Test
+    public void getItemsSortedByPopularity_success() {
+        List<Item> items = Arrays.asList(new Item(), new Item());
+        when(itemRepository.findAllByOrderByPopularityDesc()).thenReturn(items);
+
+        List<Item> sortedItems = itemService.getItemsSortedByPopularity();
+
+        assertEquals(items.size(), sortedItems.size());
+        verify(itemRepository, times(1)).findAllByOrderByPopularityDesc();
+    }
+
+    @Test
+    public void getItemsByTopicName_validTopic_success() {
+        String topicName = "Test Topic";
+        Item item1 = new Item();
+        item1.setItemId(1L);
+        item1.setItemName("Item A");
+
+        Item item2 = new Item();
+        item2.setItemId(2L);
+        item2.setItemName("Item B");
+
+        when(itemRepository.findByTopicName(topicName)).thenReturn(Arrays.asList(item1, item2));
+
+        List<Item> items = itemService.getItemsByTopicName(topicName);
+
+        assertEquals(2, items.size());
+        verify(itemRepository, times(1)).findByTopicName(topicName);
+        verify(itemRepository, times(1)).save(item1);
+        verify(itemRepository, times(1)).save(item2);
+    }
+
+    @Test
+    public void getItemsByTopicName_invalidTopic_throwsException() {
+        String topicName = "Invalid Topic";
+        when(itemRepository.findByTopicName(topicName)).thenReturn(Arrays.asList());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            itemService.getItemsByTopicName(topicName);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("No items found for topic: " + topicName, exception.getReason());
     }
 }

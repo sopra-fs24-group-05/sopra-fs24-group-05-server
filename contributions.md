@@ -73,6 +73,7 @@
 
   Learning WebSocket 
 
+
 * Yiming Xiao(24/05/08~24/05/15)
 
     Finish test all functions in TopicService and TopicRepository.
@@ -84,6 +85,22 @@
     * Related files include `ItemService.java`, `ItemServiceTest.java`, `ItemRepository.java`, `ItemRepositoryTest.java`in the project.
 
     Finish test Topic & Item parts in DTOMapper.
+
+    * Related file `DTOMapper.java` in the project.
+
+### Week 3
+
+* Yiming Xiao(24/05/15~24/05/22)
+
+  Finish test all functions in TopicService and TopicRepository.
+
+    * Related files include `TopicService.java`, `TopicServiceTest.java`, `TopicRepository.java`, `TopicRepositoryTest.java`in the project.
+
+  Finish test all functions in ItemService and ItemRepository.
+
+    * Related files include `ItemService.java`, `ItemServiceTest.java`, `ItemRepository.java`, `ItemRepositoryTest.java`in the project.
+
+  Finish test Topic & Item parts in DTOMapper.
 
     * Related file `DTOMapper.java` in the project.
  

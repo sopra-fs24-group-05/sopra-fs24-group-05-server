@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 public class ItemGetDTO {
@@ -21,6 +22,8 @@ public class ItemGetDTO {
 
     private Integer topicId;
 
+    @Column
+    private Integer popularity = 0;
 
 
     // Getters and Setters
@@ -32,7 +35,9 @@ public class ItemGetDTO {
         this.itemId = itemId;
     }
 
-    public String getItemName() {return itemName;}
+    public String getItemName() {
+        return itemName;
+    }
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
@@ -58,11 +63,17 @@ public class ItemGetDTO {
         return likes;
     }
 
-    public void setLikes(int likes) {this.likes = likes;}
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
-    public double getAverageScore() {return averageScore;}
+    public double getAverageScore() {
+        return averageScore;
+    }
 
-    public void setAverageScore(double averageScore) {this.averageScore = averageScore;}
+    public void setAverageScore(double averageScore) {
+        this.averageScore = averageScore;
+    }
 
     public void addLike() {
         this.likes++;
@@ -76,10 +87,24 @@ public class ItemGetDTO {
         this.topic = topic;
     }
 
-    public Integer getTopicId() { return topicId; }
+    public Integer getTopicId() {
+        return topicId;
+    }
 
     public void setTopicId(Integer topicId) {
         this.topicId = topicId;
     }
 
+    public int getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
+    }
+
+    public void incrementPopularity() {
+        this.popularity++;
+
+    }
 }

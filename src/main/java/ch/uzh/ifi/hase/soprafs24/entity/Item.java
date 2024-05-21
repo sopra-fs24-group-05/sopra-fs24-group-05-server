@@ -32,6 +32,9 @@ public class Item {
     @Column(name = "topicId")
     private Integer topicId;
 
+    @Column
+    private Integer popularity = 0;
+
     @ManyToOne
     @JoinColumn(name = "topicId", referencedColumnName = "topicId", nullable = false, insertable = false, updatable = false)
     private Topic topic;
@@ -98,5 +101,17 @@ public class Item {
     public void updateScore(CommentRepository commentRepository) {
         Double averageScore = commentRepository.calculateAverageScoreByCommentItemId(itemId);
         this.score = averageScore != null ? averageScore : 0.0;
+    }
+
+    public int getPopularity() {
+        return popularity != null ? popularity : 0;
+    }
+
+    public void setPopularity(Integer popularity) {
+        this.popularity = popularity;
+    }
+
+    public void incrementPopularity() {
+        this.popularity++;
     }
 }

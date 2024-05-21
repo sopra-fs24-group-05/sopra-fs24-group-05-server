@@ -131,4 +131,13 @@ public class ItemController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(itemGetDTOs);
     }
+
+    @GetMapping("/items/sortedByPopularity")
+    public ResponseEntity<List<ItemGetDTO>> getItemsSortedByPopularity() {
+        List<Item> items = itemService.getItemsSortedByPopularity();
+        List<ItemGetDTO> itemGetDTOs = items.stream()
+                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(itemGetDTOs);
+    }
 }

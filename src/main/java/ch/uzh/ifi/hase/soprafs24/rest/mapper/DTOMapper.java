@@ -72,6 +72,7 @@ public interface DTOMapper {
   @Mapping(source = "score", target = "score")
   @Mapping(source = "likes", target = "likes")
   @Mapping(source = "topicId", target = "topicId")
+  @Mapping(source = "popularity", target = "popularity")
   Item convertItemPostDTOtoEntity(ItemPostDTO itemPostDTO);  
 
   @Mapping(source = "itemId" , target = "itemId")
@@ -81,6 +82,7 @@ public interface DTOMapper {
   @Mapping(source = "score", target = "averageScore")
   @Mapping(source = "likes", target = "likes")
   @Mapping(source = "topicId", target = "topicId")
+  @Mapping(source = "popularity", target = "popularity")
   ItemGetDTO convertEntityToItemGetDTO(Item item);
   
 

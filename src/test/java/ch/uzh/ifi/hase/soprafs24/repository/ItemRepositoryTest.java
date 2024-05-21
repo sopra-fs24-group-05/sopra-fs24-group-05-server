@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
 @ComponentScan(basePackages = "ch.uzh.ifi.hase.soprafs24", includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {ItemRepository.class, TopicRepository.class}))
 public class ItemRepositoryTest {
+
+    @MockBean
+    private ServerEndpointExporter serverEndpointExporter; // Mock ServerEndpointExporter to avoid loading WebSocket configuration
 
     @Autowired
     private ItemRepository itemRepository;
@@ -46,6 +51,7 @@ public class ItemRepositoryTest {
         item.setLikes(10);
         item.setScore(5.0);
         item.setTopicId(topic.getTopicId());
+        item.setPopularity(100);
         itemRepository.save(item);
     }
 
@@ -79,6 +85,7 @@ public class ItemRepositoryTest {
         item2.setLikes(20);
         item2.setScore(10.0);
         item2.setTopicId(topic.getTopicId()); // 转换为Long
+        item2.setPopularity(200);
         itemRepository.save(item2);
 
         List<Item> items = itemRepository.findByTopicIdOrderByScoreDesc(topic.getTopicId()); // 转换为Long
@@ -109,5 +116,28 @@ public class ItemRepositoryTest {
         assertNotNull(found);
         assertFalse(found.isEmpty());
         assertTrue(found.stream().anyMatch(item -> item.getItemName().contains("Test")));
+    }
+
+    @Test
+    public void incrementPopularity_success() {
+        Item item = itemRepository.findByItemName("Test Item");
+        int initialPopularity = item.getPopularity();
+
+        item.incrementPopularity();
+        itemRepository.save(item);
+
+        Item updatedItem = itemRepository.findByItemName("Test Item");
+        assertEquals(initialPopularity + 1, updatedItem.getPopularity());
+    }
+
+    @Test
+    public void findAllByOrderByPopularityDesc_success() {
+        List<Item> items = itemRepository.findAllByOrderByPopularityDesc();
+        assertNotNull(items);
+        assertTrue(items.size() > 1);
+
+        for (int i = 0; i < items.size() - 1; i++) {
+            assertTrue(items.get(i).getPopularity() >= items.get(i + 1).getPopularity());
+        }
     }
 }
