@@ -9,10 +9,12 @@ import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -32,6 +34,7 @@ public class WebSocketServer {
 
   private static final Logger log = LoggerFactory.getLogger(WebSocketServer.class);
   private final ChatService chatService;
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Autowired
   public WebSocketServer(ChatService chatService) {
@@ -70,11 +73,18 @@ public class WebSocketServer {
 
     // called when recieve message from client / client send message
     @OnMessage 
-    public void onMessage(Session session, MessagePostDTO messagePostDTO){
-      log.info("group char (itemId = {}) recieve message:{}", currentItemId, messagePostDTO);
-      ChatMessage chatMessage = DTOMapper.INSTANCE.converMessagePostDTOToChatMessage(messagePostDTO);
-      chatService.saveChatMessage(chatMessage);
-      sendMessageToAll(DTOMapper.INSTANCE.converChatMessageToMessageGetDTO(chatMessage));
+    public void onMessage(Session session, String message){
+      try{
+        log.info("group char (itemId = {}) recieve message:{}", currentItemId, message);
+        MessagePostDTO messagePostDTO = objectMapper.readValue(message, MessagePostDTO.class);
+        ChatMessage chatMessage = DTOMapper.INSTANCE.converMessagePostDTOToChatMessage(messagePostDTO);
+        chatService.saveChatMessage(chatMessage);
+        sendMessageToAll(DTOMapper.INSTANCE.converChatMessageToMessageGetDTO(chatMessage));
+
+      } catch (IOException e){
+        // error decoding JSON
+        log.error("fail to decode message", e);
+      }
     }
 
   @OnError
@@ -88,9 +98,10 @@ public class WebSocketServer {
 
   private void sendMessageToAll(MessageGetDTO messageGetDTO){
     try{
+      String jsonMessage = objectMapper.writeValueAsString(messageGetDTO);
       for(Session session : groupSessionMap.get(currentItemId)){
-        log.info("send to client {}, message = {}", userMap.get(session), messageGetDTO);
-        session.getBasicRemote().sendObject(messageGetDTO);
+        log.info("send to client {}, message = {}", userMap.get(session), jsonMessage);
+        session.getBasicRemote().sendText(jsonMessage);
       }
     } catch(Exception e){
       log.error("sending message to client fail", e);
