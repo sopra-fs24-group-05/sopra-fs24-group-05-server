@@ -90,6 +90,24 @@ public class CommentRepositoryTest {
   }
 
   @Test
+  public void findByCommentItemId_success() {
+    // given
+    Long commentItemId = 1L;
+    
+    // when
+    List<Comment> foundComments = commentRepository.findByCommentItemId(commentItemId);
+    
+    // then
+    assertEquals(1, foundComments.size());
+    // Check each found comment to ensure it has the correct comment item ID
+    for (Comment foundComment : foundComments) {
+        assertEquals(commentItemId, foundComment.getCommentItemId());
+    }
+    // Check content of the found comment
+    assertEquals("test content", foundComments.get(0).getContent());
+  }
+
+  @Test
   public void existsByUserId_success() {
     // given
 

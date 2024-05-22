@@ -49,7 +49,7 @@ public class ChatService {
     return chatRepository.findByItemId(itemId);
   }
 
-  public void saveChatMessage(ChatMessage chatMessage){
+  public ChatMessage saveChatMessage(ChatMessage chatMessage){
     User userbyId = userRepository.findById(chatMessage.getUserId()).orElseThrow();
     chatMessage.setUserAvatar(userbyId.getAvatar()); 
     chatMessage.setUserName(userbyId.getUsername());
@@ -57,6 +57,7 @@ public class ChatService {
     checkMessageFieldsIsNull(chatMessage);
     chatRepository.save(chatMessage);
     chatRepository.flush();
+    return chatMessage;
   }
 
   private void checkMessageFieldsIsNull(ChatMessage chatMessage){
