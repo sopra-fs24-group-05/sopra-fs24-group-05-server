@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ReplyGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
@@ -69,6 +70,7 @@ public class CommentControllerTest {
 
   private Comment comment;
   private Comment reply;
+  private User user;
 
   @BeforeEach
   public void setup(){
@@ -78,7 +80,7 @@ public class CommentControllerTest {
     comment.setCommentOwnerName("commentOwner");
     comment.setCommentItemId(1L);
     comment.setScore(5L);
-    comment.setContent(null);
+    comment.setContent("null");
     comment.setThumbsUpNum(1L);
     comment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)));
 
@@ -88,10 +90,17 @@ public class CommentControllerTest {
     reply.setCommentOwnerName("replyOwner");
     reply.setCommentItemId(1L);
     reply.setScore(5L);
-    reply.setContent(null);
+    reply.setContent("null");
     reply.setThumbsUpNum(1L);
     reply.setLikedUserList(new ArrayList<>(Arrays.asList(1L, 2L, 3L)));
     reply.setFatherCommentId(comment.getCommentId());
+
+    user = new User();
+    user.setAvatar("test ");
+    user.setUsername("test username");
+    user.setUserId(1L);
+
+    given(userService.getUserById(Mockito.anyLong())).willReturn(user);
   }
 
   @Test

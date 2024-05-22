@@ -3,3 +3,13 @@
 
 runtime: java17
 instance_class: F2
+
+runtime: java11
+instance_class: F2
+
+handlers:
+  - url: /.*
+    script: this field is required, but ignored
+    secure: always
+    http_headers:
+      Access-Control-Allow-Origin: '*'

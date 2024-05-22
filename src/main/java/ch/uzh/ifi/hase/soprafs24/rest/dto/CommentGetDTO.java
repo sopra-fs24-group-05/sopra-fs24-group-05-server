@@ -9,61 +9,31 @@ public class CommentGetDTO {
   private Long score;
   private String content;
   private Long thumbsUpNum;
+  private String commentOwnerAvatar;
 
   // Get & set methods
-  public Long getCommentId(){
-    return this.commentId;
-  }
+  public Long getCommentId(){ return this.commentId; }
+  public void setCommentId(Long commentId){ this.commentId=commentId; }
 
-  public void setCommentId(Long commentId){
-    this.commentId=commentId;
-  }
+  public Long getCommentOwnerId(){ return this.commentOwnerId; }
+  public void setCommentOwnerId(Long commentOwnerId){ this.commentOwnerId = commentOwnerId; }
 
-  public Long getCommentOwnerId(){
-    return this.commentOwnerId;
-  }
+  public Long getCommentItemId(){ return this.commentItemId; }
+    public void setCommentItemId(Long commentItemId){ this.commentItemId = commentItemId; }
 
-  public void setCommentOwnerId(Long commentOwnerId){
-    this.commentOwnerId = commentOwnerId;
-  }
+  public String getCommentOwnerName() { return this.commentOwnerName; }
+  public void setCommentOwnerName(String commentOwnerName) { this.commentOwnerName = commentOwnerName; }
 
-  public Long getCommentItemId(){
-    return this.commentItemId;
-  }
-  
-  public void setCommentItemId(Long commentItemId){
-    this.commentItemId = commentItemId;
-  }
+  public Long getScore(){ return this.score; }
+  public void setScore(Long score){ this.score=score; }
 
-  public String getCommentOwnerName() {
-      return this.commentOwnerName;
-  }
+  public String getContent(){ return this.content; }
+  public void setContent(String content){ this.content=content; }
 
-  public void setCommentOwnerName(String commentOwnerName) {
-      this.commentOwnerName = commentOwnerName;
-  }
-  public Long getScore(){
-    return this.score;
-  }
+  public Long getThumbsUpNum(){ return this.thumbsUpNum; }
+  public void setThumbsUpNum(Long thumbsUpNum){ this.thumbsUpNum=thumbsUpNum; }
 
-  public void setScore(Long score){ 
-    this.score=score;
-  }
-
-  public String getContent(){
-    return this.content;
-  }
-
-  public void setContent(String content){
-    this.content=content;
-  }
-
-  public Long getThumbsUpNum(){
-    return this.thumbsUpNum;
-  }
-
-  public void setThumbsUpNum(Long thumbsUpNum){
-    this.thumbsUpNum=thumbsUpNum;
-  }
+  public String getCommentOwnerAvatar(){ return this.commentOwnerAvatar; }
+  public void setCommentOwnerAvatar(String commentOwnerAvatar){ this.commentOwnerAvatar = commentOwnerAvatar; }
   
 }
