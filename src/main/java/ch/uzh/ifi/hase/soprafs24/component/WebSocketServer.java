@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.annotation.Resource;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -30,16 +32,22 @@ import org.springframework.stereotype.Component;
 
 @ServerEndpoint(value = "/WebServer/{itemId}/{userId}")
 @Component
-public class WebSocketServer {
+public class WebSocketServer{
 
   private static final Logger log = LoggerFactory.getLogger(WebSocketServer.class);
-  private final ChatService chatService;
-  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Autowired
-  public WebSocketServer(ChatService chatService) {
-    this.chatService = chatService;
+  public void setApplicationContext(ChatService chatService){
+    WebSocketServer.chatService = chatService;
+    log.info("ChatService injected successfully: {}", chatService != null);
   }
+
+  private static ChatService chatService;
+
+  private final ObjectMapper objectMapper = new ObjectMapper();
+
+  // 
+  public WebSocketServer(){  }
 
   /**
    * keep track of current number of connections

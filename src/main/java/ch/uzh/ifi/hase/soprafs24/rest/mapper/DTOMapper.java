@@ -122,6 +122,7 @@ public interface DTOMapper {
 
   @Mapping(source = "itemId", target = "followItemId")
   @Mapping(source = "itemName", target = "followItemname")
+  @Mapping(source = "topicId", target = "followItemTopicId")
   FollowItemGetDTO converEntityToFollowItemGetDTO(Item item);
 
   @Mapping(source = "topicId", target = "followTopicId")

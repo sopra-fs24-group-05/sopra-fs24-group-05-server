@@ -10,6 +10,9 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -17,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 public class UserController {
+
+  private final Logger log = LoggerFactory.getLogger(UserService.class);
 
   private final UserService userService;
 
@@ -57,16 +60,9 @@ public class UserController {
   @ResponseBody
   public UserGetDTO getUserById(@PathVariable Long userId) {
     User userById=userService.getUserById(userId);
+    log.info("In userGetDTO.avatar: {}", DTOMapper.INSTANCE.convertEntityToUserGetDTO(userById).getAvatar());
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userById);
   }
-
-//  @GetMapping("/users/{userId}/followItems")
-//  @ResponseStatus(HttpStatus.OK)
-//  @ResponseBody
-//  public ResponseEntity<List<Item>> getFollowItemList(@PathVariable Long userId) {
-//      List<Item> followItems = userService.getFollowItems(userId);
-//      return ResponseEntity.ok(followItems);
-//  }
 
   @GetMapping("/users/{userId}/followUsers")
   @ResponseStatus(HttpStatus.OK)
