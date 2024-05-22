@@ -45,6 +45,7 @@ public class CommentRepositoryTest {
     comment.setCommentOwnerName("comment owner");
     comment.setCommentItemId(1L);
     comment.setScore(5L);
+    comment.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     comment.setContent("test content");
     comment.setThumbsUpNum(1L);
 
@@ -55,6 +56,7 @@ public class CommentRepositoryTest {
     childComment.setCommentOwnerName("comment owner");
     childComment.setCommentItemId(1L);
     childComment.setScore(15L);
+    childComment.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     childComment.setContent("test child content");
     childComment.setThumbsUpNum(1L);
     childComment.setFatherCommentId(comment.getCommentId());
@@ -150,6 +152,7 @@ public class CommentRepositoryTest {
     comment2.setCommentOwnerName("comment owner");
     comment2.setCommentItemId(1L);
     comment2.setScore(15L);
+    comment2.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     comment2.setContent("test content");
     comment2.setThumbsUpNum(1L);
 

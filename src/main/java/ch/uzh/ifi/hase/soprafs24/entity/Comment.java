@@ -21,6 +21,9 @@ public class Comment {
 
   @Column(nullable = false)
   private Long commentItemId;
+  
+  @Column(nullable = false, columnDefinition = "TEXT")
+  private String commentOwnerAvatar;
 
   /**
    * score to the item by the user
@@ -116,6 +119,13 @@ public class Comment {
 
   public void setFatherCommentId(Long fatherCommentId) {
       this.fatherCommentId = fatherCommentId;
+  }
+
+  public void setCommentOwnerAvatar(String commentOwnerAvatar){
+    this.commentOwnerAvatar =  commentOwnerAvatar;
+  }
+  public String getCommentOwnerAvatar(){
+    return this.commentOwnerAvatar;
   }
 
 }

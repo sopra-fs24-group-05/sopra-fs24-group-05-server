@@ -3,12 +3,15 @@ package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.config.WebSocketConfig;
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,11 +46,15 @@ public class CommentServiceIntegrationTest {
   private ItemRepository itemRepository;
 
   @MockBean
+  private UserRepository userRepository;
+
+  @MockBean
   private WebSocketConfig webSocketConfig;
 
   private Comment testComment;
   private List<Comment> backUpData;
   private Item testItem;
+  private User commentOwner;
 
   @BeforeEach
   public void setup(){
@@ -60,6 +67,7 @@ public class CommentServiceIntegrationTest {
     testComment.setCommentOwnerName("testComment owner");
     testComment.setCommentItemId(1L);
     testComment.setScore(5L);
+    testComment.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
 
@@ -69,6 +77,12 @@ public class CommentServiceIntegrationTest {
     testItem.setItemName("testItemName");
     testItem.setScore(0.0);
     testItem.setContent("test Item Description");
+
+    commentOwner = new User();
+    commentOwner.setUserId(testComment.getCommentOwnerId());
+    commentOwner.setAvatar("this is a test avatar");
+
+    Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(commentOwner));
     
     commentRepository.deleteAll();
   }

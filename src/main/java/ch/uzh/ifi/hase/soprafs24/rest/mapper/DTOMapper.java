@@ -96,15 +96,15 @@ public interface DTOMapper {
   @Mapping(source = "fatherCommentId", target = "fatherCommentId")
   Comment convertCommentPostDTOtoEntity(CommentPostDTO commentPostDTO);
 
-  @Mapping(source = "comment.commentId", target = "commentId")
-  @Mapping(source = "comment.commentOwnerId", target = "commentOwnerId")
-  @Mapping(source = "comment.commentOwnerName", target = "commentOwnerName")
-  @Mapping(source = "comment.commentItemId", target = "commentItemId")
-  @Mapping(source = "comment.score", target = "score")
-  @Mapping(source = "comment.content", target = "content")
-  @Mapping(source = "comment.thumbsUpNum", target = "thumbsUpNum")
+  @Mapping(source = "commentId", target = "commentId")
+  @Mapping(source = "commentOwnerId", target = "commentOwnerId")
+  @Mapping(source = "commentOwnerName", target = "commentOwnerName")
+  @Mapping(source = "commentItemId", target = "commentItemId")
+  @Mapping(source = "score", target = "score")
+  @Mapping(source = "content", target = "content")
+  @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   @Mapping(source = "commentOwnerAvatar", target = "commentOwnerAvatar")
-  CommentGetDTO converEntityToCommentGetDTO(Comment comment, String commentOwnerAvatar);
+  CommentGetDTO converEntityToCommentGetDTO(Comment comment);
 
   @Mapping(source = "isAlreadyLiked", target = "isAlreadyLiked")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")

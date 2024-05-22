@@ -41,6 +41,7 @@ public class CommentRepositoryIntegrationTest_3 {
         comment.setCommentItemId(1L);
         comment.setScore(5L);
         comment.setContent("This is a test comment.");
+        comment.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
         comment.setThumbsUpNum(0L);
         comment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L,2L,3L)));
 

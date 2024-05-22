@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,14 @@ public class CommentService {
 
   private final CommentRepository commentRepository;
   private final ItemRepository itemRepository;
+  private final UserRepository userRepository;
 
   @Autowired
   public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository,
-                        @Qualifier("itemRepository" ) ItemRepository itemRepository){
+                        @Qualifier("itemRepository" ) ItemRepository itemRepository, @Qualifier("userRepository" ) UserRepository userRepository){
     this.commentRepository = commentRepository;
     this.itemRepository = itemRepository;
+    this.userRepository = userRepository;
   }
 
   public Comment getCommentByCommentId(Long commentId){
@@ -91,8 +95,10 @@ public class CommentService {
     }
 
     Item itemOfComment = itemRepository.findByItemId(newComment.getCommentItemId());
+    User commentOwner = userRepository.findById(newComment.getCommentOwnerId()).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "commentOwner not found"));
     //newComment.setCommentOwnerName(newComment.getCommentOwnerName());
     newComment.setThumbsUpNum(0L);
+    newComment.setCommentOwnerAvatar(commentOwner.getAvatar());
     newComment = commentRepository.save(newComment);
     commentRepository.flush();
     itemOfComment.setScore(commentRepository.calculateAverageScoreByCommentItemId(newComment.getCommentItemId()));

@@ -41,7 +41,7 @@ public class CommentController {
   @ResponseBody
   public CommentGetDTO getCommentByCommentId(@PathVariable Long commentId){
     Comment commentByCommentId = commentService.getCommentByCommentId(commentId);
-    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId, userService.getUserById(commentByCommentId.getCommentOwnerId()).getAvatar());
+    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
   }
 
 
@@ -52,7 +52,7 @@ public class CommentController {
       List<Comment> comments = commentService.getCommentByCommentItemId(itemId);
       List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
       for(Comment comment : comments){
-          commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment, userService.getUserById(comment.getCommentOwnerId()).getAvatar()));
+          commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
       }
       return commentGetDTOs;
   }
@@ -64,7 +64,7 @@ public class CommentController {
     Comment commentInput = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
 
     Comment createdComment = commentService.createComment(commentInput);
-    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment, userService.getUserById(createdComment.getCommentOwnerId()).getAvatar());
+    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
   }
 
   @GetMapping("/comments/userId/{userId}")
@@ -75,7 +75,7 @@ public class CommentController {
     List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
     for(Comment comment:comments){
       System.out.println(comment.getContent());
-      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment, userService.getUserById(comment.getCommentOwnerId()).getAvatar()));
+      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
     }
     return commentGetDTOs;
   }

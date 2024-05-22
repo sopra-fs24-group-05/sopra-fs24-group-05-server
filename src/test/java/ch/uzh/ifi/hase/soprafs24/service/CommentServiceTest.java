@@ -2,8 +2,10 @@ package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ public class CommentServiceTest {
   @Mock
   private ItemRepository itemRepository;
 
+  @Mock
+  private UserRepository userRepository;
+
   @InjectMocks
   private CommentService commentService;
 
@@ -47,6 +52,8 @@ public class CommentServiceTest {
 
   private Item testItem;
 
+  private User commentOwner;
+
   @BeforeEach
   public void setup(){
     MockitoAnnotations.openMocks(this);
@@ -58,6 +65,7 @@ public class CommentServiceTest {
     testComment.setCommentOwnerName("testComment owner");
     testComment.setCommentItemId(1L);
     testComment.setScore(5L);
+    testComment.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
     testComment.setLikedUserList(new ArrayList<Long>(Arrays.asList(1L, 2L, 3L)));
@@ -68,9 +76,12 @@ public class CommentServiceTest {
     reply.setCommentOwnerName("reply owner");
     reply.setCommentItemId(1L);
     reply.setScore(null);
+    reply.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     reply.setContent("reply content");
     reply.setThumbsUpNum(1L);
     reply.setFatherCommentId(testComment.getCommentId());
+
+    commentOwner = new User();
 
 
     testCommentList = Collections.singletonList(testComment);
@@ -90,6 +101,7 @@ public class CommentServiceTest {
     Mockito.when(commentRepository.existsByCommentItemId(Mockito.anyLong())).thenReturn(true);
     Mockito.when(commentRepository.findById(Mockito.anyLong())).thenReturn(optionalTestComment);
     Mockito.when(commentRepository.findByCommentOwnerId(Mockito.anyLong())).thenReturn(testCommentList);
+    Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(commentOwner));
     //Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
   }
 
