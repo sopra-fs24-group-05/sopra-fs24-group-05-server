@@ -117,6 +117,8 @@ public class CommentService {
     if(reply.getFatherCommentId()==null){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"fatherCommentId missing");
     }
+    User replyOwner = userRepository.findById(reply.getCommentOwnerId()).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "replyOwner not found"));
+    reply.setCommentOwnerAvatar(replyOwner.getAvatar());
     commentRepository.save(reply);
     commentRepository.flush();
   }
