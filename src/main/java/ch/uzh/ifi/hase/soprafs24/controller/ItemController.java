@@ -1,8 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
-import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;

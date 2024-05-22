@@ -79,13 +79,7 @@ public class ItemService {
         return itemRepository.findByTopicId(topicId);
     }
 
-    public List<Item> getItemsByTopicName(String topicName) {
-        List<Item> items = itemRepository.findByTopicName(topicName);
-        if (items.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No items found for topic: " + topicName);
-        }
-        return items;
-    }
+    public List<Item> getItemsByTopicName(String topicName) {return itemRepository.findByTopicName(topicName);}
 
     public Item getItemByItemId(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found"));

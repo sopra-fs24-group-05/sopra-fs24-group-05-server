@@ -417,18 +417,6 @@ public class ItemServiceTest {
         // Removed verification of save calls
     }
 
-    @Test
-    public void getItemsByTopicName_invalidTopic_throwsException() {
-        String topicName = "Invalid Topic";
-        when(itemRepository.findByTopicName(topicName)).thenReturn(Collections.emptyList());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            itemService.getItemsByTopicName(topicName);
-        });
-
-        assertEquals("No items found for topic: Invalid Topic", exception.getReason());
-        verify(itemRepository, times(1)).findByTopicName(topicName);
-    }
 
     @Test
     public void getItemsSortedByCommentCountAndTopicId_noComments() {
