@@ -172,7 +172,7 @@ public class UserService {
 
   public void setAvater(Long userId, String avatar){
     User editUser=userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found"));
-    editUser.setAvatar(avatar);
+    editUser.setAvatar(avatar.substring(1,avatar.length()-2));
     userRepository.save(editUser);
     userRepository.flush();
   }
