@@ -3,25 +3,15 @@ package ch.uzh.ifi.hase.soprafs24.rest.dto;
 import java.util.Date;
 public class TopicGetDTO {
     private Integer topicId;
-
     private String topicName;
-
     private Date creationDate;
-
     private Integer ownerId;
-
     private Long fatherTopicId;
-
     private Long sonTopicId;
-
     private Boolean editAllowed;
-
     private String description;
-
     private int searchCount;
-
     public Integer getId() {return topicId;}
-
     public void setId(Integer topicId) {this.topicId = topicId;}
 
     public String getTopicName() {return topicName;}

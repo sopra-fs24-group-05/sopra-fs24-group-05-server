@@ -430,4 +430,16 @@ public class ItemServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("No items found for topic: " + topicName, exception.getReason());
     }
+
+    @Test
+    public void getItemsSortedByCommentCountAndTopicId_noComments() {
+        Integer topicId = 1;
+
+        when(commentRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<Item> items = itemService.getItemsSortedByCommentCountAndTopicId(topicId);
+
+        assertTrue(items.isEmpty());
+        verify(commentRepository, times(1)).findAll();
+    }
 }

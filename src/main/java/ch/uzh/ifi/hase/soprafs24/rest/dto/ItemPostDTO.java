@@ -7,26 +7,23 @@ import javax.persistence.Column;
 import java.util.Date;
 
 public class ItemPostDTO {
-
     private Long itemId;
-
     private String itemName;
-
     private String content;
-
     private Date creationDate;
-
-    private double score = 0.0;
-
-    private int likes = 0;
-
+    private double score;
+    private int likes;
     private Topic topic;
-
     private Integer topicId;
 
     @Column
-    private Integer popularity = 0;
+    private Integer popularity;
 
+    public ItemPostDTO() {
+        this.score = 0.0;
+        this.likes = 0;
+        this.popularity = 0;
+    }
 
     // Getters and Setters
     public Long getItemId() {
@@ -61,14 +58,6 @@ public class ItemPostDTO {
         this.creationDate = creationDate;
     }
 
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public double getScore() {
         return score;
     }
@@ -77,8 +66,12 @@ public class ItemPostDTO {
         this.score = score;
     }
 
-    public void addLike() {
-        this.likes++;
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public Topic getTopic() {
@@ -97,7 +90,7 @@ public class ItemPostDTO {
         this.topicId = topicId;
     }
 
-    public int getPopularity() {
+    public Integer getPopularity() {
         return popularity;
     }
 
@@ -105,8 +98,12 @@ public class ItemPostDTO {
         this.popularity = popularity;
     }
 
+    // Additional Methods
+    public void addLike() {
+        this.likes++;
+    }
+
     public void incrementPopularity() {
         this.popularity++;
-
     }
 }

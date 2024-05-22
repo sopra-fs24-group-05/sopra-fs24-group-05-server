@@ -92,16 +92,44 @@
 
 * Yiming Xiao(24/05/15~24/05/22)
 
-  Finish test all functions in TopicService and TopicRepository.
-
-    * Related files include `TopicService.java`, `TopicServiceTest.java`, `TopicRepository.java`, `TopicRepositoryTest.java`in the project.
-
-  Finish test all functions in ItemService and ItemRepository.
-
-    * Related files include `ItemService.java`, `ItemServiceTest.java`, `ItemRepository.java`, `ItemRepositoryTest.java`in the project.
-
-  Finish test Topic & Item parts in DTOMapper.
-
-    * Related file `DTOMapper.java` in the project.
+1. **Add function as per Frontend requirement**
+    * Search items by keywords: Search for items by keywords so that I can efficiently find items of interest.
+    * Get popular item:  Get which is most popular item
+    * Get items sorted by Comment Count
+    * Related Files:
+        - `Item.java`,`ItemService.java`, `ItemController.java`,
+        - `ItemTest.java`,`ItemServiceTest.java`,`ItemControllerTest.java`
+2. **Refactor DTO Classes:**
+    - ItemPostDTO:
+        - Removed default value initialization from field declarations and moved them to the constructor.
+        - Ensured type consistency and improved code readability.
+    - TopicPostDTO:
+        - Unified `Integer` and `Long` types for consistency.
+        - Streamlined the code for better maintainability.
+    - ItemGetDTO:
+        - Standardized method names to match field names.
+        - Removed unnecessary blank lines and optimized code structure.
+    - TopicGetDTO:
+        - Consistently used `Integer` and `Long` types.
+        - Improved code readability and maintainability.
+    - Related Files:
+        - `ItemPostDTO.java`,`ItemGetDTO.java`, `TopicPostDTO.java`,`TopicGetDTO.java`,`ItemService.java`,`ItemServiceTest.java`
+3. **Add Comprehensive Unit Tests:**
+    - ItemPostDTOTest:
+        - Added tests for `addLike` and `incrementPopularity` methods.
+        - Included tests for all getters and setters to ensure proper functionality.
+    - ItemGetDTOTest:
+        - Added tests for `addLike` and `incrementPopularity` methods.
+        - Included tests for all getters and setters to ensure proper functionality.
+    - ItemServiceTest:
+        - Added missing tests for `getItemsSortedByPopularity` and `searchItemsByKeyword` methods.
+        - Added a test for the `getItemsSortedByCommentCountAndTopicId` method to handle cases with no comments.
+4. **Update README and LICENSE Files:**
+    - README.md:
+        - Updated project description and usage instructions.
+        - Added detailed setup and configuration steps.
+        - Included contribution guidelines.
+    - LICENSE:
+        - Added the appropriate license for the project to ensure proper usage and distribution.
  
   

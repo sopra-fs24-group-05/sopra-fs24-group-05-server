@@ -4,25 +4,17 @@ import java.util.Date;
 
 public class TopicPostDTO {
 
-    private int topicId;
-
+    private Integer topicId;
     private String topicName;
-
-    private int ownerId;
-
+    private Integer ownerId;
     private Date creationDate;
-
     private Long fatherTopicId;
-
     private Long sonTopicId;
-
     private Boolean editAllowed;
-
     private String description;
-
     private int searchCount;
 
-    // Getter and Setter
+    // Getters and Setters
     public Integer getTopicId() {
         return topicId;
     }
@@ -39,16 +31,20 @@ public class TopicPostDTO {
         this.topicName = topicName;
     }
 
-    public Date getCreationDate(){return creationDate;}
-
-    public void setCreationDate(Date creationDate) {this.creationDate = creationDate;}
-
     public Integer getOwnerId() {
         return ownerId;
     }
 
     public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Long getFatherTopicId() {
@@ -83,8 +79,11 @@ public class TopicPostDTO {
         this.description = description;
     }
 
-    public int getSearchCount() {return searchCount;}
+    public int getSearchCount() {
+        return searchCount;
+    }
 
-    public void setSearchCount(int searchCount) {this.searchCount = searchCount;}
+    public void setSearchCount(int searchCount) {
+        this.searchCount = searchCount;
+    }
 }
-

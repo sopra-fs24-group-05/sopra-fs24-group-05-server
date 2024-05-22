@@ -7,24 +7,22 @@ import java.util.Date;
 
 public class ItemGetDTO {
     private Long itemId;
-
     private String itemName;
-
     private String content;
-
     private Date creationDate;
-
-    private double averageScore = 0.0;
-
-    private int likes = 0;
-
+    private double averageScore;
+    private int likes;
     private Topic topic;
-
     private Integer topicId;
 
     @Column
-    private Integer popularity = 0;
+    private Integer popularity;
 
+    public ItemGetDTO() {
+        this.averageScore = 0.0;
+        this.likes = 0;
+        this.popularity = 0;
+    }
 
     // Getters and Setters
     public Long getItemId() {
@@ -59,14 +57,6 @@ public class ItemGetDTO {
         this.creationDate = creationDate;
     }
 
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public double getAverageScore() {
         return averageScore;
     }
@@ -75,8 +65,12 @@ public class ItemGetDTO {
         this.averageScore = averageScore;
     }
 
-    public void addLike() {
-        this.likes++;
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public Topic getTopic() {
@@ -95,7 +89,7 @@ public class ItemGetDTO {
         this.topicId = topicId;
     }
 
-    public int getPopularity() {
+    public Integer getPopularity() {
         return popularity;
     }
 
@@ -103,8 +97,12 @@ public class ItemGetDTO {
         this.popularity = popularity;
     }
 
+    // Additional Methods
+    public void addLike() {
+        this.likes++;
+    }
+
     public void incrementPopularity() {
         this.popularity++;
-
     }
 }
