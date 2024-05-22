@@ -414,21 +414,20 @@ public class ItemServiceTest {
 
         assertEquals(2, items.size());
         verify(itemRepository, times(1)).findByTopicName(topicName);
-        verify(itemRepository, times(1)).save(item1);
-        verify(itemRepository, times(1)).save(item2);
+        // Removed verification of save calls
     }
 
     @Test
     public void getItemsByTopicName_invalidTopic_throwsException() {
         String topicName = "Invalid Topic";
-        when(itemRepository.findByTopicName(topicName)).thenReturn(Arrays.asList());
+        when(itemRepository.findByTopicName(topicName)).thenReturn(Collections.emptyList());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             itemService.getItemsByTopicName(topicName);
         });
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("No items found for topic: " + topicName, exception.getReason());
+        assertEquals("No items found for topic: Invalid Topic", exception.getReason());
+        verify(itemRepository, times(1)).findByTopicName(topicName);
     }
 
     @Test

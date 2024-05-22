@@ -88,9 +88,6 @@ public class ItemController {
                 .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(itemGetDTOs);
-
-     //main
-
     }
 
     @GetMapping("/{itemId}/score")

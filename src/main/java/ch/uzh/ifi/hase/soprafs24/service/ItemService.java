@@ -84,10 +84,6 @@ public class ItemService {
         if (items.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No items found for topic: " + topicName);
         }
-        items.forEach(item -> {
-            item.incrementPopularity();
-            itemRepository.save(item);
-        });
         return items;
     }
 
