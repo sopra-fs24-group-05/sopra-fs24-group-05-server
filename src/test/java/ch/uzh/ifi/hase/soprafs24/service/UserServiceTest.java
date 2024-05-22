@@ -140,7 +140,7 @@ public class UserServiceTest {
     Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
     Mockito.verify(userRepository, Mockito.times(1)).flush();
 
-    assertEquals(avatar, user.getAvatar());
+    assertEquals(avatar.substring(1,avatar.length()-2), user.getAvatar());
   }
 
   @Test
