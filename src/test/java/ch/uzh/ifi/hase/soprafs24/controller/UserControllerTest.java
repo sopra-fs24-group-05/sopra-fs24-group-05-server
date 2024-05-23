@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
@@ -425,5 +426,60 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].followTopicId", is(followTopic.getTopicId().intValue())))
                 .andExpect(jsonPath("$[0].followTopicname", is(followTopic.getTopicName())));
     }
+
+    @Test
+    public void banUser_validAdminAndTarget_success() throws Exception {
+        // given
+        Long adminId = 1L;
+        Long targetId = 2L;
+
+        // do nothing when the userService.banUser is called (default behavior)
+        Mockito.doNothing().when(userService).banUser(adminId, targetId);
+
+        // when
+        MockHttpServletRequestBuilder putRequest = put("/admin/banUser/{adminId}", adminId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(targetId.toString());
+
+        // then
+        mockMvc.perform(putRequest)
+            .andExpect(status().isOk());
+
+        Mockito.verify(userService, Mockito.times(1)).banUser(adminId, targetId);
+    }
+
+    @Test
+    public void getBannedList_validAdmin_success() throws Exception {
+        // given: mock banned users
+        User bannedUser1 = new User();
+        bannedUser1.setUserId(1L);
+        bannedUser1.setUsername("bannedUser1");
+        bannedUser1.setIdentity(UserIdentity.BANNED);
+
+        User bannedUser2 = new User();
+        bannedUser2.setUserId(2L);
+        bannedUser2.setUsername("bannedUser2");
+        bannedUser2.setIdentity(UserIdentity.BANNED);
+
+        List<User> bannedUsers = new ArrayList<>();
+        bannedUsers.add(bannedUser1);
+        bannedUsers.add(bannedUser2);
+
+        // mock userService behavior
+        Mockito.when(userService.getAllBannedUsers(Mockito.any(Long.class)))
+                .thenReturn(bannedUsers); // mock banned users list
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/admin/getBannedList/{adminId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].username", is(bannedUser1.getUsername())))
+                .andExpect(jsonPath("$[1].username", is(bannedUser2.getUsername())));
+    }
+
 
 }

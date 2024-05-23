@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,53 +30,43 @@ import org.junit.jupiter.api.BeforeEach;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Sql(scripts = "/schema.sql")
 public class UserRepositoryIntegrationTest {
+  @MockBean
+  private ServerEndpointExporter serverEndpointExporter; // Mock ServerEndpointExporter to avoid loading WebSocket configuration
 
+  @Autowired
+  private TestEntityManager entityManager;
 
-    @Autowired
-    private TestEntityManager entityManager;
+  @Autowired
+  private UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    private User user;
-
-    @BeforeEach
-    public void setUp() {
-        // Add any setup code here
-    }
-
-    @AfterEach
-    public void tearDown() {
-        // Add any teardown code here
-    }
+  private User user;
+  private User admin;
 
   @BeforeEach
   public void setup(){
-      // 保存数据
-      user = new User();
-      user.setUsername("testuser");
-      user.setPassword("testpassword");
-      user.setStatus(UserStatus.OFFLINE);
-      user.setToken("1");
-      user.setIdentity(UserIdentity.STUDENT);
-      user.setAvatar("this is a image text");
-      entityManager.persist(user);
-      entityManager.flush();
-//
-//    backUpData = userRepository.findAll(); // 保存数据
-//    userRepository.deleteAll();
-//    //entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();// may cause inconsistence in database
-//
-//    //given
-//    User user = new User();
-//    user = new User();
-//    user.setUsername("firstname@lastname");
-//    user.setPassword("testpassword");
-//    user.setStatus(UserStatus.OFFLINE);
-//    user.setToken("1");
-//    user.setIdentity(UserIdentity.STUDENT);
-//    user.setAvatar("this is a image text");
+    user = new User();
+    user.setUsername("testuser");
+    user.setPassword("testpassword");
+    user.setStatus(UserStatus.OFFLINE);
+    user.setToken("1");
+    user.setIdentity(UserIdentity.STUDENT);
+    user.setAvatar("this is a image text");
+    entityManager.persist(user);
+    entityManager.flush();
+
+    admin = new User();
+    admin.setUsername("testadmin");
+    admin.setPassword("testpassword");
+    admin.setStatus(UserStatus.OFFLINE);
+    admin.setToken("2");
+    admin.setIdentity(UserIdentity.ADMIN);
+    admin.setAvatar("this is a image text");
+    entityManager.persist(admin);
+    entityManager.flush();
   }
+
+  //@AfterEach
+  //public void cleanUp
 
   @Test
   public void findByUserName_success() {
@@ -121,4 +113,17 @@ public class UserRepositoryIntegrationTest {
     // then
     assertEquals(existsByUsername, true);
   }
+  @Test
+  public void findByIdentity_success() {
+    // when
+    List<User> students = userRepository.findByIdentity(UserIdentity.STUDENT);
+    List<User> admins = userRepository.findByIdentity(UserIdentity.ADMIN);
+
+    // then
+    assertEquals(1, students.size());
+    assertEquals("testuser", students.get(0).getUsername());
+
+    assertEquals(1, admins.size());
+    assertEquals("testadmin", admins.get(0).getUsername());
+}
 }

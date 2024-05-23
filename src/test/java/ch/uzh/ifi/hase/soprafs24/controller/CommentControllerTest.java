@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
+import ch.uzh.ifi.hase.soprafs24.entity.Item;
+import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ReplyGetDTO;
@@ -71,6 +73,8 @@ public class CommentControllerTest {
   private Comment comment;
   private Comment reply;
   private User user;
+  private Item commentItem;
+  private Topic commentItemTopic;
 
   @BeforeEach
   public void setup(){
@@ -100,7 +104,18 @@ public class CommentControllerTest {
     user.setUsername("test username");
     user.setUserId(1L);
 
+    commentItem = new Item();
+    commentItem.setItemId(1L);;
+    commentItem.setItemName("test comment ItemName");
+    commentItem.setTopicId(1);
+
+    commentItemTopic = new Topic();
+    commentItemTopic.setTopicId(1);
+    commentItemTopic.setTopicName("test comment ItemTopicName");
+
     given(userService.getUserById(Mockito.anyLong())).willReturn(user);
+    given(itemService.getItemByItemId(Mockito.anyLong())).willReturn(commentItem);
+    given(topicService.getTopicById(Mockito.anyInt())).willReturn(commentItemTopic);
   }
 
   @Test

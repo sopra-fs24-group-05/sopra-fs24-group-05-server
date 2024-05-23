@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -41,6 +43,8 @@ public class UserServiceTest {
 
   private User testUser;
   private User targetUser;
+  private User adminUser;
+  private User bannedUser;
 
   private Long validItemId;
   private Long invalidItemId;
@@ -66,6 +70,16 @@ public class UserServiceTest {
     targetUser.setUserId(2L);
     targetUser.setUsername("targetUsername");
 
+    adminUser = new User();
+    adminUser.setUserId(3L);
+    adminUser.setUsername("adminUsername");
+    adminUser.setIdentity(UserIdentity.ADMIN);
+
+    bannedUser = new User();
+    bannedUser.setUserId(4L);
+    bannedUser.setUsername("bannedUsername");
+    bannedUser.setIdentity(UserIdentity.STUDENT);
+
     validItemId = 100L;
     invalidItemId = 200L;
     alreadyFollowedItemId = 300L;
@@ -81,18 +95,20 @@ public class UserServiceTest {
     Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
     Mockito.when(userRepository.existsById(testUser.getUserId())).thenReturn(true);
     Mockito.when(userRepository.existsById(targetUser.getUserId())).thenReturn(true);
-    Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-    Mockito.when(userRepository.findById(2L)).thenReturn(Optional.of(targetUser));
-
+    Mockito.when(userRepository.existsById(adminUser.getUserId())).thenReturn(true);
+    Mockito.when(userRepository.existsById(bannedUser.getUserId())).thenReturn(true);
     Mockito.when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.of(testUser));
+    Mockito.when(userRepository.findById(targetUser.getUserId())).thenReturn(Optional.of(targetUser));
+    Mockito.when(userRepository.findById(adminUser.getUserId())).thenReturn(Optional.of(adminUser));
+    Mockito.when(userRepository.findById(bannedUser.getUserId())).thenReturn(Optional.of(bannedUser));
+
     Mockito.when(itemRepository.existsById(validItemId)).thenReturn(true);
     Mockito.when(itemRepository.existsById(invalidItemId)).thenReturn(false);
     Mockito.when(itemRepository.existsById(alreadyFollowedItemId)).thenReturn(true);
 
-    when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-    when(topicRepository.existsById(validTopicId)).thenReturn(true);
-    when(topicRepository.existsById(invalidTopicId)).thenReturn(false);
-    when(topicRepository.existsById(alreadyFollowedTopicId)).thenReturn(true);
+    Mockito.when(topicRepository.existsById(validTopicId)).thenReturn(true);
+    Mockito.when(topicRepository.existsById(invalidTopicId)).thenReturn(false);
+    Mockito.when(topicRepository.existsById(alreadyFollowedTopicId)).thenReturn(true);
   }
 
   @Test
@@ -281,5 +297,110 @@ public class UserServiceTest {
 
     assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     assertEquals("already followed target topic", exception.getReason());
+  }
+
+  @Test
+  public void banUser_validAdminAndTarget_success() {
+    // when
+    userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+
+    // then
+    verify(userRepository, times(1)).findById(adminUser.getUserId());
+    verify(userRepository, times(1)).findById(targetUser.getUserId());
+    verify(userRepository, times(1)).save(targetUser);
+    assertEquals(UserIdentity.BANNED, targetUser.getIdentity());
+  }
+
+  @Test
+  public void banUser_adminNotFound_throwsException() {
+    // given
+    when(userRepository.findById(adminUser.getUserId())).thenReturn(Optional.empty());
+
+    // when & then
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+    });
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("admin not found", exception.getReason());
+  }
+
+  @Test
+  public void banUser_targetNotFound_throwsException() {
+    // given
+    when(userRepository.findById(targetUser.getUserId())).thenReturn(Optional.empty());
+
+    // when & then
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+    });
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("target not found", exception.getReason());
+  }
+
+  @Test
+  public void banUser_adminNotAuthorized_throwsException() {
+    // given
+    adminUser.setIdentity(UserIdentity.STUDENT);//if identity is not admin
+
+    // when & then
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+    });
+    assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
+    assertEquals("you are not authorized", exception.getReason());
+  }
+  
+  @Test
+  public void getAllBannedUsers_validAdmin_success() {
+    // given
+    bannedUser.setIdentity(UserIdentity.BANNED);
+    List<User> bannedUsers = new ArrayList<>();
+    bannedUsers.add(bannedUser);
+
+    // mock userRepository behavior
+    Mockito.when(userRepository.findById(adminUser.getUserId())).thenReturn(Optional.of(adminUser));
+    Mockito.when(userRepository.findByIdentity(UserIdentity.BANNED)).thenReturn(bannedUsers); // mock banned users
+
+    // when
+    List<User> result = userService.getAllBannedUsers(adminUser.getUserId());
+
+    // then
+    assertEquals(bannedUsers.size(), result.size());
+    assertEquals(bannedUsers.get(0).getUsername(), result.get(0).getUsername());
+
+    // verify that userRepository methods were called
+    verify(userRepository, times(1)).findById(adminUser.getUserId());
+    verify(userRepository, times(1)).findByIdentity(UserIdentity.BANNED);
+  }
+
+  @Test
+  public void getAllBannedUsers_nonAdmin_throwUnauthorizedException() {
+    User nonAdminUser = new User();
+    nonAdminUser.setUserId(5L);
+    nonAdminUser.setUsername("nonAdminUsername");
+    nonAdminUser.setIdentity(UserIdentity.STUDENT);
+
+    Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(nonAdminUser)); // mock non-admin user exists
+
+    assertThrows(ResponseStatusException.class,
+            () -> userService.getAllBannedUsers(nonAdminUser.getUserId()),
+            "Expected ResponseStatusException was not thrown");
+
+    verify(userRepository, times(1)).findById(nonAdminUser.getUserId());
+    verify(userRepository, never()).findByIdentity(UserIdentity.BANNED);
+  }
+
+  @Test
+  public void getAllBannedUsers_adminNotFound_throwBadRequestException() {
+    Long nonExistentAdminId = 100L;
+
+    Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+    assertThrows(ResponseStatusException.class,
+            () -> userService.getAllBannedUsers(nonExistentAdminId),
+            "Expected ResponseStatusException was not thrown");
+
+    verify(userRepository, times(1)).findById(nonExistentAdminId);
+    verify(userRepository, never()).findByIdentity(UserIdentity.BANNED);
   }
 }

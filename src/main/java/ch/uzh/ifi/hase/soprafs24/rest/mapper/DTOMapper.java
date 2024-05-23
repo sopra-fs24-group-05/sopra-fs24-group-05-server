@@ -104,20 +104,25 @@ public interface DTOMapper {
     @Mapping(source = "comment.score", target = "score"),
     @Mapping(source = "comment.content", target = "content"),
     @Mapping(source = "comment.thumbsUpNum", target = "thumbsUpNum"),
-    @Mapping(source = "commenOwner.avatar", target = "commentOwnerAvatar")
+    @Mapping(source = "commentOwner.avatar", target = "commentOwnerAvatar"),
+    @Mapping(source = "item.itemName", target = "commentItemName"),
+    @Mapping(source = "topic.topicName", target = "commentItemTopicName")
   })
-  CommentGetDTO converEntityToCommentGetDTO(Comment comment, User commenOwner);
+  CommentGetDTO converEntityToCommentGetDTO(Comment comment, User commentOwner, Item item, Topic topic);
 
   @Mapping(source = "isAlreadyLiked", target = "isAlreadyLiked")
   @Mapping(source = "thumbsUpNum", target = "thumbsUpNum")
   CommentStatusGetDTO converParamToCommentStatusGetDTO(Boolean isAlreadyLiked, Integer thumbsUpNum);
 
-  @Mapping(source = "commentId", target = "commentId")
-  @Mapping(source = "commentOwnerId", target = "commentOwnerId")
-  @Mapping(source = "commentOwnerName", target = "commentOwnerName")
-  @Mapping(source = "content", target = "content")
-  @Mapping(source = "fatherCommentId", target = "fatherCommentId")
-  ReplyGetDTO converEntityToReplyGetDTO(Comment reply);
+  @Mappings({
+    @Mapping(source = "reply.commentId", target = "commentId"),
+    @Mapping(source = "reply.commentOwnerId", target = "commentOwnerId"),
+    @Mapping(source = "reply.commentOwnerName", target = "commentOwnerName"),
+    @Mapping(source = "reply.content", target = "content"),
+    @Mapping(source = "reply.fatherCommentId", target = "fatherCommentId"),
+    @Mapping(source = "commentOwner.avatar", target = "commentOwnerAvatar"),
+  })
+  ReplyGetDTO converEntityToReplyGetDTO(Comment reply, User commentOwner);
 
   @Mapping(source = "userId", target = "followUserId")
   @Mapping(source = "username", target = "followUsername")

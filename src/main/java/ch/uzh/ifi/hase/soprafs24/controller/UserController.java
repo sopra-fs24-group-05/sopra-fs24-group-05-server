@@ -168,4 +168,22 @@ public class UserController {
     userService.setAvater(userId, avatar);
   }
 
+  @PutMapping("/admin/banUser/{adminId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void banUser(@PathVariable Long adminId, @RequestBody Long targetId){
+    userService.banUser(adminId, targetId);
+  }
+
+  @GetMapping("/admin/getBannedList/{adminId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<UserGetDTO> getBannedList(@PathVariable Long adminId){
+    List<User> bannedUsers = userService.getAllBannedUsers(adminId);
+    List<UserGetDTO> bannedUserGetDTOs = new ArrayList<>();
+    for(User bannedUser : bannedUsers){
+      bannedUserGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(bannedUser));
+    }
+    return bannedUserGetDTOs;
+  }
 }

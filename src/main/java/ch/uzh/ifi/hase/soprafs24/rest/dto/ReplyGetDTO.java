@@ -10,6 +10,7 @@ public class ReplyGetDTO {
   //private Long score;
   private String content;
   //private Long thumbsUpNum;
+  private String commentOwnerAvatar;
 
   public void setCommentId(Long commentId){
     this.commentId = commentId;
@@ -45,5 +46,8 @@ public class ReplyGetDTO {
   public String getContent(){
     return this.content;
   }
+
+  public String getCommentOwnerAvatar(){ return this.commentOwnerAvatar; }
+  public void setCommentOwnerAvatar(String commentOwnerAvatar){ this.commentOwnerAvatar = commentOwnerAvatar; }
   
 }
