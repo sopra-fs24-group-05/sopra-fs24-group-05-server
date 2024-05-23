@@ -71,9 +71,9 @@ public class TopicService {
         topic.setSearchCount(topic.getSearchCount() + 1);
         return topic;
     }
-    public Topic getTopicByOwnerId(int ownerId) {
-        Topic topic = topicRepository.findByOwnerId(ownerId);
-        return topic;
+    public List<Topic> getTopicByOwnerId(int ownerId) {
+        List<Topic> topics = topicRepository.findByOwnerId(ownerId);
+        return topics;
     }
 
     public Topic updateTopic(Topic topicInput) {

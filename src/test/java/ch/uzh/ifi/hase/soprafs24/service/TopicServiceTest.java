@@ -151,14 +151,18 @@ public class TopicServiceTest {
         Topic topic = new Topic();
         topic.setOwnerId(ownerId);
 
-        when(topicRepository.findByOwnerId(anyInt())).thenReturn(topic);
+        List<Topic> topics = new ArrayList<>();
+        topics.add(topic);
+
+        when(topicRepository.findByOwnerId(anyInt())).thenReturn(topics);
 
         // when
-        Topic foundTopic = topicService.getTopicByOwnerId(ownerId);
+        List<Topic> foundTopics = topicService.getTopicByOwnerId(ownerId);
 
         // then
-        assertEquals(ownerId, foundTopic.getOwnerId());
-        verify(topicRepository, times(1)).findByOwnerId(anyInt());
+        assertEquals(1, foundTopics.size());
+        assertEquals(ownerId, foundTopics.get(0).getOwnerId());
+        verify(topicRepository, times(1)).findByOwnerId(ownerId);
     }
 
     @Test

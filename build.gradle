@@ -60,6 +60,12 @@ dependencies {
 
     // Google Translate
     implementation 'com.google.cloud:google-cloud-translate:1.95.4'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2'
 }
 
 bootJar {

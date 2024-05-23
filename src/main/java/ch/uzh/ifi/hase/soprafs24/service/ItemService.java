@@ -124,7 +124,7 @@ public class ItemService {
     public List<Item> getItemsSortedByCommentCountAndTopicId(Integer topicId) {
         List<Comment> comments = commentRepository.findAll();
 
-        // 过滤同一 Topic 下的评论
+        // 过滤同一 Topic 下的评论，并统计每个 Item 的评论数量
         Map<Long, Long> itemCommentCountMap = comments.stream()
                 .filter(comment -> {
                     Optional<Item> item = itemRepository.findById(comment.getCommentItemId());
@@ -138,8 +138,17 @@ public class ItemService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        return itemRepository.findAllById(sortedItemIds);
+        // 按照排序后的 ID 列表顺序重新排列查询结果
+        List<Item> sortedItems = itemRepository.findAllById(sortedItemIds);
+        Map<Long, Item> itemMap = sortedItems.stream()
+                .collect(Collectors.toMap(Item::getItemId, item -> item));
+
+        // 返回按评论数量排序的 Item 列表
+        return sortedItemIds.stream()
+                .map(itemMap::get)
+                .collect(Collectors.toList());
     }
+
 
 
     public List<Item> getItemsSortedByPopularity() {

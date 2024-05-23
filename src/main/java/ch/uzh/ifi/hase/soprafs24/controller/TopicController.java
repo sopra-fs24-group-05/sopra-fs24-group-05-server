@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.Date;
@@ -82,14 +83,18 @@ public class TopicController {
         return topicGetDTO;
     }
 
-    @GetMapping("/topics/Owner/{OwnerId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public TopicGetDTO getTopicByOwnerId(@PathVariable int ownerId) {
-        Topic topic = topicService.getTopicByOwnerId(ownerId);
-        TopicGetDTO topicGetDTO = DTOMapper.INSTANCE.convertEntityToTopicGetDTO(topic);
-        return topicGetDTO;
-    }
+//    @GetMapping("/topics/Owner/{OwnerId}")
+//    @ResponseStatus(HttpStatus.OK)
+//    @ResponseBody
+//    public TopicGetDTO getTopicByOwnerId(@PathVariable int ownerId) {
+//        List<Topic> topics = topicService.getTopicByOwnerId(ownerId);
+//        if (topics.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found");
+//        }
+//        Topic topic = topics.get(0);
+//        TopicGetDTO topicGetDTO = DTOMapper.INSTANCE.convertEntityToTopicGetDTO(topic);
+//        return topicGetDTO;
+//    }
 
     @GetMapping("/topics/search")
     @ResponseStatus(HttpStatus.OK)

@@ -1,5 +1,14 @@
 package ch.uzh.ifi.hase.soprafs24.repository;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +19,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import java.util.Date;
@@ -17,13 +30,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
-@ComponentScan(basePackages = "ch.uzh.ifi.hase.soprafs24", includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {ItemRepository.class, TopicRepository.class}))
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@ActiveProfiles("test")
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(locations = "classpath:application-test.properties")
+@Sql(scripts = {"/schema.sql", "/data.sql"})
+
 public class ItemRepositoryTest {
 
-    @MockBean
-    private ServerEndpointExporter serverEndpointExporter; // Mock ServerEndpointExporter to avoid loading WebSocket configuration
+ @MockBean
+ private ServerEndpointExporter serverEndpointExporter; // Mock ServerEndpointExporter to avoid loading WebSocket configuration
 
     @Autowired
     private ItemRepository itemRepository;

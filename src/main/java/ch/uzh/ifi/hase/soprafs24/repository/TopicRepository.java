@@ -19,7 +19,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long>, JpaSpecific
 
     Topic findByTopicId(Integer id);
 
-    Topic findByOwnerId(Integer ownerId);
+    List<Topic> findByOwnerId(Integer ownerId);
 
     @Query("SELECT t FROM Topic t WHERE t.topicName LIKE %:keyword%")
     List<Topic> searchByKeyword(String keyword);

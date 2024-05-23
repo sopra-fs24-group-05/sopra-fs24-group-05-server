@@ -9,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,45 +25,59 @@ import org.junit.jupiter.api.BeforeEach;
 
 @DataJpaTest
 @Transactional
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Sql(scripts = "/schema.sql")
 public class UserRepositoryIntegrationTest {
 
-  @Autowired
-  private TestEntityManager entityManager;
 
-  @Autowired
-  private UserRepository userRepository;
+    @Autowired
+    private TestEntityManager entityManager;
 
-  private List<User> backUpData;
+    @Autowired
+    private UserRepository userRepository;
 
-  private User user;
+    private User user;
 
-  @AfterEach
-  public void recover(){
-    userRepository.deleteAll();
-    userRepository.saveAll(backUpData);
-  }
+    @BeforeEach
+    public void setUp() {
+        // Add any setup code here
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // Add any teardown code here
+    }
 
   @BeforeEach
   public void setup(){
-
-    backUpData = userRepository.findAll(); // 保存数据
-    userRepository.deleteAll();
-    //entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();// may cause inconsistence in database
-
-    //given
-    user = new User();
-    user.setUsername("firstname@lastname");
-    user.setPassword("testpassword");
-    user.setStatus(UserStatus.OFFLINE);
-    user.setToken("1");
-    user.setIdentity(UserIdentity.STUDENT);
-    user.setAvatar("this is a image text");
+      // 保存数据
+      user = new User();
+      user.setUsername("testuser");
+      user.setPassword("testpassword");
+      user.setStatus(UserStatus.OFFLINE);
+      user.setToken("1");
+      user.setIdentity(UserIdentity.STUDENT);
+      user.setAvatar("this is a image text");
+      entityManager.persist(user);
+      entityManager.flush();
+//
+//    backUpData = userRepository.findAll(); // 保存数据
+//    userRepository.deleteAll();
+//    //entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();// may cause inconsistence in database
+//
+//    //given
+//    User user = new User();
+//    user = new User();
+//    user.setUsername("firstname@lastname");
+//    user.setPassword("testpassword");
+//    user.setStatus(UserStatus.OFFLINE);
+//    user.setToken("1");
+//    user.setIdentity(UserIdentity.STUDENT);
+//    user.setAvatar("this is a image text");
   }
 
   @Test
   public void findByUserName_success() {
-
     entityManager.persist(user);
     entityManager.flush();
 
@@ -79,7 +95,6 @@ public class UserRepositoryIntegrationTest {
 
   @Test
   public void findByToken_success() {
-
     entityManager.persist(user);
     entityManager.flush();
 
@@ -97,7 +112,6 @@ public class UserRepositoryIntegrationTest {
 
   @Test
   public void existsByUsername_success() {
-
     entityManager.persist(user);
     entityManager.flush();
 

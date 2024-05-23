@@ -6,14 +6,22 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,9 +30,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable default H2 database
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@ActiveProfiles("test")
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(locations = "classpath:application-test.properties")
+@Sql(scripts = {"/schema.sql", "/data.sql"})
 public class TopicRepositoryTest {
+
+    @MockBean
+    private ServerEndpointExporter serverEndpointExporter; // Mock ServerEndpointExporter to avoid loading WebSocket configuration
 
     @Autowired
     private TopicRepository topicRepository;
@@ -44,7 +59,6 @@ public class TopicRepositoryTest {
         topic.setDescription("This is a test topic");
         topic.setSearchCount(10);
         topicRepository.save(topic);
-
     }
 
     @Test
@@ -63,10 +77,18 @@ public class TopicRepositoryTest {
 
     @Test
     public void findByOwnerId_success() {
-        Topic found = topicRepository.findByOwnerId(topic.getOwnerId());
-        assertNotNull(found);
-        assertEquals(topic.getOwnerId(), found.getOwnerId());
+        Topic topic = new Topic();
+        topic.setOwnerId(1);
+        topic.setEditAllowed(true); // 显式设置属性
+        topic.setTopicId(1);
+        topic.setTopicName("Sample Topic"); // 显式设置topicName属性
+        topicRepository.save(topic);
+
+        List<Topic> result = topicRepository.findByOwnerId(1);
+        assertEquals(2, result.size());
+        assertEquals(1, result.get(0).getOwnerId());
     }
+
 
     @Test
     public void searchByKeyword_success() {

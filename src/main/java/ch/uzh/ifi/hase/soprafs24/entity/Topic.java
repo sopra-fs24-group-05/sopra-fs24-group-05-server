@@ -31,7 +31,7 @@ public class Topic implements Serializable {
     private Long sonTopicId;
 
     @Column(nullable = false)
-    private Boolean editAllowed;
+    private Boolean editAllowed = false;
 
     @Column
     private String description;
