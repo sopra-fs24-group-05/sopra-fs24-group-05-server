@@ -67,7 +67,6 @@ public class CommentServiceIntegrationTest {
     testComment.setCommentOwnerName("testComment owner");
     testComment.setCommentItemId(1L);
     testComment.setScore(5L);
-    testComment.setCommentOwnerAvatar("this is a test commentOwnerAvatar");
     testComment.setContent("test content");
     testComment.setThumbsUpNum(1L);
 

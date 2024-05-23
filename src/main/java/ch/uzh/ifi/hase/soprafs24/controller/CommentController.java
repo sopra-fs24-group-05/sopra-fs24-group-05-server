@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.CommentStatusGetDTO;
@@ -41,7 +42,8 @@ public class CommentController {
   @ResponseBody
   public CommentGetDTO getCommentByCommentId(@PathVariable Long commentId){
     Comment commentByCommentId = commentService.getCommentByCommentId(commentId);
-    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId);
+    User commenOwner = userService.getUserById(commentByCommentId.getCommentOwnerId());
+    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(commentByCommentId, commenOwner);
   }
 
 
@@ -52,7 +54,8 @@ public class CommentController {
       List<Comment> comments = commentService.getCommentByCommentItemId(itemId);
       List<CommentGetDTO> commentGetDTOs = new ArrayList<>();
       for(Comment comment : comments){
-          commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+        User commentOwner = userService.getUserById(comment.getCommentOwnerId());
+        commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment, commentOwner));
       }
       return commentGetDTOs;
   }
@@ -62,9 +65,9 @@ public class CommentController {
   @ResponseBody
   public CommentGetDTO creatComment(@RequestBody CommentPostDTO commentPostDTO){
     Comment commentInput = DTOMapper.INSTANCE.convertCommentPostDTOtoEntity(commentPostDTO);
-
     Comment createdComment = commentService.createComment(commentInput);
-    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment);
+    User commentOwner = userService.getUserById(createdComment.getCommentOwnerId());
+    return DTOMapper.INSTANCE.converEntityToCommentGetDTO(createdComment, commentOwner);
   }
 
   @GetMapping("/comments/userId/{userId}")
@@ -75,7 +78,8 @@ public class CommentController {
     List<CommentGetDTO> commentGetDTOs=new ArrayList<>();
     for(Comment comment:comments){
       System.out.println(comment.getContent());
-      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment));
+      User commentOwner = userService.getUserById(userId);
+      commentGetDTOs.add(DTOMapper.INSTANCE.converEntityToCommentGetDTO(comment, commentOwner));
     }
     return commentGetDTOs;
   }

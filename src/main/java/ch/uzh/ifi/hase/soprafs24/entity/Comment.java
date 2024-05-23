@@ -21,9 +21,6 @@ public class Comment {
 
   @Column(nullable = false)
   private Long commentItemId;
-  
-  @Column(nullable = false, columnDefinition = "TEXT")
-  private String commentOwnerAvatar;
 
   /**
    * score to the item by the user
@@ -49,83 +46,30 @@ public class Comment {
   private Long fatherCommentId;
 
   //methods
-  public Long getCommentId(){
-    return this.commentId;
-  }
+  public Long getCommentId(){ return this.commentId; }
+  public void setCommentId(Long commentId){ this.commentId=commentId; }
 
-  public void setCommentId(Long commentId){
-    this.commentId=commentId;
-  }
+  public Long getCommentOwnerId(){ return this.commentOwnerId; }
+  public void setCommentOwnerId(Long commentOwnerId){ this.commentOwnerId = commentOwnerId; }
 
-  public Long getCommentOwnerId(){
-    return this.commentOwnerId;
-  }
+  public Long getCommentItemId(){ return this.commentItemId; }
+  public void setCommentItemId(Long commentItemId){ this.commentItemId = commentItemId; }
 
-  public void setCommentOwnerId(Long commentOwnerId){
-    this.commentOwnerId = commentOwnerId;
-  }
+  public String getCommentOwnerName() { return this.commentOwnerName; }
+  public void setCommentOwnerName(String commentOwnerName) { this.commentOwnerName = commentOwnerName; }
 
-  public Long getCommentItemId(){
-    return this.commentItemId;
-  }
+  public Long getScore(){ return this.score; }
+  public void setScore(Long score){ this.score=score; }
 
-  public void setCommentItemId(Long commentItemId){
-    this.commentItemId = commentItemId;
-  }
+  public List<Long> getLikedUserList(){ return this.LikedUserList; }
+  public void setLikedUserList(List<Long> LikedUserList){ this.LikedUserList=LikedUserList; }
 
-  public String getCommentOwnerName() {
-      return this.commentOwnerName;
-  }
+  public String getContent(){ return this.content; }
+  public void setContent(String content){ this.content=content; }
 
-  public void setCommentOwnerName(String commentOwnerName) {
-      this.commentOwnerName = commentOwnerName;
-  }
+  public Long getThumbsUpNum(){ return this.thumbsUpNum; }
+  public void setThumbsUpNum(Long thumbsUpNum){ this.thumbsUpNum=thumbsUpNum; }
 
-  public Long getScore(){
-    return this.score;
-  }
-
-  public void setScore(Long score){ 
-    this.score=score;
-  }
-
-  public List<Long> getLikedUserList(){
-    return this.LikedUserList;
-  }
-
-  public void setLikedUserList(List<Long> LikedUserList){
-    this.LikedUserList=LikedUserList;
-  }
-
-  public String getContent(){
-    return this.content;
-  }
-
-  public void setContent(String content){
-    this.content=content;
-  }
-
-  public Long getThumbsUpNum(){
-    return this.thumbsUpNum;
-  }
-
-  public void setThumbsUpNum(Long thumbsUpNum){
-    this.thumbsUpNum=thumbsUpNum;
-  }
-
-  public Long getFatherCommentId() {
-      return this.fatherCommentId;
-  }
-
-  public void setFatherCommentId(Long fatherCommentId) {
-      this.fatherCommentId = fatherCommentId;
-  }
-
-  public void setCommentOwnerAvatar(String commentOwnerAvatar){
-    this.commentOwnerAvatar =  commentOwnerAvatar;
-  }
-  public String getCommentOwnerAvatar(){
-    return this.commentOwnerAvatar;
-  }
-
+  public Long getFatherCommentId() { return this.fatherCommentId; }
+  public void setFatherCommentId(Long fatherCommentId) { this.fatherCommentId = fatherCommentId; }
 }
