@@ -1,16 +1,13 @@
 # https://cloud.google.com/appengine/docs/the-appengine-environments#comparing_high-level_features
 # https://cloud.google.com/appengine/docs/standard
 
-runtime: java17
 # instance_class: F2 - this is standard environment specific according to GPT
-
+runtime: java
 env: flex
+
+automatic_scaling:
+  max_num_instances: 1
+
 runtime_config:
-  runtime_version: "21"
-
-handlers:
-- url: /.*
-  script: this field is required, but ignored
-
-manual_scaling:
-  instances: 1
+  operating_system: "ubuntu22"
+  runtime_version: "17"
