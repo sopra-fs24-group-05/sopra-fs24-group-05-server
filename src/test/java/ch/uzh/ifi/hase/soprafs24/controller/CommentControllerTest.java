@@ -279,7 +279,7 @@ public class CommentControllerTest {
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].commentId", is(reply.getCommentId().intValue())))
             .andExpect(jsonPath("$[0].commentOwnerId", is(reply.getCommentOwnerId().intValue())))
-            .andExpect(jsonPath("$[0].commentOwnerName", is(reply.getCommentOwnerName())))
+            .andExpect(jsonPath("$[0].commentOwnerName", is(user.getUsername())))
             .andExpect(jsonPath("$[0].content", is(reply.getContent())));
   }
 

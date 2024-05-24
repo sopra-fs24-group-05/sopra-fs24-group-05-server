@@ -99,7 +99,7 @@ public interface DTOMapper {
   @Mappings({
     @Mapping(source = "comment.commentId", target = "commentId"),
     @Mapping(source = "comment.commentOwnerId", target = "commentOwnerId"),
-    @Mapping(source = "comment.commentOwnerName", target = "commentOwnerName"),
+    @Mapping(source = "commentOwner.username", target = "commentOwnerName"),
     @Mapping(source = "comment.commentItemId", target = "commentItemId"),
     @Mapping(source = "comment.score", target = "score"),
     @Mapping(source = "comment.content", target = "content"),
@@ -117,7 +117,7 @@ public interface DTOMapper {
   @Mappings({
     @Mapping(source = "reply.commentId", target = "commentId"),
     @Mapping(source = "reply.commentOwnerId", target = "commentOwnerId"),
-    @Mapping(source = "reply.commentOwnerName", target = "commentOwnerName"),
+    @Mapping(source = "commentOwner.username", target = "commentOwnerName"),
     @Mapping(source = "reply.content", target = "content"),
     @Mapping(source = "reply.fatherCommentId", target = "fatherCommentId"),
     @Mapping(source = "commentOwner.avatar", target = "commentOwnerAvatar"),
@@ -144,14 +144,16 @@ public interface DTOMapper {
   //@Mapping(source = "userAvatar", target = "userAvatar")
   //@Mapping(source = "messageTime", target = "messageTime")
   ChatMessage converMessagePostDTOToChatMessage(MessagePostDTO messagePostDTO);
-  
-  @Mapping(source = "messageId", target = "messageId")
-  @Mapping(source = "content", target = "content")
-  @Mapping(source  = "itemId", target = "itemId")
-  @Mapping(source = "userId", target = "userId")
-  // the following three field will be set when creating message and before saving it to database
-  @Mapping(source = "userName", target = "userName")
-  @Mapping(source = "userAvatar", target = "userAvatar")
-  @Mapping(source = "messageTime", target = "messageTime")
-  MessageGetDTO converChatMessageToMessageGetDTO(ChatMessage chatMessage);
+
+  @Mappings({
+    @Mapping(source = "chatMessage.messageId", target = "messageId"),
+    @Mapping(source = "chatMessage.content", target = "content"),
+    @Mapping(source  = "chatMessage.itemId", target = "itemId"),
+    @Mapping(source = "chatMessage.userId", target = "userId"),
+    // the following three field will be set when creating message and before saving it to database
+    @Mapping(source = "chatMessageOwner.username", target = "userName"),
+    @Mapping(source = "chatMessageOwner.avatar", target = "userAvatar"),
+    @Mapping(source = "chatMessage.messageTime", target = "messageTime")
+  })
+  MessageGetDTO converChatMessageToMessageGetDTO(ChatMessage chatMessage, User chatMessageOwner);
 }

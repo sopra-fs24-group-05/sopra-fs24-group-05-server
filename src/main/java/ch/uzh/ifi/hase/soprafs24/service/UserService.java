@@ -260,7 +260,7 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
     }else if(userRepository.existsByUsername(editUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
-    }else if(userRepository.findById(editUser.getUserId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
+    }else if(!userRepository.findById(editUser.getUserId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"access deny");
     }
     User targetUser = userRepository.findById(editUser.getUserId()).get();

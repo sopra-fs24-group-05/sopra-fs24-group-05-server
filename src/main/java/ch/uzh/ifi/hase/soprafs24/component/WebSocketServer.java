@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
+import ch.uzh.ifi.hase.soprafs24.service.UserService;
 
 import java.io.IOException;
 import java.util.Map;
@@ -37,12 +38,14 @@ public class WebSocketServer{
   private static final Logger log = LoggerFactory.getLogger(WebSocketServer.class);
 
   @Autowired
-  public void setApplicationContext(ChatService chatService){
+  public void setApplicationContext(ChatService chatService, UserService userService){
     WebSocketServer.chatService = chatService;
+    WebSocketServer.userService = userService;
     log.info("ChatService injected successfully: {}", chatService != null);
   }
 
   private static ChatService chatService;
+  private static UserService userService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -87,7 +90,8 @@ public class WebSocketServer{
         MessagePostDTO messagePostDTO = objectMapper.readValue(message, MessagePostDTO.class);
         ChatMessage chatMessage = DTOMapper.INSTANCE.converMessagePostDTOToChatMessage(messagePostDTO);
         chatService.saveChatMessage(chatMessage);
-        sendMessageToAll(DTOMapper.INSTANCE.converChatMessageToMessageGetDTO(chatMessage));
+        User chatMessagOwner = userService.getUserById(chatMessage.getUserId());
+        sendMessageToAll(DTOMapper.INSTANCE.converChatMessageToMessageGetDTO(chatMessage, chatMessagOwner));
 
       } catch (IOException e){
         // error decoding JSON

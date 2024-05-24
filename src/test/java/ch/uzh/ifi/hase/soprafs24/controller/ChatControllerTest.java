@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.ChatMessage;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.MessageGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.ChatService;
@@ -56,6 +57,9 @@ public class ChatControllerTest {
   private ChatMessage chatMessage1;
   private ChatMessage chatMessage2;
 
+  private User chatMessageOwner1;
+  private User chatMessageOwner2;
+
   @BeforeEach
   public void setup() {
     chatMessage1 = new ChatMessage();
@@ -75,12 +79,24 @@ public class ChatControllerTest {
     chatMessage2.setUserAvatar("Avatar2");
     chatMessage2.setContent("Second chat message");
     chatMessage2.setMessageTime(LocalDate.now().toString());
+
+    chatMessageOwner1 = new User();
+    chatMessageOwner1.setAvatar("testAvatar");
+    chatMessageOwner1.setUserId(1L);
+    chatMessageOwner1.setUsername("User1");
+
+    chatMessageOwner2 = new User();
+    chatMessageOwner2.setAvatar("testAvatar");
+    chatMessageOwner2.setUserId(2L);
+    chatMessageOwner2.setUsername("User2");
   }
 
   @Test
   public void getChatMessagesByItemId_success() throws Exception {
       List<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
       given(chatService.getChatMessagesByItemId(1L)).willReturn(chatMessages);
+      given(userService.getUserById(chatMessageOwner1.getUserId())).willReturn(chatMessageOwner1);
+      given(userService.getUserById(chatMessageOwner2.getUserId())).willReturn(chatMessageOwner2);
 
       MockHttpServletRequestBuilder getRequest = MockMvcRequestBuilders.get("/chatMessage/1")
               .contentType(MediaType.APPLICATION_JSON);
@@ -91,14 +107,14 @@ public class ChatControllerTest {
               .andExpect(jsonPath("$[0].messageId", is(chatMessage1.getMessageId().intValue())))
               .andExpect(jsonPath("$[0].content", is(chatMessage1.getContent())))
               .andExpect(jsonPath("$[0].userId", is(chatMessage1.getUserId().intValue())))
-              .andExpect(jsonPath("$[0].userName", is(chatMessage1.getUserName())))
-              .andExpect(jsonPath("$[0].userAvatar", is(chatMessage1.getUserAvatar())))
+              .andExpect(jsonPath("$[0].userName", is(chatMessageOwner1.getUsername())))
+              .andExpect(jsonPath("$[0].userAvatar", is(chatMessageOwner1.getAvatar())))
               .andExpect(jsonPath("$[0].messageTime", is(chatMessage1.getMessageTime())))
               .andExpect(jsonPath("$[1].messageId", is(chatMessage2.getMessageId().intValue())))
               .andExpect(jsonPath("$[1].content", is(chatMessage2.getContent())))
               .andExpect(jsonPath("$[1].userId", is(chatMessage2.getUserId().intValue())))
-              .andExpect(jsonPath("$[1].userName", is(chatMessage2.getUserName())))
-              .andExpect(jsonPath("$[1].userAvatar", is(chatMessage2.getUserAvatar())))
+              .andExpect(jsonPath("$[1].userName", is(chatMessageOwner2.getUsername())))
+              .andExpect(jsonPath("$[1].userAvatar", is(chatMessageOwner2.getAvatar())))
               .andExpect(jsonPath("$[1].messageTime", is(chatMessage2.getMessageTime())));
   }
 
