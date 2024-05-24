@@ -75,9 +75,9 @@ public class CommentService {
     List<Comment> commentsByCommentOwnerId = commentRepository.findByCommentOwnerId(userId);
     List<Comment> commentsByCommentOwnerIdChecked = new ArrayList<>();
     for(Comment comment : commentsByCommentOwnerId){
-      if(!itemRepository.findByItemId(comment.getCommentItemId()).equals(null)){
+      if(itemRepository.findByItemId(comment.getCommentItemId())!=null){
         Item commentItem = itemRepository.findByItemId(comment.getCommentId());
-        if(!topicRepository.findByTopicId(commentItem.getTopicId()).equals(null)){
+        if(topicRepository.findByTopicId(commentItem.getTopicId())!=null){
           commentsByCommentOwnerIdChecked.add(comment);
         }
       }

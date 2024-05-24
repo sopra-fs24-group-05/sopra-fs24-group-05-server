@@ -197,9 +197,9 @@ public class UserService {
     List<Long> itemIdList = user.getFollowItemList();
     List<Item> itemList = new ArrayList<>();
     for (Long itemId : itemIdList) {
-      if(!itemRepository.findByItemId(itemId).equals(null)){
+      if(itemRepository.findByItemId(itemId)!=null){
         Item itemToBeAdd = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("item not found"));
-        if(!topicRepository.findByTopicId(itemToBeAdd.getTopicId()).equals(null)){
+        if(topicRepository.findByTopicId(itemToBeAdd.getTopicId())!=null){
           itemList.add(itemToBeAdd);
         }
       }
@@ -212,7 +212,7 @@ public class UserService {
     List<Long> topicIdList = user.getFollowTopicList();
     List<Topic> topicList = new ArrayList<>();
     for(Long topicId : topicIdList){
-      if(!topicRepository.findByTopicId(topicId.intValue()).equals(null)){
+      if(topicRepository.findByTopicId(topicId.intValue())!=null){
         topicList.add(topicRepository.findById(topicId).orElseThrow(() -> new EntityNotFoundException("topic not found")));
       }
     }
