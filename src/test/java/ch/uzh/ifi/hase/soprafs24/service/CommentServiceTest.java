@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
@@ -19,8 +20,10 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.hamcrest.Matchers.array;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,6 +83,8 @@ public class CommentServiceTest {
     reply.setFatherCommentId(testComment.getCommentId());
 
     commentOwner = new User();
+    commentOwner.setUserId(1L);
+    commentOwner.setIdentity(UserIdentity.ADMIN); 
 
 
     testCommentList = Collections.singletonList(testComment);
@@ -97,10 +102,12 @@ public class CommentServiceTest {
     Mockito.when(commentRepository.existsByCommentOwnerIdAndCommentItemId(Mockito.anyLong(), Mockito.anyLong())).thenReturn(false);
     Mockito.when(commentRepository.calculateAverageScoreByCommentItemId(Mockito.any())).thenReturn(testComment.getScore().doubleValue());
     Mockito.when(commentRepository.existsByCommentItemId(Mockito.anyLong())).thenReturn(true);
-    Mockito.when(commentRepository.findById(Mockito.anyLong())).thenReturn(optionalTestComment);
+    Mockito.when(commentRepository.findById(testComment.getCommentId())).thenReturn(optionalTestComment);
+    Mockito.when(commentRepository.findById(reply.getCommentId())).thenReturn(Optional.of(reply));
     Mockito.when(commentRepository.findByCommentOwnerId(Mockito.anyLong())).thenReturn(testCommentList);
     Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(commentOwner));
     //Mockito.when(itemRepository.existsById(Mockito.any())).thenReturn(true);
+    Mockito.when(itemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testItem));
   }
 
   @Test
@@ -252,6 +259,30 @@ public class CommentServiceTest {
       // times of calling save() & flush() will not increase
       Mockito.verify(commentRepository,Mockito.times(1)).save(Mockito.any());
       Mockito.verify(commentRepository,Mockito.times(1)).flush();
+  }
+
+  @Test
+  public void deleteCommentOrReply_AdminUser_Success() {
+      // When admin user deletes a comment
+      commentService.deleteCommentOrReply(commentOwner.getUserId(), testComment.getCommentId());
+
+      // Verify that the comment was deleted and the item score was updated
+      verify(commentRepository, times(1)).delete(testComment);
+      verify(commentRepository, times(1)).flush();
+      verify(itemRepository, times(1)).save(testItem);
+      verify(itemRepository, times(1)).flush();
+  }
+
+  @Test
+  public void deleteCommentOrReply_Reply_Success() {
+      // When admin user deletes a reply
+      commentService.deleteCommentOrReply(commentOwner.getUserId(), reply.getCommentId());
+      //doNothing().when(commentRepository).delete(any());
+
+      // Verify that the reply was deleted
+      verify(commentRepository, times(1)).delete(reply);
+      verify(commentRepository, times(1)).flush();
+      verify(itemRepository, times(0)).save(any());  // Item should not be updated for replies
   }
 
 }

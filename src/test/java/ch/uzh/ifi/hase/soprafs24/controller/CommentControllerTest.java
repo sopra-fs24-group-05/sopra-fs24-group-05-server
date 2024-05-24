@@ -39,10 +39,13 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -265,10 +268,8 @@ public class CommentControllerTest {
   @Test
   public void givenReplies_whenGetReplyByFatherCommentId_thenReturnJsonArray() throws Exception {
     List<Comment> replies = Collections.singletonList(reply);
-    //List<ReplyGetDTO> replyGetDTOs = Collections.singletonList(replyGetDTO);
 
     given(commentService.getReplyByFatherCommentId(Mockito.anyLong())).willReturn(replies);
-    //given(DTOMapper.INSTANCE.converEntityReplyGetDTO(Mockito.any(Comment.class))).willReturn(replyGetDTO);
 
     MockHttpServletRequestBuilder getRequest = get("/reply/get/{fatherCommentId}", 1L)
             .contentType(MediaType.APPLICATION_JSON);
@@ -279,10 +280,25 @@ public class CommentControllerTest {
             .andExpect(jsonPath("$[0].commentId", is(reply.getCommentId().intValue())))
             .andExpect(jsonPath("$[0].commentOwnerId", is(reply.getCommentOwnerId().intValue())))
             .andExpect(jsonPath("$[0].commentOwnerName", is(reply.getCommentOwnerName())))
-            //.andExpect(jsonPath("$[0].commentItemId", is(reply.getCommentItemId().intValue())))
             .andExpect(jsonPath("$[0].content", is(reply.getContent())));
-            //.andExpect(jsonPath("$[0].thumbsUpNum", is(reply.getThumbsUpNum().intValue())))
-            //.andExpect(jsonPath("$[0].fatherCommentId", is(reply.getFatherCommentId().intValue())));
+  }
+
+  @Test
+  public void deleteCommentOrReply_validInput_success() throws Exception {
+      // Mocking the service call
+      doNothing().when(commentService).deleteCommentOrReply(Mockito.anyLong(), Mockito.anyLong());
+
+      // Building the delete request
+      MockHttpServletRequestBuilder deleteRequest = delete("/comments/delete/1")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(asJsonString(1L)); // Here commentId is 1
+
+      // Performing the delete request and verifying the response
+      mockMvc.perform(deleteRequest)
+          .andExpect(status().isNoContent());
+
+      // Verifying that the service method was called once with the expected parameters
+      verify(commentService, times(1)).deleteCommentOrReply(1L, 1L);
   }
 
   

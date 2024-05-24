@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.entity.Comment;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
@@ -29,12 +30,14 @@ public class CommentService {
 
   private final CommentRepository commentRepository;
   private final ItemRepository itemRepository;
+  private final UserRepository userRepository;
 
   @Autowired
   public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository,
                         @Qualifier("itemRepository" ) ItemRepository itemRepository, @Qualifier("userRepository" ) UserRepository userRepository){
     this.commentRepository = commentRepository;
     this.itemRepository = itemRepository;
+    this.userRepository = userRepository;
   }
 
   public Comment getCommentByCommentId(Long commentId){
@@ -147,4 +150,24 @@ public class CommentService {
     commentRepository.flush();
   }
 
+  public void deleteCommentOrReply(Long userId, Long commentId){
+    User userById = userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not found"));
+    Comment commentByCommentId = commentRepository.findById(commentId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "comment Not found"));
+    if((userById.getIdentity() == UserIdentity.ADMIN) || (userId == commentByCommentId.getCommentOwnerId())){
+      if(commentByCommentId.getFatherCommentId()==null){
+        Item itemOfComment = itemRepository.findById(commentByCommentId.getCommentItemId()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "item Not found"));
+        commentRepository.delete(commentByCommentId);
+        commentRepository.flush();
+        itemOfComment.setScore(commentRepository.calculateAverageScoreByCommentItemId(itemOfComment.getItemId()));
+        itemRepository.save(itemOfComment);
+        itemRepository.flush();
+      }else{
+        commentRepository.delete(commentByCommentId);
+        commentRepository.flush();
+      }
+    }else{
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User Not authorized");
+    }
+  }
+  
 }

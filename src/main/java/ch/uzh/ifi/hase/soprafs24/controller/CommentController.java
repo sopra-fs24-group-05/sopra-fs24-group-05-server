@@ -137,5 +137,11 @@ public class CommentController {
     return replyGetDTOs;
   }
   
+  @DeleteMapping("/comments/delete/{userId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ResponseBody
+  public void deleteCommentOrReply(@PathVariable Long userId, @RequestBody Long commentId){
+    commentService.deleteCommentOrReply(userId, commentId);
+  }
   
 }
