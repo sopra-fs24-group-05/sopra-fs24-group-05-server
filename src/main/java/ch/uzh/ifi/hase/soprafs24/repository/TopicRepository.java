@@ -34,4 +34,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long>, JpaSpecific
 
     @Query("SELECT t FROM Topic t WHERE LOWER(SUBSTRING(t.topicName, 1, 1)) = LOWER(:prefix)")
     List<Topic> findByFirstLetter(@Param("prefix") String prefix);
+
+    //boolean existsById(Integer topicId);
 }

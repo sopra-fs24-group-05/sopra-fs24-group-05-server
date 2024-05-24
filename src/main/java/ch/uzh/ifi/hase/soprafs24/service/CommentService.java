@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Item;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 
 import org.slf4j.Logger;
@@ -31,13 +32,17 @@ public class CommentService {
   private final CommentRepository commentRepository;
   private final ItemRepository itemRepository;
   private final UserRepository userRepository;
+  private final TopicRepository topicRepository;
 
   @Autowired
   public CommentService(@Qualifier("commentRepository") CommentRepository commentRepository,
-                        @Qualifier("itemRepository" ) ItemRepository itemRepository, @Qualifier("userRepository" ) UserRepository userRepository){
+                        @Qualifier("itemRepository" ) ItemRepository itemRepository, 
+                        @Qualifier("userRepository" ) UserRepository userRepository,
+                        @Qualifier("topicRepository") TopicRepository topicRepository){
     this.commentRepository = commentRepository;
     this.itemRepository = itemRepository;
     this.userRepository = userRepository;
+    this.topicRepository = topicRepository;
   }
 
   public Comment getCommentByCommentId(Long commentId){
@@ -67,7 +72,17 @@ public class CommentService {
 //      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"comment not found");
         return new ArrayList<>();
     }
-    return commentRepository.findByCommentOwnerId(userId);
+    List<Comment> commentsByCommentOwnerId = commentRepository.findByCommentOwnerId(userId);
+    List<Comment> commentsByCommentOwnerIdChecked = new ArrayList<>();
+    for(Comment comment : commentsByCommentOwnerId){
+      if(itemRepository.existsById(comment.getCommentItemId())){
+        Item commentItem = itemRepository.findByItemId(comment.getCommentId());
+        if(topicRepository.findById(commentItem.getTopicId().longValue()).orElse(null)!=null){
+          commentsByCommentOwnerIdChecked.add(comment);
+        }
+      }
+    }
+    return commentsByCommentOwnerIdChecked;
   }
 
   public List<Comment> getReplyByFatherCommentId(Long fatherCommentId){
@@ -153,7 +168,7 @@ public class CommentService {
   public void deleteCommentOrReply(Long userId, Long commentId){
     User userById = userRepository.findById(userId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not found"));
     Comment commentByCommentId = commentRepository.findById(commentId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "comment Not found"));
-    if((userById.getIdentity() == UserIdentity.ADMIN) || (userId == commentByCommentId.getCommentOwnerId())){
+    if((userById.getIdentity().equals(UserIdentity.ADMIN)) || (commentByCommentId.getCommentOwnerId().equals(userId))){
       if(commentByCommentId.getFatherCommentId()==null){
         Item itemOfComment = itemRepository.findById(commentByCommentId.getCommentItemId()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "item Not found"));
         commentRepository.delete(commentByCommentId);
@@ -169,5 +184,5 @@ public class CommentService {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User Not authorized");
     }
   }
-  
+
 }

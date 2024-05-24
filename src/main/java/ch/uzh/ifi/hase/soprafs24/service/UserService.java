@@ -135,6 +135,8 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"incorrect password");
     }else if(userByUsername.getIdentity() == UserIdentity.BANNED){
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"user have been banned");
+    }else if(userByUsername.getStatus() == UserStatus.ONLINE){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"user already login");
     }
 
     userByUsername.setStatus(UserStatus.ONLINE);
@@ -258,12 +260,13 @@ public class UserService {
   public void editUser(User editUser, String token){
     if(!userRepository.existsById(editUser.getUserId())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
-    }else if(userRepository.existsByUsername(editUser.getUsername())){
+    }
+    User targetUser = userRepository.findById(editUser.getUserId()).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found"));
+    if(userRepository.existsByUsername(editUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
-    }else if(!userRepository.findById(editUser.getUserId()).get().getToken().equals(token)){ //existence of target user has been checked before(first if)
+    }else if(!targetUser.getToken().equals(token)){ //existence of target user has been checked before(first if)
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"access deny");
     }
-    User targetUser = userRepository.findById(editUser.getUserId()).get();
     if(editUser.getUsername()!=null){
       targetUser.setUsername(editUser.getUsername());
     }

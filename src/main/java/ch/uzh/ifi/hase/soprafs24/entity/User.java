@@ -75,7 +75,7 @@ public class User implements Serializable {
   /**
    * store a string point to the avatar
    */
-  @Column(nullable = false, columnDefinition = "TEXT")
+  @Column(nullable = false, columnDefinition = "MEDIUMTEXT")
   private String avatar;
 
   @ElementCollection
