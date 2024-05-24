@@ -256,7 +256,7 @@ public class UserService {
    * @throws org.springframework.web.server.ResponseStatusException
    */
   public void editUser(User editUser, String token){
-    if(userRepository.existsById(editUser.getUserId())){
+    if(!userRepository.existsById(editUser.getUserId())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Id not found");
     }else if(userRepository.existsByUsername(editUser.getUsername())){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
