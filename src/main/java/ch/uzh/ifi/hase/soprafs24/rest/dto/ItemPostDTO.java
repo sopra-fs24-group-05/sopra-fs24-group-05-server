@@ -59,7 +59,7 @@ public class ItemPostDTO {
     }
 
     public double getScore() {
-        return score;
+        return Double.parseDouble(String.format("%.1f", score));
     }
 
     public void setScore(double score) {
