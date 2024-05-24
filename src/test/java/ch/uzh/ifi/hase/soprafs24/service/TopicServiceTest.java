@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;

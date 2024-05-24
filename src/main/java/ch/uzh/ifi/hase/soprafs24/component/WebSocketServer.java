@@ -6,8 +6,6 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.MessageGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.MessagePostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.ChatService;
-import ch.uzh.ifi.hase.soprafs24.service.CommentService;
-import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 
 import java.io.IOException;
@@ -17,7 +15,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.annotation.Resource;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -102,10 +99,6 @@ public class WebSocketServer{
   @OnError
   public void onError(Session session, Throwable throwable){
     log.info("WebSocket error for session {}, userId = {}", session.getId(), userMap.get(session), throwable);
-  }
-
-  private void sendMessage(String message, Session session){
-
   }
 
   private void sendMessageToAll(MessageGetDTO messageGetDTO){

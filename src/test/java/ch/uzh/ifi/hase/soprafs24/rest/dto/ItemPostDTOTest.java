@@ -1,5 +1,4 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import org.junit.jupiter.api.Test;
 

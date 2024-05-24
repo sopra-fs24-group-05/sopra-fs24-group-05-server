@@ -2,19 +2,14 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.ChatMessage;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.MessageGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -118,11 +113,4 @@ public class ChatControllerTest {
               .andExpect(jsonPath("$[1].messageTime", is(chatMessage2.getMessageTime())));
   }
 
-  private String asJsonString(final Object object) {
-    try {
-      return new ObjectMapper().writeValueAsString(object);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
-    }
-  }
 }

@@ -2,14 +2,9 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 
 import ch.uzh.ifi.hase.soprafs24.constant.UserIdentity;
 import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**

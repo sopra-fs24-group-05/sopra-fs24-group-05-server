@@ -1,12 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.service.ChatService;
 import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
@@ -30,8 +26,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -40,7 +34,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

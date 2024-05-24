@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 import ch.uzh.ifi.hase.soprafs24.repository.ItemRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TopicRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.CommentRepository;
-import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

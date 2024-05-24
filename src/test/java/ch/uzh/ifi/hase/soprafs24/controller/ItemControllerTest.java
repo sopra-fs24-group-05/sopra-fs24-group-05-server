@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
-import ch.uzh.ifi.hase.soprafs24.entity.Topic;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 
@@ -11,13 +9,11 @@ import ch.uzh.ifi.hase.soprafs24.service.CommentService;
 import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.ItemGetDTO;
-import ch.uzh.ifi.hase.soprafs24.service.ItemService;
 
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -170,10 +166,6 @@ public class ItemControllerTest {
         item2.setTopicId(topicId);
 
         List<Item> itemList = Arrays.asList(item1, item2);
-        List<ItemGetDTO> itemGetDTOs = itemList.stream()
-                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
-                .collect(Collectors.toList());
-
         when(itemService.getItemsByTopicSortedByScore(anyInt())).thenReturn(itemList);
 
         // when & then
@@ -209,11 +201,6 @@ public class ItemControllerTest {
 
         List<Item> itemList = Arrays.asList(item1, item2);
 
-        // Convert Items to ItemGetDTOs
-        List<ItemGetDTO> itemGetDTOs = itemList.stream()
-                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
-                .collect(Collectors.toList());
-
         when(itemService.getItemsByTopicId(anyInt())).thenReturn(itemList);
 
         // when & then
@@ -248,10 +235,6 @@ public class ItemControllerTest {
         item2.setTopicId(1);
 
         List<Item> itemList = Arrays.asList(item1, item2);
-        List<ItemGetDTO> itemGetDTOs = itemList.stream()
-                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
-                .collect(Collectors.toList());
-
         when(itemService.getItemsByTopicName(anyString())).thenReturn(itemList);
 
         // when & then
@@ -345,9 +328,6 @@ public class ItemControllerTest {
         item2.setItemName("Test Item 2");
 
         List<Item> itemList = Arrays.asList(item1, item2);
-        List<ItemGetDTO> itemGetDTOs = itemList.stream()
-                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
-                .collect(Collectors.toList());
 
         when(itemService.searchItemsByKeyword(anyString())).thenReturn(itemList);
 
@@ -428,9 +408,6 @@ public class ItemControllerTest {
         item2.setPopularity(5);
 
         List<Item> items = Arrays.asList(item1, item2);
-        List<ItemGetDTO> itemGetDTOs = items.stream()
-                .map(DTOMapper.INSTANCE::convertEntityToItemGetDTO)
-                .collect(Collectors.toList());
 
         when(itemService.getItemsSortedByPopularity()).thenReturn(items);
 

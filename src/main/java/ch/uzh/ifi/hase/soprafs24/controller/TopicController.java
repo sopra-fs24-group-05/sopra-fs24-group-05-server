@@ -2,10 +2,8 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Topic;
 
-import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TopicPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.TopicService;
 
@@ -15,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.server.ResponseStatusException;
 
-
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -45,11 +40,6 @@ public class TopicController {
         Topic createdTopic = topicService.createTopic(topicInput);
 
         return DTOMapper.INSTANCE.convertEntityToTopicGetDTO(createdTopic);
-    }
-
-    //Need check with User System
-    private Long getCurrentUserId() {
-        return 1L;
     }
 
     @GetMapping("/topics")

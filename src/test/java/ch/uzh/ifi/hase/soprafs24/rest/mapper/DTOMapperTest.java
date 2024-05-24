@@ -7,12 +7,9 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import org.junit.jupiter.api.Test;
 import ch.uzh.ifi.hase.soprafs24.entity.*;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
-import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
