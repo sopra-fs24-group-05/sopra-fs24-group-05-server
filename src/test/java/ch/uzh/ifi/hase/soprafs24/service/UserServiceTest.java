@@ -453,4 +453,128 @@ public class UserServiceTest {
     verify(userRepository, times(1)).findById(nonExistentAdminId);
     verify(userRepository, never()).findByIdentity(UserIdentity.BANNED);
   }
+
+  @Test
+  public void logoutUser_validUser_success() {
+    // given
+    User logoutUser = new User();
+    logoutUser.setToken("testToken");
+
+    Mockito.when(userRepository.findByToken("testToken")).thenReturn(testUser);
+
+    // when
+    userService.logoutUser(logoutUser);
+
+    // then
+    Mockito.verify(userRepository, Mockito.times(1)).findByToken("testToken");
+    Mockito.verify(userRepository, Mockito.times(1)).saveAndFlush(testUser);
+    assertEquals(UserStatus.OFFLINE, testUser.getStatus());
+  }
+
+  @Test
+  public void logoutUser_userNotFound_throwsException() {
+    // given
+    User logoutUser = new User();
+    logoutUser.setToken("invalidToken");
+
+    Mockito.when(userRepository.findByToken("invalidToken")).thenReturn(null);
+
+    // when
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.logoutUser(logoutUser);
+    });
+
+    // then
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("username not found", exception.getReason());
+  }
+
+  @Test
+  public void loginUser_validInputs_success() {
+    User loginUser = new User();
+    loginUser.setUsername("testUsername");
+    loginUser.setPassword("testPassword");
+
+    testUser.setPassword("testPassword");
+    testUser.setStatus(UserStatus.OFFLINE);
+
+    Mockito.when(userRepository.findByUsername("testUsername")).thenReturn(testUser);
+
+    User loggedInUser = userService.loginUser(loginUser);
+
+    Mockito.verify(userRepository, Mockito.times(1)).findByUsername("testUsername");
+    Mockito.verify(userRepository, Mockito.times(1)).saveAndFlush(testUser);
+    assertEquals(UserStatus.ONLINE, loggedInUser.getStatus());
+  }
+
+  @Test
+  public void loginUser_usernameNotFound_throwsException() {
+    User loginUser = new User();
+    loginUser.setUsername("invalidUsername");
+
+    Mockito.when(userRepository.findByUsername("invalidUsername")).thenReturn(null);
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        userService.loginUser(loginUser);
+    });
+
+    assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
+    assertEquals("username not found", exception.getReason());
+  }
+
+  @Test
+  public void loginUser_incorrectPassword_throwsException() {
+    User loginUser = new User();
+    loginUser.setUsername("testUsername");
+    loginUser.setPassword("incorrectPassword");
+
+    testUser.setPassword("correctPassword");
+
+    Mockito.when(userRepository.findByUsername("testUsername")).thenReturn(testUser);
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        userService.loginUser(loginUser);
+    });
+
+    assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
+    assertEquals("incorrect password", exception.getReason());
+  }
+
+  @Test
+  public void loginUser_userBanned_throwsException() {
+    User loginUser = new User();
+    loginUser.setUsername("bannedUsername");
+    loginUser.setPassword("testPassword");
+
+    bannedUser.setPassword("testPassword");
+    bannedUser.setIdentity(UserIdentity.BANNED);
+
+    Mockito.when(userRepository.findByUsername("bannedUsername")).thenReturn(bannedUser);
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        userService.loginUser(loginUser);
+    });
+
+    assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
+    assertEquals("user have been banned", exception.getReason());
+  }
+
+  @Test
+  public void loginUser_userAlreadyOnline_throwsException() {
+    User loginUser = new User();
+    loginUser.setUsername("testUsername");
+    loginUser.setPassword("testPassword");
+
+    testUser.setPassword("testPassword");
+    testUser.setStatus(UserStatus.ONLINE);
+
+    Mockito.when(userRepository.findByUsername("testUsername")).thenReturn(testUser);
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        userService.loginUser(loginUser);
+    });
+
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("user already login", exception.getReason());
+  }
 }

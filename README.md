@@ -161,7 +161,8 @@ Users can engage in discussions by commenting on items within a topic. They can 
 
 1. **Advanced Filtering**: Implement more advanced filtering options for topics and items.
 2. **Enhanced Analytics**: Provide users with detailed analytics and insights on their participation and rankings.
-3. **Gamification**: Implement gamification elements such as badges, leaderboards, and rewards to increase user engagement and interaction.
+3. **Markdown Files support:** Allow for more detailed and vivid descriptions of topics and items
+4. **Gamification**: Implement gamification elements such as badges, leaderboards, and rewards to increase user engagement and interaction.
 
 ## Authors and Acknowledgment
 

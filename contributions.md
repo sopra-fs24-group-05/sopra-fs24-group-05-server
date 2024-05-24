@@ -19,14 +19,13 @@
 
 ### week 2
 
+#### Week 2 (24/04/17~24/04/24)
+
 * Zizhou Luo
 
   progress on comment and scoring system (#15) and other user related methods
 
   progress on frontend and backend integration
-
-
-#### Week 2 (24/04/17~24/04/24)
 
 * Yiming Xiao
 
@@ -62,7 +61,7 @@
 
     
 
-### Week 2
+### Week 2 (24/05/08~24/05/15)
 
 * Zizhou Luo
 
@@ -74,7 +73,7 @@
   Learning WebSocket 
 
 
-* Yiming Xiao(24/05/08~24/05/15)
+* Yiming Xiao
 
     Finish test all functions in TopicService and TopicRepository.
 
@@ -88,9 +87,9 @@
 
     * Related file `DTOMapper.java` in the project.
 
-### Week 3
+### Week 3 (24/05/15~24/05/22)
 
-* Yiming Xiao(24/05/15~24/05/22)
+* Yiming Xiao
 
 1. **Add function as per Frontend requirement**
     * Search items by keywords: Search for items by keywords so that I can efficiently find items of interest.
@@ -131,5 +130,31 @@
         - Included contribution guidelines.
     - LICENSE:
         - Added the appropriate license for the project to ensure proper usage and distribution.
- 
-  
+
+* Zizhou Luo
+
+1. **Implement WebSocket**
+
+   * WebSocket Endpoint, handling and saving chat message
+   * settle WebSocket connection problem in production
+
+2. **Reply functions**
+
+   * add field `fatherCommentId` to indicate whether a `comment` is a reply
+   * `getCommentByFatherCommentId` will return all reply to a specific comment
+   * reply have no score and will not be counted into average score of a item, average score item can be update correctly 
+
+3. **Modify CommentGetDTO/ReplyGetDTO**
+
+   user `@Mappings` notation to wrap the username and avatar of the owner of comment/reply for display by the frontend
+
+4. **Implement admin functions**
+
+   * endpoint for banning a user for misbehave and getting a list of banned user
+   * endpoint for unblock a user
+
+5. **test relative to Comments/Users/Chat**
+
+   improve test coverage
+
+6. **improvement of overall reliability of backend code**
