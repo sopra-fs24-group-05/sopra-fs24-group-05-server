@@ -172,7 +172,7 @@ If you want to avoid running all tests with every change, use the following comm
 
 The user registration process involves creating an account by providing a username, name, and password. This allows users to access the full features of the application. Below is a screenshot of the registration page.
 
-![image-20240524225728042](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524225728042.png)
+![image-20240524225728042](.\screenshot\image-20240524225728042.png)
 
 *Figure 1: User Registration Page*
 
@@ -182,7 +182,7 @@ The user registration process involves creating an account by providing a userna
 
 After logging in, users will be direct to lobby page below, where they can choose to browse different topics/ 
 
-![image-20240524210027397](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524210027397.png)
+![image-20240524210027397](.\screenshot\image-20240524210027397.png)
 
 *Figure 2: User Registration Page*
 
@@ -190,7 +190,7 @@ After logging in, users will be direct to lobby page below, where they can choos
 
 Users can create new topics where items can be added and ranked. The topic creation page allows users to specify the topic title, description, and settings regarding who can contribute to the topic. Below is a screenshot of the topic creation page.
 
-![image-20240524210104735](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524210104735.png)
+![image-20240524210104735](.\screenshot\image-20240524210104735.png)
 
 *Figure 3: Topic Creation Page*
 
@@ -198,7 +198,7 @@ Users can create new topics where items can be added and ranked. The topic creat
 
 Within a topic, users can add items and assign scores to these items based on their preferences. The ranking system aggregates these scores to display a real-time ranking of items. Below is a screenshot of the item ranking interface.
 
-![image-20240524210206671](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524210206671.png)
+![image-20240524210206671](.\screenshot\image-20240524210206671.png)
 
 *Figure 4: Item Ranking Interface*
 
