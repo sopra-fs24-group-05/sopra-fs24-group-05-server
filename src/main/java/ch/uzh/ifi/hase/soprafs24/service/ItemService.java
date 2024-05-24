@@ -122,15 +122,20 @@ public class ItemService {
     }
 
     public List<Item> getItemsSortedByCommentCountAndTopicId(Integer topicId) {
+        // 获取所有属于该 topicId 的 Item
+        List<Item> items = itemRepository.findByTopicId(topicId);
+
+        // 获取所有评论
         List<Comment> comments = commentRepository.findAll();
 
-        // 过滤同一 Topic 下的评论，并统计每个 Item 的评论数量
+        // 统计每个 Item 的评论数量
         Map<Long, Long> itemCommentCountMap = comments.stream()
-                .filter(comment -> {
-                    Optional<Item> item = itemRepository.findById(comment.getCommentItemId());
-                    return item.isPresent() && item.get().getTopicId().equals(topicId);
-                })
+                .filter(comment -> items.stream()
+                        .anyMatch(item -> item.getItemId().equals(comment.getCommentItemId())))
                 .collect(Collectors.groupingBy(Comment::getCommentItemId, Collectors.counting()));
+
+        // 将没有评论的 Item 评论数视为0
+        items.forEach(item -> itemCommentCountMap.putIfAbsent(item.getItemId(), 0L));
 
         // 按评论数量排序
         List<Long> sortedItemIds = itemCommentCountMap.entrySet().stream()
@@ -139,8 +144,7 @@ public class ItemService {
                 .collect(Collectors.toList());
 
         // 按照排序后的 ID 列表顺序重新排列查询结果
-        List<Item> sortedItems = itemRepository.findAllById(sortedItemIds);
-        Map<Long, Item> itemMap = sortedItems.stream()
+        Map<Long, Item> itemMap = items.stream()
                 .collect(Collectors.toMap(Item::getItemId, item -> item));
 
         // 返回按评论数量排序的 Item 列表
@@ -148,6 +152,7 @@ public class ItemService {
                 .map(itemMap::get)
                 .collect(Collectors.toList());
     }
+
 
 
 

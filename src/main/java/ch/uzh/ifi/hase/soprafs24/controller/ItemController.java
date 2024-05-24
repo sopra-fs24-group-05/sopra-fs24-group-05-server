@@ -104,7 +104,7 @@ public class ItemController {
 
     @DeleteMapping("/items/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTopicById(@PathVariable Long itemId) {
+    public void deleteItemByItemId(@PathVariable Long itemId) {
         itemService.deleteItemByItemId(itemId);
     }
 

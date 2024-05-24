@@ -356,19 +356,24 @@ public class ItemServiceTest {
         item2.setItemId(2L);
         item2.setTopicId(topicId);
 
+        Item item3 = new Item();  // 新增没有评论的 item
+        item3.setItemId(3L);
+        item3.setTopicId(topicId);
+
         when(commentRepository.findAll()).thenReturn(Arrays.asList(comment1, comment2, comment3));
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
-        when(itemRepository.findById(2L)).thenReturn(Optional.of(item2));
-        when(itemRepository.findAllById(anyList())).thenReturn(Arrays.asList(item1, item2));
+        when(itemRepository.findByTopicId(topicId)).thenReturn(Arrays.asList(item1, item2, item3));
+        when(itemRepository.findAllById(anyList())).thenReturn(Arrays.asList(item1, item2, item3));
 
         // when
         List<Item> items = itemService.getItemsSortedByCommentCountAndTopicId(topicId);
 
         // then
-        assertEquals(2, items.size());
+        assertEquals(3, items.size());
         assertEquals(1L, items.get(0).getItemId());
         assertEquals(2L, items.get(1).getItemId());
+        assertEquals(3L, items.get(2).getItemId());
     }
+
 
     @Test
     public void getItemByItemId_incrementsPopularity() {
