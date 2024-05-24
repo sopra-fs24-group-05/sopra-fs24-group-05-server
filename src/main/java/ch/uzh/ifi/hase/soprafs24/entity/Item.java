@@ -76,7 +76,9 @@ public class Item {
 
     public void setLikes(int likes) {this.likes = likes;}
 
-    public double getScore() {return score;}
+    public double getScore() {
+        return Double.parseDouble(String.format("%.1f", score));
+    }
 
     public void setScore(double score) {this.score = score;}
 

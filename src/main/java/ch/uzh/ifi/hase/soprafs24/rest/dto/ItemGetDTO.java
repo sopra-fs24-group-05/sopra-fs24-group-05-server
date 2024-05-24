@@ -58,7 +58,7 @@ public class ItemGetDTO {
     }
 
     public double getAverageScore() {
-        return averageScore;
+        return Double.parseDouble(String.format("%.1f", averageScore));
     }
 
     public void setAverageScore(double averageScore) {
