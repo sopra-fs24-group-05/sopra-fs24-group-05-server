@@ -4,6 +4,17 @@
 
 "Rank Everything" is an innovative digital application that empowers users to create and participate in topics for collective ranking. This application allows users to create items within these topics, assign points based on their preferences, and visualize rankings in real-time. It also facilitates rich user interaction through the ability to comment on items and engage with comments via replies and likes, ensuring a vibrant community dialogue around each ranked item.
 
+## Technologies
+
+* database: MySQL & H2
+* React
+* SpringBoot
+* Gradle
+* WebSocket
+* Google Cloud Service
+  * SQL
+  * Cloud Translation API
+
 ## Getting Started
 
 ### Prerequisites
@@ -123,27 +134,29 @@ If you want to avoid running all tests with every change, use the following comm
 
 The user registration process involves creating an account by providing a username, name, and password. This allows users to access the full features of the application. Below is a screenshot of the registration page.
 
-需要补图
+![image-20240524225728042](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524225728042.png)
 
 *Figure 1: User Registration Page*
 
 
 
+### Lobby Page
+
+![image-20240524210027397](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524210027397.png)
+
 ### Topic Creation
 
 Users can create new topics where items can be added and ranked. The topic creation page allows users to specify the topic title, description, and settings regarding who can contribute to the topic. Below is a screenshot of the topic creation page.
 
-需要补图
+![image-20240524210104735](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524210104735.png)
 
 *Figure 2: Topic Creation Page*
-
-
 
 ### Item Ranking
 
 Within a topic, users can add items and assign scores to these items based on their preferences. The ranking system aggregates these scores to display a real-time ranking of items. Below is a screenshot of the item ranking interface.
 
-需要补图
+![image-20240524210206671](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524210206671.png)
 
 *Figure 3: Item Ranking Interface*
 
@@ -153,9 +166,7 @@ Within a topic, users can add items and assign scores to these items based on th
 
 Users can engage in discussions by commenting on items within a topic. They can also reply to comments and like them, enhancing interaction and community engagement. Below is a screenshot of the commenting system.
 
-需要补图
-
-*Figure 4: Commenting System Interface*
+![image-20240524214023247](C:\Users\23625\AppData\Roaming\Typora\typora-user-images\image-20240524214023247.png)*Figure 4: Commenting System Interface*
 
 ## Roadmap
 
@@ -179,5 +190,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 - Sopra TA: Louis Caerts
 - Hat tip to anyone whose code was used
-- Inspiration
-- etc
+- Inspiration 
+- Solution for WebSocket connection problems from Krumm Jonas and Andermatt Marion Belinda in Sopra forum on OLAT. 
