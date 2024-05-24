@@ -133,6 +133,8 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "username not found");
     }else if(!loginUser.getPassword().equals(userByUsername.getPassword())){
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"incorrect password");
+    }else if(userByUsername.getIdentity() == UserIdentity.BANNED){
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"user have been banned");
     }
 
     userByUsername.setStatus(UserStatus.ONLINE);
@@ -280,6 +282,17 @@ public class UserService {
     }
     User targetUser = userRepository.findById(targetId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "target not found"));
     targetUser.setIdentity(UserIdentity.BANNED);
+    userRepository.save(targetUser);
+    userRepository.flush();
+  }
+
+  public void unblockUser(Long adminId, Long targetId){
+    User admin = userRepository.findById(adminId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "admin not found"));
+    if(admin.getIdentity()!=UserIdentity.ADMIN){
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you are not authorized");
+    }
+    User targetUser = userRepository.findById(targetId).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "target not found"));
+    targetUser.setIdentity(UserIdentity.STUDENT);
     userRepository.save(targetUser);
     userRepository.flush();
   }

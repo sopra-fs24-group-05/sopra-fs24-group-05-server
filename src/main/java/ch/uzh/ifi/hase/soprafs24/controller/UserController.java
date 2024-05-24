@@ -175,6 +175,13 @@ public class UserController {
     userService.banUser(adminId, targetId);
   }
 
+  @PutMapping("/admin/unblockUser/{adminId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void unblockUser(@PathVariable Long adminId, @RequestBody Long targetId){
+    userService.unblockUser(adminId, targetId);
+  }
+
   @GetMapping("/admin/getBannedList/{adminId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody

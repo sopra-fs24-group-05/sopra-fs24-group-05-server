@@ -82,7 +82,7 @@ public class CommentRepositoryTest {
     List<Comment> found = commentRepository.findByCommentOwnerId(comment.getCommentOwnerId());
 
     // then
-    assertEquals(2, found.size());
+    assertEquals(1, found.size());
     assertNotNull(found.get(0).getCommentId());
     assertEquals(found.get(0).getCommentItemId(), comment.getCommentItemId());
     assertEquals(found.get(0).getCommentOwnerId(), comment.getCommentOwnerId());

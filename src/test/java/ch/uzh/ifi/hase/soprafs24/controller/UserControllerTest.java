@@ -449,6 +449,27 @@ public class UserControllerTest {
     }
 
     @Test
+    public void unblockUser_validAdminAndTarget_success() throws Exception {
+        // given
+        Long adminId = 1L;
+        Long targetId = 2L;
+
+        // do nothing when the userService.banUser is called (default behavior)
+        Mockito.doNothing().when(userService).unblockUser(adminId, targetId);
+
+        // when
+        MockHttpServletRequestBuilder putRequest = put("/admin/unblockUser/{adminId}", adminId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(targetId.toString());
+
+        // then
+        mockMvc.perform(putRequest)
+            .andExpect(status().isOk());
+
+        Mockito.verify(userService, Mockito.times(1)).unblockUser(adminId, targetId);
+    }
+
+    @Test
     public void getBannedList_validAdmin_success() throws Exception {
         // given: mock banned users
         User bannedUser1 = new User();

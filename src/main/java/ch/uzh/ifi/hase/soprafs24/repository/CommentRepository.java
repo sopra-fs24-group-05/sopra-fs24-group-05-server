@@ -22,7 +22,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
   @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId ORDER BY c.thumbsUpNum DESC")
   List<Comment> findByCommentItemIdOrderByThumbsUpNumDesc(@Param("commentItemId") Long commentItemId,Pageable pageable);
 
-  @Query("SELECT c FROM Comment c WHERE c.commentOwnerId = :commentOwnerId ORDER BY c.thumbsUpNum DESC")
+  @Query("SELECT c FROM Comment c WHERE c.commentOwnerId = :commentOwnerId AND c.fatherCommentId IS NULL ORDER BY c.thumbsUpNum DESC")
   List<Comment> findByCommentOwnerId(@Param("commentOwnerId") Long commentOwnerId);
 
   @Query("SELECT c FROM Comment c WHERE c.commentItemId = :commentItemId AND c.fatherCommentId IS NULL")

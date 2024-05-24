@@ -349,6 +349,57 @@ public class UserServiceTest {
     assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
     assertEquals("you are not authorized", exception.getReason());
   }
+
+  @Test
+  public void unblockUser_validAdminAndTarget_success() {
+    // when
+    userService.unblockUser(adminUser.getUserId(), targetUser.getUserId());
+
+    // then
+    verify(userRepository, times(1)).findById(adminUser.getUserId());
+    verify(userRepository, times(1)).findById(targetUser.getUserId());
+    verify(userRepository, times(1)).save(targetUser);
+    assertEquals(UserIdentity.STUDENT, targetUser.getIdentity());
+  }
+
+  @Test
+  public void unblockUser_adminNotFound_throwsException() {
+    // given
+    when(userRepository.findById(adminUser.getUserId())).thenReturn(Optional.empty());
+
+    // when & then
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+    });
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("admin not found", exception.getReason());
+  }
+
+  @Test
+  public void unblockUser_targetNotFound_throwsException() {
+    // given
+    when(userRepository.findById(targetUser.getUserId())).thenReturn(Optional.empty());
+
+    // when & then
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+    });
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    assertEquals("target not found", exception.getReason());
+  }
+
+  @Test
+  public void unblockUser_adminNotAuthorized_throwsException() {
+    // given
+    adminUser.setIdentity(UserIdentity.STUDENT);//if identity is not admin
+
+    // when & then
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      userService.banUser(adminUser.getUserId(), targetUser.getUserId());
+    });
+    assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
+    assertEquals("you are not authorized", exception.getReason());
+  }
   
   @Test
   public void getAllBannedUsers_validAdmin_success() {
